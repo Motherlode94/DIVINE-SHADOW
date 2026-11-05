@@ -184,3 +184,11 @@
  .population-art{min-height:220px}
  .population-portrait{width:136px;height:169px}
 }
+
+/* Masquage des légendes imprimées par erreur en haut des lignes 3 et 4 de l'atlas. */
+.population-portrait[data-atlas-row="2"]::before,
+.population-portrait[data-atlas-row="3"]::before{
+ content:"";position:absolute;left:0;right:0;top:0;height:18px;
+ background:linear-gradient(180deg,#241b21 0%,#241b21 65%,#241b2100 100%);
+ pointer-events:none
+}
