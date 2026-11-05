@@ -17,7 +17,7 @@ const $=id=>document.getElementById(id);
 $("profile-kind").textContent=p.kind;$("profile-name").textContent=p.short;$("profile-title").textContent=p.title;
 $("profile-intro").textContent=p.intro;$("profile-story").textContent=p.story;$("profile-relations").textContent=p.relation;
 if(p.title.length>19){document.querySelector(".profile-intro h1").classList.add("long-subtitle")}
-if(["vaelkor","nyssara","orvann"].includes(key)){document.querySelector(".profile-visual").dataset.artwork="poster"}
+
 
 const portrait=$("profile-image");if(p.image){portrait.alt="Portrait de "+p.name;portrait.src="./assets/"+encodeURIComponent(p.image)}else{portrait.remove();document.querySelector(".profile-visual").classList.add("portrait-pending");document.querySelector(".profile-visual").setAttribute("aria-label","Illustration officielle non encore validée pour "+p.name)}
 $("profile-attributes").replaceChildren(...p.traits.map(v=>{const e=document.createElement("span");e.textContent=v;return e}));
