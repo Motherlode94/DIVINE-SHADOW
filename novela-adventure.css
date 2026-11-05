@@ -1,0 +1,40 @@
+[hidden]{display:none!important}
+.adventure-hero{padding:145px clamp(24px,7vw,120px) 86px;min-height:530px;background:linear-gradient(100deg,#08090df5,#140c17cc 65%),url('./assets/chayah_hd_candidate.jpg') center 32%/cover}
+.adventure-hero h1{font-size:clamp(80px,12vw,165px);margin:30px 0 26px}
+.adventure-hero p{max-width:730px;line-height:1.85;color:#d1c7d2}.adventure-intro-links{display:flex;flex-wrap:wrap;gap:13px;margin:27px 0}
+.adventure-disclaimer{font-size:12px;color:#afa3b1!important}
+.adventure-wrap{padding:65px clamp(17px,5vw,90px) 105px;background:#0c0c13;scroll-margin-top:75px}
+.adventure-setup{max-width:1100px;margin:0 auto}.adventure-setup h2{font-size:clamp(65px,9vw,120px);margin:25px 0}.adventure-setup p{line-height:1.8;color:#cfc2d0;max-width:760px}
+.mode-options{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+.mode-choice{background:#18121b;border:1px solid #b3597599;padding:35px;text-align:left;color:white;display:grid;gap:22px;transition:background .2s}
+.mode-choice strong{font:900 clamp(28px,4vw,50px) 'Barlow Condensed',sans-serif}.mode-choice span{line-height:1.8;color:#d2c4cf}.mode-choice:hover,.adventure-action:hover{background:#4a2134;border-color:#ed658e}
+.adventure-chapter{display:flex;justify-content:space-between;gap:25px;align-items:end;margin-bottom:24px}
+.adventure-chapter h2{font-size:clamp(46px,7vw,100px);margin:12px 0}.adventure-chapter p{max-width:900px;line-height:1.8;color:#cbbdcb}
+.adventure-top-actions{display:grid;gap:15px;min-width:170px;text-align:center;font-size:12px;color:#ef9bb0}.adventure-top-actions button{padding:13px;color:white;background:#251723;border:1px solid #ffffff4b}
+.adventure-status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:25px 0}
+.status-panel{background:#19141e;border:1px solid #ffffff28;padding:20px;display:grid;gap:10px}.status-panel>span{color:#baaebd;font-size:10px;letter-spacing:.1em}.status-panel strong{font-size:21px}
+.progress-track{height:7px;background:#302b33;overflow:hidden;border-radius:5px}.progress-track i{display:block;background:#da5877;height:100%;transition:width .3s}.progress-track.energy i{background:#73bdd8}.progress-track.enemy i{background:#e05256}
+.adventure-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.7fr);gap:17px;align-items:start}
+.scene-view{min-height:360px;border:1px solid #ffffff2c;padding:32px;background:linear-gradient(90deg,#0b0b10e8,#13111ed6),url('./assets/aether_hd_candidate.jpg') center/cover;display:flex;flex-direction:column;justify-content:end}
+.scene-view h3{font-size:clamp(55px,7vw,95px);margin:18px 0}.scene-view>p{color:#e3d7e0;line-height:1.8;max-width:630px}
+.event-message{margin:24px 0 0;padding:15px 19px;border-left:3px solid #dd6886;background:#4a213552;line-height:1.8;color:#f0dbe7;font-size:13px}
+.adventure-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:17px 0}
+.adventure-panel{background:#17131b;border:1px solid #ffffff29;padding:24px;min-width:0}
+.adventure-panel h3{font-size:31px;margin-bottom:20px;line-height:1.1}
+.adventure-actions{display:grid;gap:10px}
+.adventure-action{color:white;text-align:left;border:1px solid #ffffff3b;background:#261c28;padding:15px;display:grid;gap:7px;transition:background .2s}
+.adventure-action strong{font-size:13px;line-height:1.5}.adventure-action small{color:#beb2bf;font-size:11px;line-height:1.55}.adventure-action:disabled{opacity:.35;cursor:not-allowed}
+.adventure-sidebar{display:grid;gap:16px;position:sticky;top:100px}.adventure-sidebar li{font-size:12px;color:#c9becc;line-height:1.8;padding:4px 0}.adventure-sidebar ul,.adventure-sidebar ol{padding-left:20px}
+#journal-button{background:#291c2c;border:1px solid #af5279;color:#fff;padding:16px;width:100%;font-size:11px;font-weight:800}
+.combat-panel{margin:15px 0;border:1px solid #cf5564;background:linear-gradient(115deg,#32121d,#13101b);padding:clamp(22px,4vw,40px)}
+.combat-heading{display:flex;justify-content:space-between;gap:20px;align-items:start}.combat-heading h3{font-size:clamp(42px,5vw,75px);margin:18px 0}.combat-heading p{color:#ded0d6;line-height:1.8}
+.combat-heading strong{color:#f7a9b8;font-size:12px;white-space:nowrap}.enemy-health{margin:24px 0;color:#e9c9d0;font-size:12px}.enemy-health .progress-track{margin-top:10px}
+.combat-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:25px}
+.encounter-modal{position:fixed;inset:0;z-index:85;background:#000d;display:grid;place-items:center;padding:18px}
+.encounter-box{background:radial-gradient(circle at 100% 0,#51283a60,transparent 60%),#15121c;border:1px solid #b45978;width:min(680px,100%);max-height:90vh;overflow:auto;padding:clamp(24px,5vw,48px);position:relative}
+.encounter-box h2{font-size:clamp(50px,7vw,90px);margin:20px 0}.encounter-box p{font-size:14px;color:#ddd0dd;line-height:1.85}
+.encounter-close{position:absolute;right:20px;top:20px;padding:10px;background:transparent;color:white;border:0;font-size:22px}
+.adventure-ending{margin:30px 0;padding:45px;border:1px solid #d36889;background:#2c1723}.adventure-ending h2{font-size:clamp(50px,8vw,105px);margin:20px 0}.adventure-ending p{color:#ded0df;line-height:1.8}
+@media(max-width:1000px){.adventure-layout{grid-template-columns:1fr}.adventure-sidebar{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.adventure-hero{padding:125px 22px 70px}.adventure-wrap{padding:50px 17px 75px}.mode-options,.adventure-panels,.adventure-sidebar,.combat-actions{grid-template-columns:1fr}.adventure-status{grid-template-columns:repeat(2,minmax(0,1fr))}.adventure-chapter{flex-direction:column;align-items:start}.scene-view{padding:23px;min-height:310px}.combat-heading{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.mode-choice,.adventure-action,.progress-track i{transition:none}}
