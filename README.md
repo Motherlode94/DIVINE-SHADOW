@@ -60,6 +60,23 @@ Le joueur sélectionne **Mode Histoire** ou **Mode Impitoyable**, puis découvre
 
 Le **cheminement des épisodes** n'encombre plus l'écran principal : il est consultable dans le menu **Informations → Épisodes**. Les décisions de la scène utilisent désormais toute la largeur disponible.
 
+### Direction narrative : le secret de CHAYAH
+
+**Règle de la révélation** : CHAYAH ne montre pas toute sa puissance durant la saison actuellement jouable. Une révélation majeure **pourrait se produire à l'épisode 150**, face à une entité plus ancienne que lui, selon les décisions futures du créateur. Ce moment est **une direction scénaristique, non un épisode déjà écrit ou jouable**.
+
+Les combats ne doivent pas devenir des démonstrations de toute-puissance : CHAYAH, immortel, peut saigner, souffrir, subir des fractures, perdre connaissance et échouer à protéger des habitants. Ces conséquences persistent dans la partie. L'immortalité ne signifie pas immunité physique.
+
+Les scènes d'action emploient des descriptions incarnées (perception, mouvement, terrain, conséquences immédiates, réactions des adversaires et des alliés), complétées par des effets visuels abstraits originaux, sans reproduire de scènes ni d'animations de franchises existantes.
+
+### Nouveau système de combat cinématique (prototype)
+
+Le joueur peut choisir **Frappe ciblée, Void Step, Garde, Contre d'appui, Rempart divin, Sceau du réel, Sommation, Repli tactique**, et éventuellement **Rage contenue** après plusieurs deuils. Les compétences dépensent de l'énergie, peuvent transmettre un contrecoup physique à CHAYAH, et les blessures limitent les dégâts des coups suivants.
+
+- **Niveau de lésions (0 à 8)** enregistré et affiché en combat ; blessures durables, même après une victoire.
+- **Rage contenue** volontairement limitée : ce n'est ni une transformation divine ni la révélation des pouvoirs scellés.
+- Les effets de scène (impacts, anneaux d'énergie, mouvements) sont des animations CSS stylisées. Il ne s'agit **pas de séquences vidéo animées** ou de chorégraphies 3D.
+- La sauvegarde passe à `divine-shadow-campaign-v8` pour ne pas mélanger les anciennes parties sans gestion des blessures.
+
 ### Mécaniques et conséquences
 
 - **CHAYAH** est le protagoniste principal ; son HUD conserve la **Vitalité** et la **Puissance divine** visibles.
@@ -70,7 +87,7 @@ Le **cheminement des épisodes** n'encombre plus l'écran principal : il est con
 - Au cours de l'**épisode 19**, MAILEIZ, mortelle, se précipite pour protéger une enfant face à une lance ennemie. CHAYAH peut **s'interposer**, **projeter un bouclier et absorber le choc**, ou **ne pas intervenir**. Les blessures et, en mode Impitoyable, une mort possible restent persistantes dans la partie ; une MAILEIZ décédée ne participe plus aux scènes suivantes.
 - Les adversaires humains possèdent une jauge de **Force** distincte de la Puissance divine. Les créatures et personnages dont la nature reste à confirmer ne reçoivent pas automatiquement un statut immortel.
 
-La progression est stockée localement dans `localStorage`, sous la clé **`divine-shadow-campaign-v7`**. Le passage aux 27 épisodes a nécessité une nouvelle version : les index des anciennes parties ne sont pas importés automatiquement. Les sauvegardes ne sont pas synchronisées entre appareils.
+La progression est stockée localement dans `localStorage`, sous la clé **`divine-shadow-campaign-v8`**. Le passage aux 27 épisodes a nécessité une nouvelle version : les index des anciennes parties ne sont pas importés automatiquement. Les sauvegardes ne sont pas synchronisées entre appareils.
 
 ### Guerre des cités et fins diplomatiques
 
