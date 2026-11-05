@@ -35,7 +35,24 @@ window.DS_ADVENTURE_DATA = Object.freeze({
     shade:{name:"Ombre des Serments",hp:68,damage:14,armor:1,portrait:"nyssara",desc:"Une entité liée aux pactes brisés. Sa présence ne prouve pas la culpabilité de NYSSARA."},
     captain:{name:"Capitaine des Cendres",hp:92,damage:16,armor:4,portrait:"vaelkor",desc:"Un officier discipliné, prêt à battre en retraite si son objectif est compromis."}
   },
-  abilities:[
+  // Les noms incomplets restent explicitement à confirmer par le créateur.
+  npcs:{
+    general:{name:"LE GÉNÉRAL",role:"Commandant de la garde urbaine",status:"Nom et identité à confirmer",place:"gate",portrait:null,
+      intro:"Le Général coordonne les défenses et refuse de sacrifier les civils pour une victoire symbolique."},
+    eleaonor:{name:"ÉLÉAONOR",role:"Figure politique de la cité",status:"Rôle précis à confirmer",place:"council",portrait:null,
+      intro:"ÉLÉAONOR connaît les tensions du Conseil. Elle demande des preuves avant toute accusation."},
+    brother:{name:"LE FRÈRE AUX PACTES",role:"Frère de CHAYAH — identité à préciser",status:"Nom et pouvoirs à confirmer",place:"sanctuary",portrait:null,
+      intro:"Un frère de CHAYAH explore des pratiques liées à des entités inquiétantes. Ses objectifs véritables restent inconnus."},
+    innkeeper:{name:"MIREN",role:"Aubergiste — civile proposée",status:"Concept à valider",place:"gallery",portrait:null,
+      intro:"MIREN connaît les rumeurs de la ville, sans être omnisciente. Elle protège ses clients."},
+    healer:{name:"DOCTEURE SELMA",role:"Médecin de quartier — civile proposée",status:"Concept à valider",place:"laboratory",portrait:null,
+      intro:"SELMA dirige un dispensaire où blessés et réfugiés demandent protection."},
+    courier:{name:"TOMAS",role:"Messager — civil proposé",status:"Concept à valider",place:"gate",portrait:null,
+      intro:"TOMAS livre les nouvelles entre les quartiers et tente d'échapper aux patrouilles."},
+    archivist:{name:"NADIR",role:"Archiviste municipal — civil proposé",status:"Concept à valider",place:"archives",portrait:null,
+      intro:"NADIR conserve les registres civils et sait distinguer un document falsifié d'une pièce authentique."}
+  },
+    abilities:[
     {id:"strike",name:"FRAPPE CIBLÉE",cost:0,hint:"16–22 dégâts avant armure ; restitue 5 énergie."},
     {id:"void",name:"VOID STEP",cost:18,hint:"24–30 dégâts, évite la prochaine attaque."},
     {id:"guard",name:"GARDE",cost:0,hint:"Réduit les dégâts de cette attaque et restaure 10 énergie."},
