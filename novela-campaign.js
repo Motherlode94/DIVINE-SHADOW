@@ -331,6 +331,8 @@ function battleTurn(action){
 function finish(){
  S.finished=true;
  let title,text;
+ const priorTruth=has("samaConnaîtMaileiz");
+ const powerRevealed=has("pouvoirRevele150");
  const rescued=Object.values(S.aidDecisions).filter(v=>v==="accepted").length;
  const refused=Object.values(S.aidDecisions).filter(v=>v==="refused").length;
  const neutralTrust=["brumelac","asterne"].reduce((total,id)=>total+(S.cityStates[id]?.trust||0),0);
@@ -392,9 +394,20 @@ function render(){
   "Les premières attaques bouleversent la vie des quartiers. CHAYAH protège, enquête et découvre le prix des décisions.":
   n.episode<28?
   "Les conséquences des combats, le deuil et les secrets des pactes modifient l'avenir de la ville.":
-  "La guerre gagne les cités voisines. Renforts, alliances, refus et preuves déterminent les différentes conclusions.";
+  n.episode<41?"La guerre gagne les cités voisines. Chaque demande d'aide a des conséquences durables.":
+ n.episode<86?"Reconstruction, diplomatie et faux bienfaiteurs: chaque victime et chaque témoin comptent.":
+ n.episode<116?"CHAYAH affronte ses silences envers SAMA, l'autonomie de MAILEIZ et les pactes de son frère.":
+ n.episode<146?"Le continent se déchire tandis qu'AETHER analyse des phénomènes plus anciens que les lois connues.":
+ n.episode<161?"Face à une présence antérieure à CHAYAH, sa puissance profonde ne peut se révéler sans blessures.":
+ "Les survivants, les proches et les cités décident de ce qu'ils feront de la paix.";
  $("current-place").textContent=n.place;
  let sceneText=n.text;
+ if(n.textIfSamaAware&&has("samaConnaîtMaileiz"))sceneText=n.textIfSamaAware;
+ else if(n.textIfSamaUnaware&&!has("samaConnaîtMaileiz"))sceneText=n.textIfSamaUnaware;
+ if(n.textIfPowerRevealed&&has("pouvoirRevele150"))sceneText=n.textIfPowerRevealed;
+ else if(n.textIfPowerHidden&&has("pouvoirRetenu150"))sceneText=n.textIfPowerHidden;
+ if(n.textIfMaileizDead&&S.maileizStatus==="morte")sceneText=n.textIfMaileizDead;
+ else if(n.textIfMaileizAlive&&S.maileizStatus!=="morte")sceneText=n.textIfMaileizAlive;
  if(n.id==="s18"&&S.maileizStatus==="morte")sceneText="La ville enterre ses morts, dont MAILEIZ, tombée en sauvant une enfant. CHAYAH ne peut pas effacer les décisions de cette route. AETHER l'accompagne sans le décharger de sa responsabilité. Les quartiers cherchent comment vivre après la bataille.";
  else if(n.id==="s18"&&S.maileizStatus==="blessee")sceneText+=" MAILEIZ est vivante mais blessée. Sa convalescence et ses choix futurs lui appartiennent.";
  $("place-desc").textContent=sceneText+reaction();
@@ -448,7 +461,7 @@ function render(){
    button("REMPART DIVIN","Protéger les civils. Coût 23 : choc absorbé par CHAYAH.",()=>battleTurn("ward"),S.energy<23),
    button("SCEAU DU RÉEL","Sceau de ralentissement : 26 énergie et 5 vitalité.",()=>battleTurn("seal"),S.energy<26),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
-   ...(n.episode>=14&&n.episode<=38?[
+   ...(n.episode>=14&&S.resources.aether!==undefined?[
     button("AETHER — CONSTRUCTION D'ÉNERGIE","Structure énergétique : dégâts et entrave. -24 PM d’AETHER.",()=>battleTurn("energyConstruct"),(S.resources.aether??0)<24),
     button("AETHER — ANALYSE DES LOIS","Identifie la faiblesse ennemie. -15 PM d’AETHER.",()=>battleTurn("lawAnalysis"),(S.resources.aether??0)<15)
    ]:[]),
