@@ -113,10 +113,10 @@ function choose(choice){
  advanceClock(1);log("CHAYAH : "+choice.label);
  if(has("evacuation")&&S.index===1)S.civiliansSaved+=20;
  if(has("couloir")&&S.index===2)S.civiliansSaved+=12;
- if(has("barricades")&&S.index===3)S.npc.general="défend la porte avec les gardes";
+ if(has("barricades")&&S.index===4)S.npc.general="défend la porte avec les gardes";
  if(has("respect")&&S.index===7)S.npc.selma="coordonne les soins avec MAILEIZ";
- if(has("dossier")&&S.index===7)S.npc.aether="consolide les témoignages";
- if(has("mandat")&&S.index===8)S.npc.eleaonor="approuve une opération ciblée";
+ if(has("dossier")&&S.index===8)S.npc.aether="consolide les témoignages";
+ if(has("mandat")&&S.index===9)S.npc.eleaonor="approuve une opération ciblée";
  if(current.id==="s07" && S.maileizStatus==="morte"){go("s08");return}
  go(choice.next);
 }
