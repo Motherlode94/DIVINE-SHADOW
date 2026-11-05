@@ -160,3 +160,19 @@
 .city-record strong{font-size:13px;letter-spacing:.04em}
 .city-record p{color:#cbbdc9;font-size:12px;margin:0}
 #world-actions .adventure-action:focus-visible{outline:2px solid #ff819c;outline-offset:2px}
+
+/* Animation abstraite originale : énergie, défense et impact. Pas de vidéo ni d'assets empruntés. */
+.cinematic-battle-visual{position:relative;isolation:isolate;overflow:hidden;min-height:155px;margin:13px 0;border:1px solid #ffffff24;background:radial-gradient(ellipse at 60% 40%,#61253b50,transparent 50%),linear-gradient(125deg,#11101a,#20111e 65%,#080b13)}
+.battle-flare{position:absolute;width:240px;height:240px;left:calc(50% - 120px);top:-45px;border-radius:50%;background:radial-gradient(circle,#fff9 0%,#b43a65aa 15%,#74152e55 30%,transparent 65%);filter:blur(7px);animation:battle-flash 1.2s ease-in-out infinite alternate}
+.battle-ring{position:absolute;width:180px;height:75px;left:calc(50% - 90px);top:40px;border:3px solid #fd8aa1aa;border-radius:50%;transform:rotate(-19deg);box-shadow:0 0 35px #dc406b88,inset 0 0 16px #d65c8e66;animation:battle-pulse 2.2s ease-in-out infinite}
+.battle-spark{position:absolute;inset:12px;background:repeating-linear-gradient(125deg,transparent 0 28px,#f9b1c61c 28px 30px,transparent 30px 80px);animation:battle-sweep 1.7s linear infinite}
+#combat-panel[data-impact="defense"] .battle-ring{border-color:#80d9f3;box-shadow:0 0 42px #73a9e7aa}
+#combat-panel[data-impact="speed"] .battle-flare{background:radial-gradient(circle,#8ddbfac2,transparent 68%);animation-duration:.5s}
+#combat-panel[data-impact="fury"] .battle-flare{background:radial-gradient(circle,#fa6f90ec 0%,#e01135aa 30%,transparent 75%)}
+#combat-panel[data-impact="impact"] .cinematic-battle-visual{border-color:#e96b79}
+.battle-narration{font-size:clamp(14px,1.4vw,18px);line-height:1.85;padding:18px 20px;max-width:950px;white-space:normal}
+.combat-wounds{color:#ffb7b8;background:#3b1a2340;border-left:3px solid #e36e82;padding:12px 15px;font-size:12px;line-height:1.6}
+@keyframes battle-flash{from{transform:scale(.8);opacity:.5}to{transform:scale(1.17);opacity:1}}
+@keyframes battle-pulse{0%,100%{transform:rotate(-19deg) scale(.8);opacity:.4}50%{transform:rotate(-19deg) scale(1.22);opacity:1}}
+@keyframes battle-sweep{from{transform:translateX(-60px)}to{transform:translateX(60px)}}
+@media(prefers-reduced-motion:reduce){.battle-flare,.battle-ring,.battle-spark{animation:none}}
