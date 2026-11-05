@@ -54,6 +54,42 @@ La page [novela.html](./novela.html) est désormais une **fiction interactive jo
 
 Pour tester : terminer les trois épisodes avec différentes décisions, confirmer des fins différentes, recharger la page pour retrouver sa progression, puis vérifier l'affichage sur mobile.
 
+## Campagne narrative simulée — *La Nuit des Serments* (prototype v2)
+
+Accessible depuis [novela-adventure.html](./novela-adventure.html), cette campagne est une **tranche jouable** distincte du lecteur de la première saison. Elle suit une chaîne causale de **18 situations**, réparties sur **deux actes** :
+
+1. Réception interrompue → sortie en ville → évacuation du marché → protection des blessés → organisation défensive du Général → bataille de la Porte Ouest → bilan humain → enquête avec AETHER et NADIR → décision du Conseil avec ÉLÉAONOR.
+2. Départ hors de la ville → protection ou abandon relatif de voyageurs → enquête au laboratoire d'ORVANN → reconnaissance des ruines → embuscade du capitaine des Cendres → rencontre du frère de CHAYAH lié aux pactes → confrontation de l'Ombre → retour devant le Conseil → épilogue selon le bilan.
+
+### Ce qui est déjà simulé
+
+- **Temps par phases** : les décisions et les tours de combat font avancer la situation. Des attaques ou des initiatives secondaires se déclenchent selon la progression.
+- **État de la ville** : sécurité civile, évacués, blessures, défense et progression adverse. La bataille n'est pas indépendante des préparatifs.
+- **Initiative des PNJ** : le Général mobilise, MIREN abrite des réfugiés, SELMA soigne, ÉLÉAONOR organise l'aide, AETHER enquête. Leurs activités progressent selon les événements.
+- **Relations et conséquences** : MAILEIZ reste libre et mortelle, AETHER peut contester CHAYAH, le Conseil réagit à la façon de gérer les preuves.
+- **Combat tactique narratif** : trois affrontements scénarisés, avec attaque, Void Step, garde, sceau, sommation et repli ; les ennemis ripostent à chaque tour.
+- **Modes Histoire / Impitoyable** : récupération après défaite avec conséquences, ou fin de route si CHAYAH est neutralisé.
+- **Sauvegarde locale indépendante** sous `divine-shadow-campaign-v2`, sans authentification ni synchronisation.
+
+### Architecture
+
+- `novela-campaign-data.js` : chapitres, situations, texte, choix et batailles ;
+- `novela-campaign.js` : gestion d'état, chronologie, décisions, initiatives de la ville, combat, bilan et sauvegarde ;
+- `novela-adventure.html` et `novela-adventure.css` : interface adaptée ordinateur et mobile.
+
+L'ancien prototype d'exploration `novela-adventure.js` / `novela-adventure-data.js` est conservé dans le dépôt mais **n'est plus chargé** par la page de campagne.
+
+### Direction littéraire et simulation — principes de développement
+
+1. **Personnages autonomes** : motivations, contradictions, failles et décisions indépendantes ; une statistique de relation ne force jamais un sentiment ou un choix.
+2. **Récit incarné** : point de vue cohérent, scènes de vie, perception des émotions et conséquences observables, pas une succession de boîtes de dialogue.
+3. **Causalité** : une sortie entraîne une rencontre, qui peut déclencher un secours, une alerte, une bataille, une enquête et des conséquences politiques.
+4. **Ville vivante** : les habitants travaillent, se soignent, fuient, défendent leurs maisons et répondent aux événements. Le pouvoir divin de CHAYAH n'efface pas leur libre arbitre.
+5. **Ennemis motivés** : une embuscade, un repli ou une négociation doivent correspondre à des objectifs ; les antagonistes ne sont pas de simples réserves de points de vie.
+6. **Canon sous contrôle du créateur** : le Général, ÉLÉAONOR et le frère aux pactes sont inclus sans inventer de noms ou capacités non validés. MIREN, SELMA, TOMAS et NADIR sont des propositions de civils.
+
+**Limites connues du prototype :** les 18 situations sont encore des scènes scriptées et non un monde ouvert autonome ; l'initiative des PNJ est basée sur des phases, pas une IA de planification avancée ; les combats sont textuels au tour par tour et non des affrontements en temps réel. La profondeur psychologique, les sous-intrigues et la durée des épisodes doivent continuer à être développées.
+
 ## Architecture du site
 
 | Fichier | Fonction |
