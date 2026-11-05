@@ -19,3 +19,9 @@ Les silhouettes sont des **illustrations CSS temporaires**, explicitement indiqu
 ## Hébergement
 
 Compatible avec GitHub Pages (Settings → Pages → Deploy from a branch → main / root) et Cloudflare Pages (déploiement statique sans commande de build, dossier racine `.`). Le déploiement n'est pas activé automatiquement par ce dépôt.
+
+## Cloudflare Pages
+
+Projet : `divine-shadow` — https://divine-shadow.pages.dev
+
+Dépôt GitHub connecté à Cloudflare Pages ; branche de production `main`, publication statique depuis la racine du dépôt. Les commits sur `main` déclenchent un déploiement automatique.
