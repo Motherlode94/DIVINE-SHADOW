@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=13"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=14"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -45,7 +45,7 @@
 <span class="eyebrow">ALERTE / COMBAT TACTIQUE AU TOUR PAR TOUR</span>
 <div class="combat-heading"><div><h3 id="enemy-name"></h3><p id="enemy-desc"></p></div><strong id="combat-turn"></strong></div>
 <div class="enemy-health"><span>ENNEMI : <strong id="enemy-hp"></strong></span><div class="progress-track enemy"><i id="enemy-hp-fill"></i></div></div><div id="enemy-force-panel" class="enemy-force" hidden><span>FORCE DE L’ENNEMI : <strong id="enemy-force">100</strong> / 100</span><div class="progress-track force"><i id="enemy-force-fill"></i></div></div>
-<p id="combat-log" class="event-message"></p><div id="combat-actions" class="combat-actions" aria-label="Capacités de combat"></div>
+<div class="cinematic-battle-visual" aria-hidden="true"><span class="battle-flare"></span><span class="battle-ring"></span><span class="battle-spark"></span></div><p id="combat-log" class="event-message battle-narration"></p><p id="combat-wounds" class="combat-wounds" aria-live="polite">LÉSIONS : 0/8</p><div id="combat-actions" class="combat-actions" aria-label="Capacités de combat"></div>
 </section>
 </section>
 <aside id="info-drawer" class="adventure-sidebar info-drawer" hidden aria-label="Informations de la campagne">
@@ -85,5 +85,5 @@
 <script src="./novela-allies.js?v=2" defer></script>
 <script src="./novela-war-data.js?v=2" defer></script>
 <script src="./novela-war-episodes.js?v=2" defer></script>
-<script src="./novela-campaign.js?v=13" defer></script>
+<script src="./novela-campaign.js?v=14" defer></script>
 </body></html>
