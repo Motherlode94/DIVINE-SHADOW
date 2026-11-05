@@ -353,7 +353,7 @@ function finish(){
  else text+=" CHAYAH a retenu sa véritable puissance devant l'Ancien, et des innocents en ont payé le prix.";
  text+=" MARIN, père adoptif de CHAYAH et légataire de la Mère, retourne à la terre. Le destin des cités appartient à leurs habitants.";
  S.ending={title,text};
- log("Fin de la saison de 175 épisodes : "+title+".");render();
+ log("Fin de la saison de "+(C.season?.totalEpisodes||25)+" épisodes : "+title+".");render();
 }
 const introArt={
  chayah:"chayah_hd_candidate.jpg",
