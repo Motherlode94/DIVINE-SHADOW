@@ -101,3 +101,10 @@
 .cast-art-note{position:absolute;left:0;bottom:0;right:0;z-index:2;text-align:center;padding:11px 6px 8px;background:linear-gradient(0deg,#100d14 20%,transparent);font-size:9px;letter-spacing:.12em;color:#e5d4e4}
 @media(max-width:720px){.cast-item-art{height:190px}.cast-pose-svg{height:205px}}
 @media(max-width:420px){.cast-item-art{height:230px}.cast-pose-svg{height:245px}}
+
+/* Portraits cinema : assets nommes pour les personnages, jamais silhouettes interchangeables. */
+.cast-item-art{height:245px}
+.cast-real-portrait{width:100%;height:100%;display:block;object-fit:cover;object-position:center 32%}
+.cast-awaiting-portrait{display:flex;align-items:center;justify-content:center;background:linear-gradient(125deg,#15121b,#2a202b)}
+.cast-missing-image{max-width:180px;color:#e1c9d5;font-weight:700;font-size:12px;letter-spacing:.08em;text-align:center;line-height:1.7;text-transform:uppercase}
+@media(max-width:720px){.cast-item-art{height:205px}}@media(max-width:420px){.cast-item-art{height:245px}}
