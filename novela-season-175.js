@@ -90,6 +90,12 @@ for(let a=0;a<arcs.length;a++){
   if(ep===151||ep===155||ep===160){const sc=after||third;sc.textIfPowerRevealed="La révélation de CHAYAH a laissé des blessures dans sa chair et des cicatrices dans le monde. AETHER ne prétend pas pouvoir les effacer.";sc.textIfPowerHidden="CHAYAH n'a pas dévoilé cette part de sa puissance. Les blessés du seuil rappellent le prix de ce choix.";}
   if(ep===170||ep===175){third.textIfMaileizDead="MAILEIZ est morte dans cette continuité. Les survivants honorent sa mémoire sans parler en son nom.";third.textIfMaileizAlive="MAILEIZ, mortelle et libre, décide seule de son avenir; CHAYAH ne lui impose pas de destin.";}
   const elements=[intro,second,third,...(after?[after]:[])];
+  // L'arc sentimental change si MAILEIZ est morte dans la continuité impitoyable.
+  // Aucun PNJ décédé ne réapparaît pour accomplir une action dans un épisode ultérieur.
+  if([88,91,92,95,100,165].includes(ep)){
+   const mourning="Dans cette continuité, MAILEIZ est morte pendant les attaques. Les gens évoquent ses décisions, sa liberté et son absence, sans lui prêter de nouvelles paroles ni de nouveaux actes. CHAYAH traverse ce lieu avec le souvenir de son amour, tandis que SAMA conserve sa propre autonomie.";
+   for(const sc of elements)if(!sc.textIfMaileizDead)sc.textIfMaileizDead=mourning+" "+arc.mood;
+  }
   for(const sc of elements){C.scenes.push(sc);sceneIds.push(sc.id);}
   C.season.episodes.push({title,arc:arc.arc,sceneIds});
  }
