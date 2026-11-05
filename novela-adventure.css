@@ -121,3 +121,33 @@
 .enemy-force{margin:10px 0 24px;color:#e4cdb1;font-size:12px}
 .enemy-force .progress-track{margin-top:8px}
 .enemy-force .progress-track i{background:#dda769}
+
+/* Saison 1 : cinématique en cinq tableaux puis lecture sans panneaux parasites. */
+.opening-cinematic{position:relative;min-height:min(76vh,760px);display:flex;align-items:end;overflow:hidden;border:1px solid #a758764a;background:#0b0b12;margin:8px 0 25px}
+.opening-cinematic[hidden]{display:none!important}
+.cinematic-backdrop{position:absolute;inset:0;background-size:cover;background-position:center 31%;filter:saturate(.84);transform:scale(1.035);animation:cinematic-breathe 12s ease-in-out infinite alternate}
+.cinematic-content{position:relative;z-index:1;width:min(900px,100%);padding:clamp(24px,6vw,75px)}
+.cinematic-caption{color:#e4a1b6;font-size:11px;letter-spacing:.2em;font-weight:800;margin:16px 0}
+.cinematic-content h2{font-size:clamp(58px,8vw,120px);line-height:.91;letter-spacing:-.035em;margin:24px 0}
+#cinematic-narration{font-size:clamp(16px,1.45vw,21px);color:#f2e6ed;line-height:1.9;max-width:720px;text-wrap:pretty;text-shadow:0 2px 12px #000b}
+.cinematic-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:38px}
+.cinematic-controls span{font-size:12px;letter-spacing:.16em;color:#f3c5d0;padding-right:12px}
+.cinematic-controls button{background:#af3e5b;color:white;border:1px solid #d96688;padding:15px 22px;font-weight:900;letter-spacing:.08em;font-size:11px}
+.cinematic-controls button:last-child{background:#1b1520b8;border-color:#ffffff57}
+.episode-progress{display:flex;align-items:center;gap:13px;flex-wrap:wrap;border-top:1px solid #ffffff24;border-bottom:1px solid #ffffff24;padding:15px 3px;margin-top:17px}
+#episode-label{font-size:11px;letter-spacing:.13em;font-weight:900;color:#e786a2}
+#episode-name{font:900 clamp(24px,2.4vw,39px)/1 'Barlow Condensed',sans-serif;letter-spacing:-.01em}
+#episode-arc{font-size:10px;letter-spacing:.12em;color:#b4a9b8;margin-left:auto}
+.adventure-panels{grid-template-columns:minmax(0,1fr);margin:12px 0}
+.adventure-panels #exploration-panel{padding:clamp(17px,2vw,29px)}
+.adventure-panels #world-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px}
+.adventure-panels #world-actions .adventure-action{min-height:90px;align-content:start}
+.info-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+.info-tabs button{font-size:9px}
+.episode-index{max-height:60vh;overflow:auto}
+.episode-index .adventure-action{padding:10px 13px;min-height:auto;border-color:#ffffff22}
+.episode-index .adventure-action:disabled{opacity:.75}
+@keyframes cinematic-breathe{from{transform:scale(1.035)}to{transform:scale(1.095)}}
+@media(max-width:850px){.opening-cinematic{min-height:620px}.cinematic-content{padding:30px 21px}.episode-progress{align-items:start}.episode-progress #episode-arc{margin-left:0;width:100%}.adventure-panels #world-actions{grid-template-columns:1fr}}
+@media(max-width:540px){.opening-cinematic{min-height:660px}.cinematic-content h2{font-size:clamp(55px,13vw,78px)}#cinematic-narration{font-size:16px;line-height:1.8}.cinematic-controls button{padding:13px 14px}.info-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.info-tabs button{padding:11px 5px}}
+@media(prefers-reduced-motion:reduce){.cinematic-backdrop{animation:none}}
