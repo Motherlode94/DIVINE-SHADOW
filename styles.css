@@ -142,3 +142,45 @@
 
 /* Recadrage intérieur : les légendes du poster n'apparaissent pas dans les portraits. */
 .population-portrait{background-size:1000% 520%}
+
+/* Correctif visuel : la planche n'a que 90 px de largeur utile par visage.
+   On rend les portraits à une taille adaptée au fichier, sans zoom destructeur. */
+.population-art{
+ aspect-ratio:auto;
+ min-height:228px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:17px 12px;
+ background:
+  radial-gradient(ellipse at 50% 39%,#82645b65 0%,#35252e8c 42%,transparent 74%),
+  linear-gradient(145deg,#30232b,#141119 70%);
+}
+.population-art::before{
+ content:"";position:absolute;inset:12px;border:1px solid #b69e8b22;pointer-events:none
+}
+.population-art::after{
+ content:"";position:absolute;bottom:0;left:0;right:0;height:40px;
+ background:linear-gradient(to top,#16121b 0%,transparent 100%);
+ pointer-events:none
+}
+.population-portrait{
+ position:relative;inset:auto;
+ display:block;flex-shrink:0;
+ width:136px;height:169px;
+ background-size:1000% 400%;
+ background-repeat:no-repeat;
+ border:1px solid #d7c6b161;
+ box-shadow:0 4px 20px #09060cac,0 0 0 8px #ffffff08;
+ filter:saturate(1.04) contrast(1.03);
+ border-radius:2px;
+}
+.population-featured .population-portrait{border-color:#e9bd72;box-shadow:0 7px 25px #09060cbb,0 0 0 8px #d6ae6e12}
+@media(max-width:640px){
+ .population-art{min-height:196px;padding:12px 8px}
+ .population-portrait{width:120px;height:149px}
+}
+@media(max-width:360px){
+ .population-art{min-height:220px}
+ .population-portrait{width:136px;height:169px}
+}
