@@ -1,0 +1,204 @@
+/* DIVINE SHADOW — simulation narrative pilote v2.
+ * Scènes causales, initiative des PNJ, pression temporelle et combats tactiques.
+ * Partie exploratoire distincte du canon officiel.
+ */
+(() => {
+"use strict";
+const C=window.DS_CAMPAIGN;if(!C)return;
+const KEY="divine-shadow-campaign-v2", $=id=>document.getElementById(id);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const fresh=mode=>({version:2,mode,index:0,tick:0,health:100,energy:100,city:70,defense:35,intel:0,
+ trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
+ flags:[],log:[],battle:null,finished:false,ending:null,spent:0,
+ npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
+let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
+if(!S||S.version!==2||!C.scenes[S.index]||!S.npc)S=fresh(null);
+const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
+function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
+const button=(title,subtitle,onClick,disabled=false)=>{
+ const b=document.createElement("button");b.type="button";b.className="adventure-action";
+ const strong=document.createElement("strong");strong.textContent=title;b.append(strong);
+ if(subtitle){const small=document.createElement("small");small.textContent=subtitle;b.append(small)}
+ b.disabled=disabled;b.addEventListener("click",onClick);return b;
+};
+function newGame(mode){S=fresh(mode);log("La réception commence. Les habitants n'ont aucune idée de l'attaque.");render()}
+function advanceClock(n=1){
+ for(let i=0;i<n;i++){
+  S.tick++;
+  // Les autres acteurs agissent sans attendre une permission du joueur.
+  if(S.index<10){
+   if(S.tick%3===0){S.enemyAdvance++;S.city=clamp(S.city-(has("evacuation")?1:3),0,100);log("Les assaillants cherchent un passage ; les secouristes poursuivent l'évacuation.")}
+   if(S.tick===5){S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
+   if(S.tick===8){S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
+  }else{
+   if(S.tick%4===0){S.enemyAdvance++;S.city=clamp(S.city-2,0,100);log("Des messagers signalent de nouveaux mouvements ennemis aux frontières.")}
+   if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
+  }
+ }
+}
+function applyDelta(delta={}){
+ for(const [k,v] of Object.entries(delta)){
+  if(k==="clock"){advanceClock(Math.max(0,v));continue}
+  if(Object.hasOwn(S,k)&&typeof S[k]==="number"){S[k]=clamp(S[k]+v,k==="city"||k==="health"||k==="energy"?0:-10,k==="city"||k==="health"||k==="energy"?100:k==="intel"?30:k==="defense"?30:10)}
+ }
+}
+function reaction(){
+ const id=C.scenes[S.index].id;
+ if(id==="s03" && !has("evacuation"))return " Sans escorte, plusieurs familles restent bloquées derrière les étals ; SELMA exige une voie de sortie.";
+ if(id==="s04" && has("alertePrecoce"))return " Grâce à l'alerte, une compagnie était déjà en position avant l'arrivée du Général.";
+ if(id==="s06")return S.city<55?" Des maisons brûlent encore et les ambulances manquent de places.":" Le quartier tient debout ; les habitants commencent déjà à organiser des secours.";
+ if(id==="s07")return has("couloir")?" Le couloir protégé a permis à SELMA de sauver d'autres blessés.":" Les soignants s'épuisent et des familles attendent des nouvelles.";
+ if(id==="s09")return has("dossier")?" NADIR a produit des copies du registre : le Conseil peut vérifier plusieurs éléments.":" Le dossier reste incomplet ; certaines accusations reposent sur des suppositions.";
+ if(id==="s11")return S.city<52?" Des nouvelles arrivent : la reconstruction ralentit, faute de personnel et de provisions.":" TOMAS transmet une lettre : la ville reprend prudemment ses activités.";
+ if(id==="s14")return has("sabotage")?" Les réserves ennemies ont été détournées, leurs soldats sont désorganisés.":" Les archers tiennent leurs positions, mais l'encerclement n'est pas parfait.";
+ if(id==="s16")return has("sceauBrise")?" Le sceau brisé a élargi la faille ; l'énergie qui s'en échappe devient incontrôlable.":" Le passage est instable, sans être complètement ouvert.";
+ if(id==="s17")return S.city<50?" Les commerçants réclament des comptes pour les morts et les disparitions.":" Les marchands demandent une aide durable, pas un récit héroïque.";
+ return "";
+}
+function choose(choice){
+ if(S.battle||S.finished)return;
+ if(choice.requires&&!has(choice.requires))return;
+ applyDelta(choice.delta);(choice.flags||[]).forEach(flag);
+ advanceClock(1);log("CHAYAH : "+choice.label);
+ if(has("evacuation")&&S.index===1)S.civiliansSaved+=20;
+ if(has("couloir")&&S.index===2)S.civiliansSaved+=12;
+ if(has("barricades")&&S.index===3)S.npc.general="défend la porte avec les gardes";
+ if(has("respect")&&S.index===6)S.npc.selma="coordonne les soins avec MAILEIZ";
+ if(has("dossier")&&S.index===7)S.npc.aether="consolide les témoignages";
+ if(has("mandat")&&S.index===8)S.npc.eleaonor="approuve une opération ciblée";
+ go(choice.next);
+}
+function go(id){
+ const idx=C.scenes.findIndex(x=>x.id===id);if(idx<0)return;
+ S.index=idx;const scene=C.scenes[idx];S.battle=null;
+ log("Nouveau lieu : "+scene.place+".");
+ if(scene.battle)startBattle(scene.battle);
+ render();
+}
+function startBattle(config){
+ const enemy=C.enemies[config.enemy];
+ S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),turn:1,weak:0,guard:false,dodge:false,
+ objective:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
+ last:"Le combat commence. Pendant chaque tour, l'adversaire agit et la ville subit la pression de l'affrontement."};
+}
+function outcome(kind){
+ const battle=S.battle;if(!battle)return;
+ S.battle=null;
+ if(kind==="win"){S.city=clamp(S.city+3,0,100);log("L'ennemi recule après avoir été vaincu.")}
+ if(kind==="parley"){S.trust=clamp(S.trust+1,-10,10);log("L'adversaire accepte de se retirer, sans devenir l'allié de CHAYAH.")}
+ if(kind==="retreat"){S.city=clamp(S.city-12,0,100);S.injuries+=3;log("La retraite laisse des blessés et un passage fragilisé.")}
+ const chapterBattle=C.scenes[S.index].battle;
+ if(chapterBattle)go(chapterBattle.next);else render();
+}
+function battleTurn(action){
+ const b=S.battle;if(!b||S.finished)return;
+ const e=C.enemies[b.enemy];let damage=0,guard=false,dodge=false;
+ if(action==="strike"){damage=20+((b.turn*3)%5);S.energy=clamp(S.energy+6,0,100)}
+ if(action==="void"){if(S.energy<18)return;S.energy-=18;damage=29;dodge=true}
+ if(action==="seal"){if(S.energy<25)return;S.energy-=25;damage=18;b.weak=2}
+ if(action==="guard"){guard=true;S.energy=clamp(S.energy+14,0,100)}
+ if(action==="retreat"){outcome("retreat");return}
+ if(action==="parley"){
+  if(b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
+  b.last="Le capitaine refuse l'offre : il maintient ses ordres. L'ombre ne peut pas négocier.";
+ }
+ b.hp=clamp(b.hp-Math.max(0,damage-e.armor),0,b.max);
+ if(b.hp===0){outcome("win");return}
+ let blow=e.damage+(b.turn%2?2:0);
+ if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
+ if(dodge){blow=0;b.last="VOID STEP : CHAYAH échappe à la riposte."}
+ if(guard){blow=Math.ceil(blow*.25);b.last="La garde absorbe presque toute l'attaque."}
+ if(!guard&&!dodge&&action!=="parley")b.last="L'ennemi riposte après "+Math.max(0,damage-e.armor)+" dégâts reçus.";
+ S.health=clamp(S.health-blow,0,100);
+ S.spent++;
+ advanceClock(1);
+ const prepared=S.defense+(has("barricades")?5:0);
+ const attrition=Math.max(0,Math.ceil((b.turn+S.enemyAdvance)/3)-(prepared>=5?2:0));
+ if(b.enemy==="raider")S.city=clamp(S.city-attrition,0,100);
+ if(b.enemy==="shade")S.energy=clamp(S.energy-3,0,100);
+ b.turn++;
+ if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("Le combat s'étire : des blessés supplémentaires sont évacués.");}
+ if(S.health===0){
+  if(S.mode==="ruthless"){S.finished=true;S.ending="defeat";S.injuries+=6;log("CHAYAH est neutralisé ; la ville affronte l'attaque sans lui.");S.battle=null;render();return}
+  S.health=38;S.energy=35;S.injuries+=3;flag("blessureDurable");log("La garde recueille CHAYAH. La défaite coûte du temps, et des civils sont blessés.");outcome("retreat");return;
+ }
+ render();
+}
+function finish(){
+ S.finished=true;
+ let title,text;
+ if(S.city<=38||S.injuries>=12){title="UNE VICTOIRE AMÈRE";text="La ville survit, mais le prix humain est lourd. Les civils exigent des comptes et le Conseil n'accorde aucune absolution.";}
+ else if(has("transparence")&&S.trust>=3&&S.city>=58){title="LA VILLE SE RELÈVE";text="Les habitants voient une alliance entre preuves, secours et responsabilité. Le mystère du pacte demeure, mais la cité peut envisager demain.";}
+ else if(has("sceauBrise")||has("secret")){title="LES SERMENTS INACHEVÉS";text="La cité est sauvée pour l'heure, mais les secrets et les blessures nourrissent de nouvelles tensions.";}
+ else {title="LA TRÊVE FRAGILE";text="La bataille s'achève sans effacer les contradictions. La ville a besoin de soins, d'enquête et de choix futurs.";}
+ S.ending={title,text};
+ log("Fin de la campagne pilote : "+title+".");render();
+}
+function render(){
+ if(!S.mode){$("mode-setup").hidden=false;$("game-root").hidden=true;save();return}
+ $("mode-setup").hidden=true;$("game-root").hidden=false;
+ const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
+ $("chapter-title").textContent=chapter.title;
+ $("chapter-desc").textContent=chapter.goal;
+ $("current-place").textContent=n.place;
+ $("place-desc").textContent=n.text+reaction();
+ $("story-event").textContent="SITUATION • "+n.who+" • Temps écoulé : "+S.tick+" phases • "+(S.battle?"Combats actifs.":"Les habitants et ennemis poursuivent leurs activités.");
+ $("mode-name").textContent=S.mode==="ruthless"?"IMPITOYABLE":"HISTOIRE";
+ $("hp").textContent=S.health;$("energy").textContent=S.energy;$("hp-fill").style.width=S.health+"%";$("energy-fill").style.width=S.energy+"%";
+ $("city-state").textContent=S.city+" / 100";
+ $("evidence-count").textContent="Renseignement "+S.intel;
+ const path=$("world-locations");path.replaceChildren();
+ const local=C.scenes.filter(x=>x.chapter===n.chapter);
+ local.forEach(x=>path.append(button((x.id===n.id?"● ":"○ ")+x.place,x.id===n.id?"SITUATION EN COURS":"Étape de l'intrigue • progression chronologique",()=>{},true)));
+ const actions=$("world-actions");actions.replaceChildren();
+ if(n.choices&&!S.battle&&!S.finished)n.choices.forEach((c,i)=>actions.append(button((i+1)+". "+c.label,c.hint,()=>choose(c),Boolean(c.requires&&!has(c.requires)))));
+ if(n.ending&&!S.finished)actions.append(button("CONCLURE CETTE CAMPAGNE","Le bilan tient compte des blessures, du temps et de l'état de la ville.",finish));
+ $("exploration-panel").hidden=Boolean(S.battle)||Boolean(S.finished);
+ const combat=$("combat-panel");combat.hidden=!S.battle;
+ if(S.battle){
+  const b=S.battle,e=C.enemies[b.enemy];
+  $("enemy-name").textContent=e.name;
+  $("enemy-desc").textContent=b.objective+" · Les ennemis conservent leur initiative.";
+  $("enemy-hp").textContent=b.hp+" / "+b.max;
+  $("enemy-hp-fill").style.width=100*b.hp/b.max+"%";
+  $("combat-turn").textContent="TOUR "+b.turn+" / "+b.limit;
+  $("combat-log").textContent=b.last;
+  const skills=$("combat-actions");skills.replaceChildren(
+   button("FRAPPE CIBLÉE","Dégâts stables ; récupère un peu d'énergie.",()=>battleTurn("strike")),
+   button("VOID STEP","29 dégâts, esquive la riposte. Coût : 18 énergie.",()=>battleTurn("void"),S.energy<18),
+   button("GARDE","Réduit la prochaine attaque ; récupère de l'énergie.",()=>battleTurn("guard")),
+   button("SCEAU DU RÉEL","Affaiblit les prochaines frappes. Coût : 25.",()=>battleTurn("seal"),S.energy<25),
+   button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
+   button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat"))
+  );
+ }
+ const objectives=$("chapter-objectives");objectives.replaceChildren();
+ const objectivesText=[
+ "Situation : "+(S.index+1)+" / "+C.scenes.length,
+ "Civils évacués : "+S.civiliansSaved,
+ "Blessures civiles recensées : "+S.injuries,
+ "Progression des assaillants : "+S.enemyAdvance
+ ];objectivesText.forEach(x=>{const li=document.createElement("li");li.textContent=x;objectives.append(li)});
+ const clues=$("clue-list");clues.replaceChildren();const points=[
+ "Porte : "+(has("barricades")?"fortifiée":has("alertePrecoce")?"alerte avancée":"vulnérable"),
+ "NADIR / archives : "+(has("dossier")?"registre recoupé":"enquête en cours"),
+ "ORVANN : "+(has("analyse")?"documents vérifiés":"position non établie"),
+ "Frère aux pactes : "+(has("ecouteFrere")?"entendu":has("sceauBrise")?"sceau brisé":"mystère ouvert")
+ ];points.forEach(x=>{const li=document.createElement("li");li.textContent=x;clues.append(li)});
+ const relations=$("relation-list");relations.replaceChildren();
+ const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense};
+ Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
+ const journal=$("adventure-journal");journal.replaceChildren();
+ [ ...S.log.slice(0,12), ...Object.entries(S.npc).map(([k,v])=>k.toUpperCase()+" : "+v)].forEach(line=>{const li=document.createElement("li");li.textContent=line;journal.append(li)});
+ const ending=$("adventure-ending");ending.hidden=!S.finished;
+ if(S.finished){$("ending-title").textContent=S.ending==="defeat"?"LA VILLE SANS SON PROTECTEUR":S.ending.title;$("ending-text").textContent=S.ending==="defeat"?"CHAYAH a été neutralisé. Dans cette continuité impitoyable, les survivants poursuivent sans lui.":S.ending.text;}
+ save();
+}
+$("history-mode").addEventListener("click",()=>newGame("story"));
+$("ruthless-mode").addEventListener("click",()=>newGame("ruthless"));
+$("reset-adventure").addEventListener("click",()=>{if(confirm("Recommencer la campagne et ses conséquences ?")){S=fresh(null);render()}});
+$("journal-button").addEventListener("click",()=>{const p=$("journal-panel");p.hidden=!p.hidden;$("journal-button").setAttribute("aria-expanded",String(!p.hidden))});
+$("menu").addEventListener("click",()=>{const links=$("links");const open=links.classList.toggle("open");$("menu").setAttribute("aria-expanded",String(open))});
+render();
+})();
