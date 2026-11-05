@@ -13,3 +13,6 @@
 @media(max-width:1120px){.population-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.population-grid{grid-template-columns:1fr}.population-card{grid-template-columns:112px minmax(0,1fr)}.population-art{width:112px;min-height:172px}.population-copy{padding:13px 14px}.population-copy h3{font-size:27px}}
 @media(max-width:390px){.population-card{grid-template-columns:104px minmax(0,1fr)}.population-art{width:104px;min-height:165px;padding:9px 5px}.population-copy{padding:11px}.population-copy h3{font-size:25px}}
+
+/* Sur certaines images de la planche, la légende est incrustée aux pixels du bord supérieur. */
+.population-portrait[data-atlas-row="2"]::before,.population-portrait[data-atlas-row="3"]::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:15px;background:linear-gradient(#211920 0%,#211920 60%,transparent 100%);pointer-events:none}
