@@ -66,3 +66,19 @@
 .critical-moment #world-actions .adventure-action:hover{background:#6c253d}
 .critical-moment #world-actions .adventure-action small{color:#f1c4d1}
 .critical-moment #story-event{border-color:#ff576d}
+
+/* Une seule Novela : interface de jeu visible immédiatement, sans second écran promotionnel. */
+.adventure-hero.game-entry{min-height:0;padding:112px clamp(20px,5vw,90px) 25px;background:linear-gradient(110deg,#0b0911f0,#21101bdc),url('./assets/chayah_hd_candidate.jpg') center 40%/cover}
+.game-entry-text{max-width:960px}
+.adventure-hero.game-entry h1{font-size:clamp(44px,6.2vw,90px);line-height:.96;margin:15px 0}
+.adventure-hero.game-entry p{max-width:790px;line-height:1.6;margin:0 0 16px;font-size:14px}
+.adventure-hero.game-entry .btn{padding:11px 17px}
+#adventure-game{scroll-margin-top:85px}
+.adventure-wrap{padding-top:18px}
+.adventure-setup h2{font-size:clamp(40px,5.2vw,68px);line-height:1;margin:9px 0}
+.adventure-setup>p{font-size:13px;line-height:1.6}
+.mode-options{margin-top:15px}
+.mode-choice{padding:20px;gap:7px}
+.mode-choice strong{font-size:clamp(23px,2.8vw,37px)}
+.mode-choice span{font-size:12px;line-height:1.6}
+@media(max-width:700px){.adventure-hero.game-entry{padding:96px 18px 15px}.adventure-wrap{padding:10px 17px 55px}.adventure-hero.game-entry h1{font-size:clamp(43px,12vw,68px)}.adventure-setup h2{font-size:45px}.mode-choice{padding:18px}}
