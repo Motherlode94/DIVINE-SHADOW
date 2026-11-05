@@ -5,15 +5,15 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v4", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v5", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const initialResources=()=>Object.fromEntries(Object.entries(C.roster||{}).map(([id,actor])=>[id,actor.initial]));
-const fresh=mode=>({version:4,mode,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
+const fresh=mode=>({version:5,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
  flags:[],log:[],battle:null,finished:false,ending:null,spent:0,maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==4||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
+if(!S||S.version!==5||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -30,10 +30,10 @@ function advanceClock(n=1){
   if(S.tick%5===0&&S.maileizStatus!=="morte")restoreForce("maileiz",6);
   if(S.tick%4===0)restoreForce("general",4);
   // Les autres acteurs agissent sans attendre une permission du joueur.
-  if(S.index<10){
+  if((C.scenes[S.index]?.episode||1)>=8&&(C.scenes[S.index]?.episode||1)<=17){
    if(S.tick%3===0){S.enemyAdvance++;S.city=clamp(S.city-(has("evacuation")?1:3),0,100);log("Les assaillants cherchent un passage ; les secouristes poursuivent l'évacuation.")}
-   if(S.tick===5){S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
-   if(S.tick===8){S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
+   if(S.tick===5 || (C.scenes[S.index]?.id==="s04"&&!has("militiaDeployed"))){flag("militiaDeployed");S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
+   if(S.tick===8 || (C.scenes[S.index]?.episode===10&&!has("refugeesArrived"))){flag("refugeesArrived");S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
   }else{
    if(S.tick%4===0){S.enemyAdvance++;S.city=clamp(S.city-2,0,100);log("Des messagers signalent de nouveaux mouvements ennemis aux frontières.")}
    if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
@@ -121,7 +121,7 @@ function choose(choice){
  if(S.battle||S.finished)return;
  if(choice.requires&&!has(choice.requires))return;
  const current=C.scenes[S.index];const number=current.choices.indexOf(choice);
- S.beat=choiceBeats[current.id]?.[number]||"Ce choix modifiera les réactions des autres personnages.";
+ S.beat=choice.after||choiceBeats[current.id]?.[number]||"Ce choix modifiera les réactions des autres personnages.";
  if(choice.critical)criticalMaileiz(choice);
  applyDelta(choice.delta);(choice.flags||[]).forEach(flag);
  // En combat ou en secours, l'effort des mortels réduit leur Force.
@@ -130,12 +130,12 @@ function choose(choice){
  if(current.id==="s04")spendForce("general",12);
  if(current.id==="s07"&&S.maileizStatus!=="morte")restoreForce("maileiz",12);
  advanceClock(1);log("CHAYAH : "+choice.label);
- if(has("evacuation")&&S.index===1)S.civiliansSaved+=20;
- if(has("couloir")&&S.index===2)S.civiliansSaved+=12;
- if(has("barricades")&&S.index===4)S.npc.general="défend la porte avec les gardes";
- if(has("respect")&&S.index===7)S.npc.selma="coordonne les soins avec MAILEIZ";
- if(has("dossier")&&S.index===8)S.npc.aether="consolide les témoignages";
- if(has("mandat")&&S.index===9)S.npc.eleaonor="approuve une opération ciblée";
+ if(has("evacuation")&&current.id==="s02")S.civiliansSaved+=20;
+ if(has("couloir")&&current.id==="s03")S.civiliansSaved+=12;
+ if(has("barricades")&&current.id==="s04")S.npc.general="défend la porte avec les gardes";
+ if(has("respect")&&current.id==="s07")S.npc.selma="coordonne les soins avec MAILEIZ";
+ if(has("dossier")&&current.id==="s08")S.npc.aether="consolide les témoignages";
+ if(has("mandat")&&current.id==="s09")S.npc.eleaonor="approuve une opération ciblée";
  if(current.id==="s07" && S.maileizStatus==="morte"){go("s08");return}
  go(choice.next);
 }
@@ -211,10 +211,43 @@ function finish(){
  S.ending={title,text};
  log("Fin de la campagne pilote : "+title+".");render();
 }
+const introArt={
+ chayah:"chayah_hd_candidate.jpg",
+ aether:"aether_hd_candidate.jpg",
+ maileiz:"Guerrière de feu dans les ruines en flammes.png",
+ vaelkor:"vaelkor_clean.png"
+};
+function showCinematic(){
+ const frames=C.season?.cinematic||[];const i=Math.min(S.introFrame||0,frames.length-1),frame=frames[i];
+ if(!frame){S.introDone=true;render();return}
+ $("cinematic-kicker").textContent=frame.eyebrow;
+ $("cinematic-title").textContent=frame.title;
+ $("cinematic-narration").textContent=frame.text;
+ $("cinematic-count").textContent=String(i+1).padStart(2,"0")+" / "+String(frames.length).padStart(2,"0");
+ $("cinematic-next").textContent=i===frames.length-1?"COMMENCER L'ÉPISODE 01 →":"SUIVANT →";
+ const image=introArt[frame.art]||introArt.chayah;
+ $("cinematic-backdrop").style.backgroundImage="linear-gradient(90deg,#090911d9,#130914b3),url('./assets/"+encodeURIComponent(image)+"')";
+ save();
+}
+function endCinematic(){S.introDone=true;S.introFrame=C.season.cinematic.length;render();$("adventure-game").scrollIntoView({block:"start",behavior:"smooth"});}
+$("cinematic-next").addEventListener("click",()=>{
+ if(S.introFrame>=C.season.cinematic.length-1){endCinematic();return}
+ S.introFrame++;showCinematic();
+});
+$("cinematic-skip").addEventListener("click",endCinematic);
 function render(){
+ if(S.mode&&!S.introDone){
+  $("mode-setup").hidden=true;$("game-root").hidden=true;
+  $("opening-cinematic").hidden=false;showCinematic();return;
+ }
+ $("opening-cinematic").hidden=true;
  if(!S.mode){$("mode-setup").hidden=false;$("game-root").hidden=true;save();return}
  $("mode-setup").hidden=true;$("game-root").hidden=false;
  const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
+ const episode=C.season?.episodes[n.episode-1];
+ $("episode-label").textContent="ÉPISODE "+String(n.episode).padStart(2,"0")+" / "+(C.season?.totalEpisodes||25);
+ $("episode-name").textContent=episode?.title||"LA NUIT DES SERMENTS";
+ $("episode-arc").textContent=episode?.arc||"SAISON I";
  $("chapter-title").textContent=chapter.title;
  $("chapter-desc").textContent=chapter.goal;
  $("current-place").textContent=n.place;
@@ -228,8 +261,13 @@ function render(){
  $("city-state").textContent=S.city+" / 100";
  $("evidence-count").textContent="Renseignement "+S.intel;
  const path=$("world-locations");path.replaceChildren();
- const local=C.scenes.filter(x=>x.chapter===n.chapter);
- local.forEach(x=>path.append(button((x.id===n.id?"● ":"○ ")+x.place,x.id===n.id?"SITUATION EN COURS":"Étape de l'intrigue • progression chronologique",()=>{},true)));
+ const available=C.season?.episodes||[];
+ available.forEach((item,i)=>{
+  const first=C.scenes.findIndex(x=>x.episode===i+1);
+  const done=first<S.index,active=i+1===n.episode;
+  path.append(button((active?"● ":done?"✓ ":"○ ")+String(i+1).padStart(2,"0")+" — "+item.title,
+   active?"EN COURS":done?"TERMINÉ":"À DÉCOUVRIR",()=>{},true));
+ });
  $("game-root").classList.toggle("critical-moment",Boolean(n.critical));
  const actions=$("world-actions");actions.replaceChildren();
  if(n.choices&&!S.battle&&!S.finished)n.choices.forEach((c,i)=>actions.append(button((i+1)+". "+c.label,c.hint,()=>choose(c),Boolean(c.requires&&!has(c.requires)))));
