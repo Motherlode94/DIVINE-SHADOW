@@ -117,3 +117,7 @@
 .progress-track.force i{background:#dda769}
 @media(max-width:950px){.player-hud{grid-template-columns:1fr 2fr}.info-menu-toggle{grid-column:1/-1;display:flex;justify-content:space-between;text-align:left}.player-hud .adventure-status{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.player-hud{grid-template-columns:1fr;gap:9px}.player-hud .adventure-status{grid-template-columns:repeat(2,minmax(0,1fr))}.info-menu-toggle{grid-column:auto}.info-drawer{top:64px;padding:14px}.status-panel strong{font-size:20px}}
+
+.enemy-force{margin:10px 0 24px;color:#e4cdb1;font-size:12px}
+.enemy-force .progress-track{margin-top:8px}
+.enemy-force .progress-track i{background:#dda769}
