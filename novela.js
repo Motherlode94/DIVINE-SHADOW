@@ -63,6 +63,26 @@
    narrativeSummary().forEach(part=>{const li=document.createElement("li");li.textContent=part;list.append(li)});
    el("final-screen").hidden=false;
  }
+ function contextualDialogue(id,original){
+   if(id==="p_intro"){
+     if(state.flags.includes("fuite"))return "La réception a laissé MAILEIZ blessée par l'esquive de CHAYAH. AETHER l'a remarqué. Il attend CHAYAH près des archives, où se joue un autre dilemme.";
+     if(state.flags.includes("aveu"))return "Après la confession sincère de CHAYAH, AETHER l'attend aux archives. Un aveu ne règle pas tout, et leur conversation promet d'être franche.";
+   }
+   if(id==="p_reproche"){
+     if(state.flags.includes("fuite"))return "« Tu as fui sa question avec une plaisanterie. Tu sais pourtant qu'elle est mortelle : tu ne peux pas présumer qu'elle attendra toujours. »";
+     if(state.flags.includes("temps"))return "« Tu as demandé du temps, mais sais-tu seulement ce que tu veux en faire ? MAILEIZ n'a pas promis de t'attendre. »";
+   }
+   if(id==="c_intro"){
+     if(state.flags.includes("alerte"))return "La cour se prépare à une cérémonie sous tension : l'alerte lancée par CHAYAH circule déjà, sans coupable identifié. MAILEIZ et SERAPHYRA se retrouvent face à face.";
+     if(state.flags.includes("enquete"))return "CHAYAH et AETHER ont conservé leur enquête secrète. La cérémonie s'ouvre sans accusation publique. MAILEIZ croise SERAPHYRA au pied des arches.";
+   }
+   if(id==="c_interrupt"){
+     if(state.flags.includes("enquete"))return "« Nous avons trouvé une anomalie dans les archives », dit AETHER à voix basse. « Les documents ne suffisent pas à accuser quelqu'un. »";
+     if(state.flags.includes("alerte"))return "AETHER s'adresse aux invités : « La cour a reçu une alerte. Ne confondons pas soupçon et preuve. » Les conversations s'interrompent.";
+   }
+   if(id==="c_final" && state.flags.includes("franchise"))return "MAILEIZ n'a pas reculé devant une question difficile. SERAPHYRA conserve ses secrets, et les tensions de la cour laissent entrevoir les conséquences de votre choix.";
+   return original;
+ }
  function render(){
    const ep=episode(),n=node();
    renderEpisodes();renderStats();
@@ -74,7 +94,7 @@
    const actor=book.actors[n.speaker]||book.actors.narration;
    el("speaker").textContent=actor.name;
    el("speaker").style.color=actor.color;
-   el("dialogue-text").textContent=n.text;
+   el("dialogue-text").textContent=contextualDialogue(state.node,n.text);
    const image=el("actor-portrait");if(actor.image){image.src=portraitFor(n.speaker);image.alt="Portrait de "+actor.name;image.hidden=false}else{image.hidden=true;image.removeAttribute("src")}
    const choices=el("scene-choices");choices.replaceChildren();
    const next=el("scene-next");next.hidden=Boolean(n.choices||n.ending);
@@ -87,7 +107,7 @@
        b.append(label,hint);b.addEventListener("click",()=>makeChoice(choice));choices.append(b);
      });
    }
-   el("end-actions").hidden=!n.ending;el("scene-next").hidden=Boolean(n.choices||n.ending);
+   el("end-actions").hidden=!n.ending || state.finished;el("scene-next").hidden=Boolean(n.choices||n.ending);
    el("undo-choice").disabled=state.history.length===0 || state.finished;
    el("final-screen").hidden=!state.finished;
    el("episode-stage").dataset.ending=String(Boolean(n.ending));
