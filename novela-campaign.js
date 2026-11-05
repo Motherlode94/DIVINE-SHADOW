@@ -5,14 +5,15 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v3", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v4", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-const fresh=mode=>({version:3,mode,index:0,tick:0,health:100,energy:100,city:70,defense:35,intel:0,
+const initialResources=()=>Object.fromEntries(Object.entries(C.roster||{}).map(([id,actor])=>[id,actor.initial]));
+const fresh=mode=>({version:4,mode,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
  flags:[],log:[],battle:null,finished:false,ending:null,spent:0,maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==3||!C.scenes[S.index]||!S.npc)S=fresh(null);
+if(!S||S.version!==4||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -26,6 +27,8 @@ function newGame(mode){S=fresh(mode);log("La réception commence. Les habitants 
 function advanceClock(n=1){
  for(let i=0;i<n;i++){
   S.tick++;
+  if(S.tick%5===0&&S.maileizStatus!=="morte")restoreForce("maileiz",6);
+  if(S.tick%4===0)restoreForce("general",4);
   // Les autres acteurs agissent sans attendre une permission du joueur.
   if(S.index<10){
    if(S.tick%3===0){S.enemyAdvance++;S.city=clamp(S.city-(has("evacuation")?1:3),0,100);log("Les assaillants cherchent un passage ; les secouristes poursuivent l'évacuation.")}
@@ -36,6 +39,14 @@ function advanceClock(n=1){
    if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
   }
  }
+}
+function spendForce(id,amount){
+ const actor=C.roster?.[id];if(!actor||actor.resource!=="force")return;
+ S.resources[id]=clamp((S.resources[id]??actor.initial)-amount,0,100);
+}
+function restoreForce(id,amount){
+ const actor=C.roster?.[id];if(!actor||actor.resource!=="force")return;
+ S.resources[id]=clamp((S.resources[id]??actor.initial)+amount,0,100);
 }
 function applyDelta(delta={}){
  for(const [k,v] of Object.entries(delta)){
@@ -63,6 +74,9 @@ function criticalMaileiz(choice){
  // Unique event, rolled once and saved. MAILEIZ is mortal and not resurrected by a UI choice.
  if(S.maileizFate)return;
  const kind=choice.critical;
+ const force=S.resources.maileiz??100;
+ // Sprinting through flames consumes the mortal character's physical strength.
+ spendForce("maileiz",28);
  const outcome={choice:kind,result:"",roll:null};
  if(kind==="interpose"){
    S.health=clamp(S.health-42,1,100);
@@ -87,7 +101,7 @@ function criticalMaileiz(choice){
  } else {
    // The chance is influenced by earlier protection, not by arbitrary dialogue affinity.
    const protectedRoute=has("evacuation")||has("couloir");
-   const fatalChance=protectedRoute?.36:.68;
+   const fatalChance=clamp((protectedRoute?.36:.68)+(force<50?.12:0),0,.9);
    outcome.roll=Math.random();
    if(S.mode==="ruthless"&&outcome.roll<fatalChance){
      S.maileizStatus="morte";outcome.result="morte";
@@ -110,6 +124,11 @@ function choose(choice){
  S.beat=choiceBeats[current.id]?.[number]||"Ce choix modifiera les réactions des autres personnages.";
  if(choice.critical)criticalMaileiz(choice);
  applyDelta(choice.delta);(choice.flags||[]).forEach(flag);
+ // En combat ou en secours, l'effort des mortels réduit leur Force.
+ if(current.id==="s01"&&number===0)spendForce("maileiz",8);
+ if(current.id==="s03")spendForce("maileiz",number===0?18:26);
+ if(current.id==="s04")spendForce("general",12);
+ if(current.id==="s07"&&S.maileizStatus!=="morte")restoreForce("maileiz",12);
  advanceClock(1);log("CHAYAH : "+choice.label);
  if(has("evacuation")&&S.index===1)S.civiliansSaved+=20;
  if(has("couloir")&&S.index===2)S.civiliansSaved+=12;
@@ -248,6 +267,33 @@ function render(){
  const relations=$("relation-list");relations.replaceChildren();
  const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense};
  Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
+ const list=$("character-list");if(list){
+  list.replaceChildren();
+  const discovered=["chayah","maileiz","aether","seraphyra","general","eleaonor","miren","selma","tomas","nadir","brother"].filter(id=>{
+    if(["chayah","maileiz","aether"].includes(id))return true;
+    if(id==="seraphyra")return S.index>=1;
+    if(id==="general")return S.index>=4;
+    if(id==="eleaonor")return S.index>=9;
+    if(["miren","selma","tomas"].includes(id))return S.index>=2;
+    if(id==="nadir")return S.index>=8;
+    if(id==="brother")return S.index>=15;
+    return false;
+  });
+  for(const id of discovered){
+   const actor=C.roster[id];if(!actor)continue;
+   const item=document.createElement("div");item.className="resource-character";
+   const top=document.createElement("div");top.className="resource-character-head";
+   const name=document.createElement("strong");name.textContent=actor.name;
+   const category=document.createElement("span");category.textContent=actor.nature==="immortal"?"IMMORTEL":actor.nature==="human"?"MORTEL":"NON CONFIRMÉ";top.append(name,category);item.append(top);
+   const detail=document.createElement("p");
+   const value=actor.resource==="energy"?(id==="chayah"?S.energy:S.resources[id]):S.resources[id];
+   detail.textContent=actor.resource?actor.resourceLabel+" : "+value+" / 100":actor.resourceLabel;
+   item.append(detail);
+   if(actor.resource){const track=document.createElement("div");track.className="progress-track "+(actor.resource==="energy"?"energy":"force");const bar=document.createElement("i");bar.style.width=value+"%";track.append(bar);item.append(track)}
+   if(id==="maileiz"&&S.maileizStatus!=="saine"){const health=document.createElement("small");health.textContent="État : "+(S.maileizStatus==="morte"?"décédée":"blessée");item.append(health)}
+   list.append(item);
+  }
+ }
  const npcList=$("npc-status-list");if(npcList){npcList.replaceChildren();Object.entries(S.npc).forEach(([name,activity])=>{const li=document.createElement("li");li.textContent=name.toUpperCase()+" : "+activity;npcList.append(li)})}
  const journal=$("adventure-journal");journal.replaceChildren();
  [ ...S.log.slice(0,12), ...Object.entries(S.npc).map(([k,v])=>k.toUpperCase()+" : "+v)].forEach(line=>{const li=document.createElement("li");li.textContent=line;journal.append(li)});
@@ -258,7 +304,22 @@ function render(){
 $("history-mode").addEventListener("click",()=>newGame("story"));
 $("ruthless-mode").addEventListener("click",()=>newGame("ruthless"));
 $("reset-adventure").addEventListener("click",()=>{if(confirm("Recommencer la campagne et ses conséquences ?")){S=fresh(null);render()}});
-$("journal-button").addEventListener("click",()=>{const p=$("journal-panel");p.hidden=!p.hidden;$("journal-button").setAttribute("aria-expanded",String(!p.hidden))});
+const drawer=$("info-drawer"),menuToggle=$("info-menu-toggle"),menuClose=$("info-menu-close");
+function openInfo(open){
+ drawer.hidden=!open;
+ menuToggle.setAttribute("aria-expanded",String(open));
+ $("info-menu-indicator").textContent=open?"FERMER":"OUVRIR";
+}
+menuToggle.addEventListener("click",()=>openInfo(drawer.hidden));
+menuClose.addEventListener("click",()=>openInfo(false));
+const tabs=[...document.querySelectorAll("[data-info-tab]")];
+function switchInfo(id){
+ tabs.forEach(t=>{const selected=t.dataset.infoTab===id;t.setAttribute("aria-selected",String(selected));t.tabIndex=selected?0:-1});
+ document.querySelectorAll(".info-tab-panel").forEach(p=>p.hidden=p.id!=="info-"+id);
+}
+tabs.forEach(t=>t.addEventListener("click",()=>switchInfo(t.dataset.infoTab)));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!drawer.hidden)openInfo(false)});
+switchInfo("city");
 $("menu").addEventListener("click",()=>{const links=$("links");const open=links.classList.toggle("open");$("menu").setAttribute("aria-expanded",String(open))});
 render();
 })();
