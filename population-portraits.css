@@ -1,0 +1,15 @@
+/* DIVINE SHADOW — presentation des 40 habitants a resolution native. */
+.population-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}
+.population-card{display:grid;grid-template-columns:116px minmax(0,1fr);min-width:0;align-items:stretch;border:1px solid #66505c91;background:linear-gradient(135deg,#211921,#100f17);box-shadow:inset 0 1px #ffffff0d}
+.population-art{width:116px;min-width:0;height:100%;min-height:180px;padding:12px 8px;position:relative;box-sizing:border-box;border-right:1px solid #b5a08239;display:flex;align-items:flex-start;justify-content:center;background:radial-gradient(ellipse at 50% 28%,#79524860,transparent 70%),#18121a}
+.population-art::after{height:12px}
+.population-portrait{position:relative;inset:auto;display:block;width:90px;height:112px;max-width:none;flex:none;background-image:url('./assets/population/population-atlas.webp');background-size:900px 448px;background-repeat:no-repeat;border:1px solid #cbb59e7d;box-shadow:0 3px 15px #09070bba;filter:none;image-rendering:auto}
+.population-copy{padding:16px 15px;gap:8px;min-width:0}
+.population-copy h3{font-size:clamp(24px,2.25vw,32px)}
+.population-copy p{font-size:12px;line-height:1.65}
+.population-marin-note{font-size:9px}
+.population-portrait::before,.population-portrait[data-atlas-row="2"]::before,.population-portrait[data-atlas-row="3"]::before{display:none}
+.population-featured{border-color:#caad7c;box-shadow:inset 2px 0 #e0b16e,0 0 0 1px #caad7c30}
+@media(max-width:1120px){.population-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.population-grid{grid-template-columns:1fr}.population-card{grid-template-columns:112px minmax(0,1fr)}.population-art{width:112px;min-height:172px}.population-copy{padding:13px 14px}.population-copy h3{font-size:27px}}
+@media(max-width:390px){.population-card{grid-template-columns:104px minmax(0,1fr)}.population-art{width:104px;min-height:165px;padding:9px 5px}.population-copy{padding:11px}.population-copy h3{font-size:25px}}
