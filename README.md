@@ -1,5 +1,19 @@
 # DIVINE SHADOW
 
+## Extension interactive — 175 épisodes (saison I)
+
+La campagne interactive de `novela.html` possède désormais **175 épisodes reliés et 533 scènes**, dont **30 rencontres de combat**. Les 40 premiers épisodes restent jouables ; le dernier cesse d'être une fin de campagne pour ouvrir l'arc de la reconstruction.
+
+L'extension (épisodes 41 à 175) est répartie en **neuf arcs de quinze épisodes** : *Les brûlures de la paix*, *Les villes sans drapeau*, *Le prix des masques*, *Les corps et les promesses*, *Le frère et les impurs*, *Le continent qui brûle*, *Le seuil sans soleil*, *L'Ancien d'avant le temps* et *Les serments qu'on garde*.
+
+**Principaux éléments narratifs :** MARIN est le père adoptif de CHAYAH et légataire de la Mère. SAMA est l'ex-compagne de CHAYAH, avec laquelle persiste une intimité ; elle **ignore** ses sentiments réciproques avec MAILEIZ jusqu'à une révélation effective. Les conséquences de la vérité ou du silence sont conservées sous des drapeaux de sauvegarde. Les mortels conservent leur libre arbitre et peuvent mourir en mode impitoyable. **L'épisode 150** offre la confrontation avec une entité plus ancienne que CHAYAH et le choix de révéler une part de sa puissance, au prix d'énergie et de blessures, sans déduire que toute sa puissance est connue.
+
+**Architecture :** neuf fichiers `novela-arcs-<plage>.js` chargent les intrigues 41–175. `novela-season-175.js` génère leurs scènes et raccorde les décisions, rencontres et fins ; `novela-campaign.js` affiche les ramifications conditionnelles et conserve la sauvegarde existante (`divine-shadow-campaign-v8`). Les épisodes disposent actuellement de trois ou quatre scènes jouables chacun, ce qui constitue une **première version** à enrichir littérairement, et non 175 chapitres longs achevés.
+
+**Vérification :** syntaxe JavaScript correcte, 175 entrées dans l'index, aucune transition manquante et test de navigation complet sur Cloudflare jusqu'à la conclusion au 175e épisode, avec choix de vérité concernant SAMA et révélation de puissance à l'épisode 150.
+
+
+
 **DIVINE SHADOW** est un site vitrine narratif et interactif consacré à un univers original de dark fantasy : divinités, humains, conflits, alliances, sentiments et conséquences. Projet indépendant de Base44, hébergé sur Cloudflare Pages.
 
 **Site :** https://divine-shadow.pages.dev  
