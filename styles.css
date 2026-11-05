@@ -3,8 +3,8 @@
 .chayah .character-art .figure,.chayah .character-art .orb{display:none}
 
 /* Portraits cinématiques approuvés : fichiers PNG présents dans assets */
-.chayah .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/chayah-exact-capture.png')}
-.aether .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/aether-exact-capture.png')}
+.chayah .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/chayah_hd_candidate.jpg')}
+.aether .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/aether_hd_candidate.jpg')}
 
 /* Galerie trois personnages et portraits validés */
 @media(min-width:1050px){.character-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.char-content{padding:26px}.char-content h3{font-size:clamp(48px,5vw,72px)}.character-art{height:350px}}
