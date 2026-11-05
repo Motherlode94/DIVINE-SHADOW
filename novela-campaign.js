@@ -252,7 +252,8 @@ function battleTurn(action){
  counter:"Il attend le dernier instant, détourne la lame et frappe en retour. L'élan ennemi lui tord le poignet.",
  ward:"Un rempart translucide jaillit entre la colonne et les habitants. La surface résiste ; l'onde de retour traverse les côtes de CHAYAH.",
  fury:"Sa colère fend la poussière en une onde écarlate contrôlée. Le sol vibre, les ennemis reculent, mais CHAYAH refuse de libérer ce qui sommeille en lui.",
- parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
+ shadowBind:"AETHER frappe le sol de sa paume. Les ombres des assaillants se soudent en chaînes vivantes ; leurs jambes cèdent sous l'entrave. CHAYAH profite de l'ouverture sans prétendre contrôler le pouvoir de son ami.",
+  parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
  };
  if(action==="strike"){damage=22-fatigue;S.energy=clamp(S.energy+4,0,100)}
  if(action==="void"){cost=19;if(S.energy<cost)return;damage=27-fatigue;dodge=true;recoil=3}
@@ -265,6 +266,15 @@ function battleTurn(action){
   cost=29;damage=Math.max(10,Math.min(38,29+S.grief)-fatigue);recoil=13;
   S.fury=clamp(S.fury-32,0,100);S.trust=clamp(S.trust-1,-10,10);
   log("RAGE CONTENUE : puissance non révélée ; dégâts et contrecoup physiques.");
+ }
+ if(action==="shadowBind"){
+  const available=S.resources.aether??0;
+  if(available<24)return;
+  S.resources.aether=clamp(available-24,0,100);
+  damage=Math.max(4,13-fatigue);b.weak=2;
+  S.aether=clamp(S.aether+1,-10,10);
+  S.beat="AETHER étire l'ombre des soldats en filaments noirs. Chaque mouvement adverse tend les liens jusqu'à ralentir la charge. Le sort absorbe sa propre énergie divine, pas celle de CHAYAH.";
+  log("AETHER — NEXUS UMBRA : -24 PM pour AETHER, entrave et dégâts, deux tours de faiblesse.");
  }
  if(action==="retreat"){outcome("retreat");return}
  if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
@@ -417,6 +427,7 @@ function render(){
    button("REMPART DIVIN","Protéger les civils. Coût 23 : choc absorbé par CHAYAH.",()=>battleTurn("ward"),S.energy<23),
    button("SCEAU DU RÉEL","Sceau de ralentissement : 26 énergie et 5 vitalité.",()=>battleTurn("seal"),S.energy<26),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
+   ...(n.episode>=14&&n.episode<=38?[button("AETHER — NEXUS UMBRA","Entrave des ombres : dégâts et affaiblissement. Consomme 24 PM d'AETHER.",()=>battleTurn("shadowBind"),(S.resources.aether??0)<24)]:[]),
    button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
    ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
   );
@@ -442,6 +453,25 @@ function render(){
  const relations=$("relation-list");relations.replaceChildren();
  const stats={"BLESSURES DE CHAYAH":S.injuryLevel,MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense,DEUIL:S.grief,FUREUR:S.fury,DÉSOBÉISSANCES:S.defianceCount};
  Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
+ const statusPanel=$("divinity-status-list");
+ if(statusPanel){
+  statusPanel.replaceChildren();
+  for(const [id,d] of Object.entries(C.divinities||{})){
+   const wrap=document.createElement("section");wrap.className="isekai-status";
+   const header=document.createElement("div");header.className="isekai-status-header";
+   const name=document.createElement("strong");name.textContent=d.name;
+   const level=document.createElement("span");level.textContent="LVL "+(d.level??"???")+" · RANG "+(d.rank??"???");
+   header.append(name,level);wrap.append(header);
+   const details=document.createElement("p");details.textContent="CLASSE : "+d.className+" · TITRE : "+d.title+" · APTITUDE : "+(d.power||"NON RÉVÉLÉE");
+   wrap.append(details);
+   const resource=document.createElement("p");resource.textContent="PV : "+(id==="chayah"?S.health:"???")+" · PM : "+(id==="chayah"?S.energy:S.resources[id]??"???");
+   wrap.append(resource);
+   const attrs=document.createElement("p");attrs.textContent=C.statusSystem.stats.map(key=>key+" "+(d.knownStats[key]??"???")).join("  •  ");
+   attrs.className="isekai-attributes";wrap.append(attrs);
+   const skills=document.createElement("p");skills.textContent="COMPÉTENCES : "+(d.skills.length?d.skills.map(x=>x.name).join(" / "):"Non validées — aucune capacité inventée");
+   wrap.append(skills);statusPanel.append(wrap);
+  }
+ }
  const list=$("character-list");if(list){
   list.replaceChildren();
   const discovered=["chayah","maileiz","aether","seraphyra","general","eleaonor","miren","selma","tomas","nadir","brother"].filter(id=>{
