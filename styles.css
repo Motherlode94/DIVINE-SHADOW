@@ -5,3 +5,11 @@
 /* Portraits cinématiques approuvés : fichiers PNG présents dans assets */
 .chayah .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/chayah-exact-capture.png')}
 .aether .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/aether-exact-capture.png')}
+
+/* Galerie trois personnages et portraits validés */
+@media(min-width:1050px){.character-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.char-content{padding:26px}.char-content h3{font-size:clamp(48px,5vw,72px)}.character-art{height:350px}}
+.aether .character-art .figure,.aether .character-art .orb{display:none}
+.maileiz-art{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#9a2a3590,transparent 48%),linear-gradient(125deg,#24101a,#0c0c14 75%);border-bottom:1px solid #b3495430}
+.maileiz-sigil{font-family:serif;font-size:clamp(130px,16vw,220px);color:#f2797988;text-shadow:0 0 45px #ee364a75;user-select:none}
+.maileiz .char-content h3 em{color:#e66a62}
+.character-art .art-caption{z-index:2;text-shadow:0 1px 7px #000}
