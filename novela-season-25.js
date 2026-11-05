@@ -1,4 +1,4 @@
-/* Saison 1 : 25 épisodes scénarisés, chacun en plusieurs scènes.
+/* Saison 1 : 27 épisodes scénarisés, chacun en plusieurs scènes.
    Conserve les mécanismes historiques mais réordonne les événements de manière causale.
    Continuité exploratoire : ni canon, ni promesse de 25 heures de contenu. */
 (() => {
@@ -172,7 +172,7 @@
   if(here.choices)here.choices.forEach(c=>{if(next)c.next=next});
   if(here.battle&&next)here.battle.next=next;
  }
- C.season={title:"LA NUIT DES SERMENTS",totalEpisodes:25,episodes:E,
+ C.season={title:"LA NUIT DES SERMENTS",totalEpisodes:E.length,episodes:E,
   cinematic:[
    {eyebrow:"PROLOGUE / PREMIÈRE LUMIÈRE",title:"UNE VILLE QUI RESPIRE",text:"Avant qu'une guerre ait un nom, les rues étaient pleines de vies ordinaires. Des marchands levaient leurs étals. Des enfants couraient derrière les roues des chariots. Les gens aimaient, se disputaient, vieillissaient. La ville ne savait pas encore qu'elle aurait bientôt besoin de courage.",art:"maileiz"},
    {eyebrow:"PROLOGUE / DEUXIÈME LUMIÈRE",title:"CEUX QUI VEILLENT",text:"Parmi les vivants marchaient des êtres qui ne connaissaient pas la même fin. CHAYAH pouvait réécrire le réel. AETHER lui parlait comme à un ami et non à un maître. Aucun de leurs pouvoirs ne leur donnait le droit de décider à la place de tous.",art:"aether"},
