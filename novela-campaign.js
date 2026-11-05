@@ -162,15 +162,18 @@ function respondToCity(reqId,accept){
  const cost=Math.min(S.troops,r.units);
  S.aidDecisions[r.id]=accept?"accepted":"refused";
  if(accept){
-   S.troops=clamp(S.troops-r.units,0,16);
-   target.trust=clamp(target.trust+3,-10,10);
-   target.threat=clamp(target.threat-17,0,100);
-   target.security=clamp(target.security+8,0,100);
-   S.defense=clamp(S.defense-2,0,30);
-   S.trust=clamp(S.trust+1,-10,10);
-   S.warInfluence++;
-   S.beat="CHAYAH accepte l'appel de "+city.name+". "+cost+" unités disponibles partent réellement, au risque d'affaiblir les frontières de sa cité. Les habitants saluent le secours ; les ennemis préparent une riposte.";
-   log("SECOURS ENVOYÉS À "+city.name+": "+cost+" unités ; menace réduite, troupes locales diminuées.");
+   const adequate=cost>=r.units,shortfall=r.units-cost;
+   S.troops=clamp(S.troops-cost,0,16);
+   target.trust=clamp(target.trust+(adequate?3:cost>0?1:-2),-10,10);
+   target.threat=clamp(target.threat-(adequate?17:cost>0?6:-1),0,100);
+   target.security=clamp(target.security+(adequate?8:cost>0?3:-2),0,100);
+   S.defense=clamp(S.defense-(cost>0?2:0),0,30);
+   S.trust=clamp(S.trust+(adequate?1:0),-10,10);
+   S.warInfluence+=adequate?1:0;
+   S.beat=adequate?
+    "CHAYAH accepte l'appel de "+city.name+". "+cost+" unités partent réellement et les habitants saluent leur arrivée. Leurs propres frontières restent moins protégées.":
+    "CHAYAH accepte l'appel de "+city.name+", mais ses réserves sont insuffisantes : "+cost+" unités partent, "+shortfall+" manquent. Cette promesse incomplète ne suffit pas à briser le siège, et la cité s'en souviendra.";
+   log("RENFORTS À "+city.name+": "+cost+"/"+r.units+" unités disponibles. "+(adequate?"Secours complet.":"Secours insuffisant."));
  }else{
    target.trust=clamp(target.trust-4,-10,10);
    target.threat=clamp(target.threat+24,0,100);
