@@ -33,3 +33,25 @@
 .profile-visual.portrait-pending{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 52%),#0d0e16}
 .profile-visual.portrait-pending::before{content:"ILLUSTRATION OFFICIELLE À VALIDER";position:relative;z-index:1;max-width:280px;text-align:center;letter-spacing:.23em;font-size:12px;font-weight:800;line-height:2;color:#d1c6d2}
 .profile-visual.portrait-pending::after{display:none}
+
+/* Dossiers des antagonistes : lisibilité du titre et cadrage sans le cartouche imprimé */
+body[data-character="vaelkor"] .profile-visual img,
+body[data-character="nyssara"] .profile-visual img,
+body[data-character="orvann"] .profile-visual img{
+  object-position:center top;
+}
+body[data-character="orvann"] .profile-intro h1{
+  font-size:clamp(62px,6.6vw,103px);
+  line-height:.96;
+}
+body[data-character="orvann"] .profile-intro h1 em{
+  font-size:clamp(35px,3.65vw,57px);
+  line-height:1.12;
+  overflow-wrap:normal;
+  hyphens:none;
+  max-width:100%;
+}
+@media(max-width:850px){
+  body[data-character="orvann"] .profile-intro h1{font-size:clamp(61px,12vw,91px)}
+  body[data-character="orvann"] .profile-intro h1 em{font-size:clamp(32px,7vw,52px)}
+}
