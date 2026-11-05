@@ -154,3 +154,9 @@
 
 /* Keep narrator and chapter text clear of fixed mobile navigation. */
 @media(max-width:540px){.opening-cinematic{min-height:760px;align-items:center;padding-top:95px}.cinematic-content{padding:20px 21px 35px}.cinematic-controls{gap:9px}.cinematic-caption{margin-top:6px}}
+
+/* Diplomatie des six cités — accessible seulement depuis Informations > Ville. */
+.city-record{padding:12px 0;border-bottom:1px solid #ffffff25;display:grid;gap:5px}
+.city-record strong{font-size:13px;letter-spacing:.04em}
+.city-record p{color:#cbbdc9;font-size:12px;margin:0}
+#world-actions .adventure-action:focus-visible{outline:2px solid #ff819c;outline-offset:2px}
