@@ -94,3 +94,10 @@
 @media(max-width:720px){.expanded-cast-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cast-item-art{height:130px}.cast-item-body{padding:13px}.cast-item-body h3{font-size:22px}.expanded-cast-filters button{padding:12px;font-size:11px}}
 @media(max-width:420px){.expanded-cast-grid{grid-template-columns:1fr}.cast-item-art{height:160px}.cast-item-body h3{font-size:28px}}
 @media(prefers-reduced-motion:reduce){.expanded-cast-filters button{transition:none}}
+
+/* Illustrations de concept du casting : silhouettes complètes, attitudes liées au métier. */
+.cast-item-art{height:230px;isolation:isolate}
+.cast-pose-svg{display:block;position:absolute;inset:-10px auto auto 50%;transform:translateX(-50%);height:245px;width:auto;max-width:100%;overflow:visible;filter:drop-shadow(0 12px 12px #03020b88)}
+.cast-art-note{position:absolute;left:0;bottom:0;right:0;z-index:2;text-align:center;padding:11px 6px 8px;background:linear-gradient(0deg,#100d14 20%,transparent);font-size:9px;letter-spacing:.12em;color:#e5d4e4}
+@media(max-width:720px){.cast-item-art{height:190px}.cast-pose-svg{height:205px}}
+@media(max-width:420px){.cast-item-art{height:230px}.cast-pose-svg{height:245px}}
