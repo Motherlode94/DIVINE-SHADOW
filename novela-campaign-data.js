@@ -7,7 +7,7 @@ window.DS_CAMPAIGN={
  aether:{name:"AETHER",nature:"immortal",resource:"energy",resourceLabel:"Puissance divine",initial:100},
  seraphyra:{name:"SERAPHYRA",nature:"immortal",resource:"energy",resourceLabel:"Puissance divine",initial:100},
  maileiz:{name:"MAILEIZ",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
- general:{name:"LE GÉNÉRAL",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ general:{name:"LE GÉNÉRAL",nature:"unspecified",resource:null,resourceLabel:"Nature à confirmer",initial:null},
  eleaonor:{name:"ÉLÉAONOR",nature:"unspecified",resource:null,resourceLabel:"Nature à confirmer",initial:null},
  miren:{name:"MIREN",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
  selma:{name:"SELMA",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
@@ -25,7 +25,7 @@ window.DS_CAMPAIGN={
   tomas:{name:"TOMAS",role:"Messager, civil proposé",confirmed:false},
   nadir:{name:"NADIR",role:"Archiviste municipal, civil proposé",confirmed:false}
  },
- enemies:{raider:{name:"ÉCLAIREUR DES CENDRES",hp:58,damage:12,armor:2},captain:{name:"CAPITAINE DES CENDRES",hp:95,damage:16,armor:4},shade:{name:"OMBRE DU SERMENT",hp:80,damage:14,armor:1}},
+ enemies:{raider:{name:"ÉCLAIREUR DES CENDRES",nature:"human",resource:"force",hp:58,force:100,damage:12,armor:2},captain:{name:"CAPITAINE DES CENDRES",nature:"human",resource:"force",hp:95,force:100,damage:16,armor:4},shade:{name:"OMBRE DU SERMENT",nature:"entity",resource:null,hp:80,damage:14,armor:1}},
  scenes:[
  {id:"s01",chapter:0,place:"Réception du Palais",who:"NARRATION",text:"La musique s'interrompt lorsque TOMAS, un jeune messager, traverse les portes de la réception, la manche déchirée. Les charrettes qui descendaient vers le marché ont été arrêtées. Dans la galerie, SERAPHYRA a déjà remarqué l'absence d'un sceau au registre des invités. MAILEIZ approche de CHAYAH : « Si des gens sont dehors, allons voir. »",choices:[
   {label:"Partir au marché avec MAILEIZ.",hint:"CHAYAH accepte son aide sans lui imposer de protection.",delta:{maileiz:2},flags:["avecMaileiz"],next:"s02"},
