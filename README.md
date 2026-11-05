@@ -2,7 +2,7 @@
 
 ## Extension interactive — 175 épisodes (saison I)
 
-La campagne interactive de `novela.html` possède désormais **175 épisodes reliés et 526 scènes**, dont **25 rencontres de combat**. Les 40 premiers épisodes restent jouables ; le dernier cesse d'être une fin de campagne pour ouvrir l'arc de la reconstruction.
+La campagne interactive de `novela.html` possède désormais **175 épisodes reliés et 528 scènes**, dont **25 rencontres de combat**. Les 40 premiers épisodes restent jouables ; le dernier cesse d'être une fin de campagne pour ouvrir l'arc de la reconstruction.
 
 L'extension (épisodes 41 à 175) est répartie en **neuf arcs de quinze épisodes** : *Les brûlures de la paix*, *Les villes sans drapeau*, *Le prix des masques*, *Les corps et les promesses*, *Le frère et les impurs*, *Le continent qui brûle*, *Le seuil sans soleil*, *L'Ancien d'avant le temps* et *Les serments qu'on garde*.
 
