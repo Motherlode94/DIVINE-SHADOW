@@ -108,3 +108,34 @@
 .cast-awaiting-portrait{display:flex;align-items:center;justify-content:center;background:linear-gradient(125deg,#15121b,#2a202b)}
 .cast-missing-image{max-width:180px;color:#e1c9d5;font-weight:700;font-size:12px;letter-spacing:.08em;text-align:center;line-height:1.7;text-transform:uppercase}
 @media(max-width:720px){.cast-item-art{height:205px}}@media(max-width:420px){.cast-item-art{height:245px}}
+
+/* DIVINE SHADOW — population originale multiethnique / représentation visuelle approuvée. */
+.population-section{background:radial-gradient(ellipse at 15% 3%,#352b274c,transparent 52%),#100d12}
+.population-section .section-head{max-width:900px}
+.population-highlight{display:flex;gap:22px;border:1px solid #c69c6388;padding:23px 26px;margin:25px 0 34px;background:linear-gradient(110deg,#31231c,#17111c 54%,#160e17);box-shadow:inset 3px 0 #cfa968}
+.population-highlight-number{font:900 68px/1 Georgia,serif;color:#f0cd91;min-width:100px}
+.population-highlight-number span{display:block;font-size:24px;color:#e6a966;margin-top:8px}
+.population-highlight-tag{font-size:10px;letter-spacing:.14em;font-weight:800;color:#f5c99a}
+.population-highlight-content h3{font:900 clamp(34px,5vw,54px)/1 "Barlow Condensed",Impact,sans-serif;margin:7px 0 10px;color:#f8e4c3}
+.population-highlight-content p{max-width:750px;line-height:1.8;font-size:14px;color:#e7d7cc;margin:0}
+.population-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px;margin:0 0 18px}
+.population-toolbar p{font-size:12px;letter-spacing:.12em;color:#c7bac2;text-transform:uppercase}
+.population-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+.population-filters button{padding:12px 14px;color:#e4d5ce;background:#1d151b;border:1px solid #7d606a9c;font-size:11px;font-weight:800;cursor:pointer;transition:background .2s,border-color .2s}
+.population-filters button:hover,.population-filters button[aria-pressed=true]{background:#673344;border-color:#ee8ca4;color:#fff}
+.population-filters button:focus-visible{outline:2px solid #ff9db5;outline-offset:3px}
+.population-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.population-card{min-width:0;overflow:hidden;display:flex;flex-direction:column;background:linear-gradient(135deg,#1b1720,#120f17);border:1px solid #ffffff29}
+.population-featured{border-color:#d6ae6e;box-shadow:0 0 0 1px #d6ae6e50}
+.population-art{overflow:hidden;position:relative;background:linear-gradient(145deg,#42313a,#16121a);aspect-ratio:4/4.7}
+.population-portrait{position:absolute;inset:0;background-image:url('./assets/population/population-atlas.webp');background-size:1000% 400%;background-repeat:no-repeat;filter:saturate(.95) contrast(1.045)}
+.population-copy{display:flex;flex-direction:column;flex:1;align-items:flex-start;gap:8px;padding:16px}
+.population-origin{font-size:10px;letter-spacing:.06em;color:#f3a1b6;text-transform:uppercase;font-weight:750}
+.population-copy h3{font:900 clamp(25px,2.4vw,36px)/1 "Barlow Condensed",Impact,sans-serif;margin:0;letter-spacing:-.025em;overflow-wrap:anywhere;color:#f6eff0}
+.population-copy strong{font-size:12px;color:#e7c0ab}
+.population-copy p{font-size:12px;line-height:1.65;color:#cbbfc9;margin:0;flex:1}
+.population-marin-note{font-size:10px;line-height:1.5;color:#f6d49b;letter-spacing:.08em;font-weight:850;border-top:1px solid #c49d6388;width:100%;padding-top:10px;margin-top:8px}
+@media(max-width:1250px){.population-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:940px){.population-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){.population-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.population-copy{padding:12px}.population-copy h3{font-size:26px}.population-highlight{padding:17px;gap:12px}.population-highlight-number{font-size:43px;min-width:58px}}
+@media(max-width:360px){.population-grid{grid-template-columns:1fr}}
