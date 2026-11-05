@@ -61,6 +61,18 @@ Accessible depuis [novela-adventure.html](./novela-adventure.html), cette campag
 1. Réception interrompue → sortie en ville → évacuation du marché → protection des blessés → organisation défensive du Général → bataille de la Porte Ouest → bilan humain → enquête avec AETHER et NADIR → décision du Conseil avec ÉLÉAONOR.
 2. Départ hors de la ville → protection ou abandon relatif de voyageurs → enquête au laboratoire d'ORVANN → reconnaissance des ruines → embuscade du capitaine des Cendres → rencontre du frère de CHAYAH lié aux pactes → confrontation de l'Ombre → retour devant le Conseil → épilogue selon le bilan.
 
+### Choix critique — MAILEIZ (nouveau)
+
+Pendant la fuite de la rue des Tisserands, MAILEIZ, **mortelle**, se précipite pour sauver une enfant menacée par une lance ennemie mortelle pour les humains. CHAYAH doit choisir entre :
+
+- **S'interposer physiquement** : MAILEIZ survit, CHAYAH subit une forte perte de vitalité et d'énergie.
+- **Projeter un bouclier à distance et encaisser son contrecoup** : MAILEIZ est protégée si CHAYAH possède l'énergie nécessaire ; sinon elle survit blessée.
+- **Ne pas intervenir** : MAILEIZ est grièvement blessée. En mode **Impitoyable**, elle peut mourir ; le risque est plus faible si l'évacuation a été préparée.
+
+Le résultat de ce choix est **enregistré une seule fois** dans la sauvegarde. Une MAILEIZ morte ne peut plus intervenir dans le dispensaire ou l'épilogue de cette continuité. Aucun retour à la vie automatique n'est prévu. La mort est une conséquence **fictionnelle de la partie**, et non un changement du canon officiel.
+
+**Compatibilité :** le nouveau passage ajoute une scène à la chronologie. La sauvegarde de la simulation utilise la nouvelle clé `divine-shadow-campaign-v3` : les anciennes parties v2 ne sont pas importées car leurs indices de scènes seraient décalés.
+
 ### Ce qui est déjà simulé
 
 - **Temps par phases** : les décisions et les tours de combat font avancer la situation. Des attaques ou des initiatives secondaires se déclenchent selon la progression.
