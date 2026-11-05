@@ -158,7 +158,7 @@
  E.forEach((ep,index)=>{
   const episode=index+1,ids=[];
   ep.scenes.forEach((part,j)=>{
-   const scene=typeof part==="string"?structuredClone(original.get(part)):{...part};
+   const scene=typeof part==="string"?JSON.parse(JSON.stringify(original.get(part))):{...part};
    if(!scene)throw Error("Scène manquante "+part);
    scene.id=scene.id||"season-"+String(episode).padStart(2,"0")+"-"+(j+1);
    scene.episode=episode;scene.chapter=episode<=17?0:1;
