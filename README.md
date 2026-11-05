@@ -71,6 +71,16 @@ Le résultat de ce choix est **enregistré une seule fois** dans la sauvegarde. 
 
 **Compatibilité :** le nouveau passage ajoute une scène à la chronologie. La sauvegarde de la simulation utilise la nouvelle clé `divine-shadow-campaign-v3` : les anciennes parties v2 ne sont pas importées car leurs indices de scènes seraient décalés.
 
+### Ressources des personnages et interface du joueur
+
+- **CHAYAH et les autres immortels confirmés** : `Puissance divine` (jauge d'énergie). Les capacités divines consomment cette ressource.
+- **MAILEIZ et les autres humains mortels** : `Force` (effort physique et endurance), individuelle et distincte de l'énergie divine. Sauvetages et courses peuvent la réduire ; le repos peut la restaurer. Une MAILEIZ épuisée est plus vulnérable pendant le choix critique.
+- **Ennemis humains** : leur `Force` diminue pendant leurs attaques ; une forte fatigue réduit leurs dégâts. Les entités ou personnages dont la nature n'est pas validée ne sont pas classés immortels automatiquement.
+- **HUD permanent** : seules l'identité, la vitalité et la puissance divine du personnage joué (CHAYAH) restent visibles. Un bouton **Informations** ouvre un dossier latéral en quatre onglets : **Ville**, **Personnages**, **Relations**, **Journal**.
+- **Valeurs de Force/Puissance divine** : paramètres de gameplay du prototype, **pas des niveaux de puissance canonisés**.
+
+La structure des sauvegardes passe à `divine-shadow-campaign-v4`. Les anciennes sauvegardes de simulation ne sont pas importées automatiquement.
+
 ### Ce qui est déjà simulé
 
 - **Temps par phases** : les décisions et les tours de combat font avancer la situation. Des attaques ou des initiatives secondaires se déclenchent selon la progression.
