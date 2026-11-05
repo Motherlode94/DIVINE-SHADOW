@@ -385,8 +385,14 @@ function render(){
  $("episode-label").textContent="ÉPISODE "+String(n.episode).padStart(2,"0")+" / "+(C.season?.totalEpisodes||25);
  $("episode-name").textContent=episode?.title||"LA NUIT DES SERMENTS";
  $("episode-arc").textContent=episode?.arc||"SAISON I";
- $("chapter-title").textContent=chapter.title;
- $("chapter-desc").textContent=chapter.goal;
+ $("chapter-title").textContent="SAISON I — "+(C.season?.title||"LES SERMENTS");
+ $("chapter-desc").textContent=n.episode<8?
+  "Avant les batailles, découvre les habitants, leurs liens et les choix qui rendront chaque perte importante.":
+  n.episode<20?
+  "Les premières attaques bouleversent la vie des quartiers. CHAYAH protège, enquête et découvre le prix des décisions.":
+  n.episode<28?
+  "Les conséquences des combats, le deuil et les secrets des pactes modifient l'avenir de la ville.":
+  "La guerre gagne les cités voisines. Renforts, alliances, refus et preuves déterminent les différentes conclusions.";
  $("current-place").textContent=n.place;
  let sceneText=n.text;
  if(n.id==="s18"&&S.maileizStatus==="morte")sceneText="La ville enterre ses morts, dont MAILEIZ, tombée en sauvant une enfant. CHAYAH ne peut pas effacer les décisions de cette route. AETHER l'accompagne sans le décharger de sa responsabilité. Les quartiers cherchent comment vivre après la bataille.";
