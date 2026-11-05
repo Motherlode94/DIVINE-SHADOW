@@ -1,1 +1,133 @@
-const scenes={regard:{title:"LE REGARD QUI RESTE",lines:[["NARRATION","MAILEIZ retrouve CHAYAH au balcon, loin des voix de la réception. Dans la salle, SERAPHYRA détourne les yeux une seconde trop tard."],["MAILEIZ","« Je ne te demande pas de promettre l'éternité. Je te demande de ne pas fuir ma question. »"],["CHAYAH","« Je t'aime. C'est précisément pour cela que je ne veux pas te répondre à la légère. »"],["NARRATION","Derrière les portes, SERAPHYRA retrouve son sourire de cérémonie. Personne ne lui demande ce qu'elle pense."]]},promesse:{title:"DEUX DIVINITÉS, UNE PROMESSE",lines:[["AETHER","« Tu peux déplacer des étoiles, mais une conversation avec MAILEIZ te déstabilise ? »"],["CHAYAH","« Tu es censé être mon meilleur ami, pas mon juge. »"],["AETHER","« Justement. Je suis libre de te dire quand tu te trompes. »"],["NARRATION","CHAYAH esquisse un sourire. Entre eux, la contradiction n'a jamais eu besoin de détruire l'amitié."]]},cour:{title:"LA COUR DES SILENCES",lines:[["NARRATION","La cour divine s'illumine. SERAPHYRA salue MAILEIZ avec une politesse irréprochable."],["SERAPHYRA","« La soirée promet d'être... mémorable. »"],["MAILEIZ","« Je l'espère. Les cérémonies m'ennuient quand personne ne dit ce qu'il pense. »"],["NARRATION","AETHER perçoit la froideur de l'échange, sans en connaître la cause. CHAYAH arrive avant qu'un nouveau mot soit prononcé."]]}};const stage=document.querySelector("#scene-lines");function showEpisode(key){const scene=scenes[key];if(!scene)return;document.querySelector("#scene-title").textContent=scene.title;stage.replaceChildren(...scene.lines.map(([who,line])=>{const article=document.createElement("article"),speaker=document.createElement("strong"),p=document.createElement("p");speaker.textContent=who;p.textContent=line;article.append(speaker,p);return article}));document.querySelectorAll("[data-episode]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.episode===key)))}document.querySelectorAll("[data-episode]").forEach(button=>button.addEventListener("click",()=>{showEpisode(button.dataset.episode);document.querySelector("#episode-stage").scrollIntoView({behavior:"smooth",block:"start"})}));showEpisode("regard");const menu=document.querySelector("#menu"),links=document.querySelector("#links");menu.addEventListener("click",()=>{const open=links.classList.toggle("open");menu.setAttribute("aria-expanded",String(open))});links.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{links.classList.remove("open");menu.setAttribute("aria-expanded","false")}));
+/* DIVINE SHADOW — moteur de novela. Sauvegarde locale, décisions et conséquences. */
+(() => {
+ "use strict";
+ const book=window.DIVINE_NOVELA;
+ if(!book || !Array.isArray(book.episodes)) return;
+ const KEY="divine-shadow-non-dits-v2";
+ const initial=()=>({episode:0,node:book.episodes[0].start,stats:{maileiz:0,aether:0,seraphyra:0,trust:0,court:0},flags:[],completed:[],log:[],history:[],finished:false});
+ const el=id=>document.getElementById(id);
+ let state;
+ try{const loaded=JSON.parse(localStorage.getItem(KEY)||"null");state=loaded&&loaded.stats&&Number.isInteger(loaded.episode)&&book.episodes[loaded.episode]?.nodes[loaded.node]?{...initial(),...loaded}:initial()}catch{state=initial()}
+ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}};
+ const episode=()=>book.episodes[state.episode];
+ const node=()=>episode().nodes[state.node];
+ const clamp=n=>Math.max(-5,Math.min(5,n));
+ const metricLabels={maileiz:"Proximité avec MAILEIZ",aether:"Confiance d'AETHER",seraphyra:"Ouverture avec SERAPHYRA",trust:"Franchise",court:"Tension à la cour"};
+ const portraitFor=id=>book.actors[id]?.image?("./assets/"+encodeURIComponent(book.actors[id].image)):"";
+ function snapshot(){return JSON.parse(JSON.stringify({...state,history:[]}))}
+ function status(label){el("save-status").textContent=label;}
+ function renderEpisodes(){
+   document.querySelectorAll("[data-episode]").forEach((b,i)=>{
+     const unlocked=i<=state.episode || state.completed.includes(book.episodes[i].id) || state.finished;
+     b.disabled=!unlocked;
+     b.setAttribute("aria-disabled",String(!unlocked));
+     b.setAttribute("aria-current",String(i===state.episode));
+     b.querySelector(".ep-state").textContent=state.completed.includes(book.episodes[i].id)?"TERMINÉ":i===state.episode?(state.finished?"TERMINÉ":"EN COURS"):unlocked?"ACCESSIBLE":"VERROUILLÉ";
+   });
+ }
+ function renderStats(){
+   const panel=el("story-stats");panel.replaceChildren();
+   for(const [key,name] of Object.entries(metricLabels)){
+     const value=state.stats[key]||0;
+     const row=document.createElement("div");row.className="stat-row";
+     const title=document.createElement("span");title.textContent=name;
+     const score=document.createElement("strong");score.textContent=(value>0?"+":"")+value;
+     const meter=document.createElement("div");meter.className="stat-meter";
+     const fill=document.createElement("span");fill.style.width=(50+value*10)+"%";
+     fill.className=value<0?"negative":"positive";meter.append(fill);
+     row.append(title,score,meter);panel.append(row);
+   }
+ }
+ function narrativeSummary(){
+   const parts=[];
+   if(state.flags.includes("aveu"))parts.push("CHAYAH a exprimé son amour sans engagement forcé.");
+   else if(state.flags.includes("temps"))parts.push("CHAYAH a demandé du temps, sans garantir l'attente de MAILEIZ.");
+   else if(state.flags.includes("fuite"))parts.push("L'esquive de CHAYAH a fragilisé leur dialogue.");
+   if(state.flags.includes("enquete"))parts.push("CHAYAH et AETHER ont choisi une enquête discrète.");
+   else if(state.flags.includes("alerte"))parts.push("La cour a été prévenue avant toute preuve décisive.");
+   if(state.flags.includes("justice"))parts.push("Une enquête impartiale a été demandée.");
+   else if(state.flags.includes("silence"))parts.push("Le silence a repoussé les interrogations.");
+   else if(state.flags.includes("confrontation"))parts.push("La confrontation a intensifié les tensions.");
+   return parts;
+ }
+ function ending(){
+   const s=state.stats;
+   if(s.court>=3) return {title:"LA COUR FISSURÉE",text:"Les relations restent possibles, mais les tensions sont désormais visibles. Le prochain acte pourrait transformer une rumeur en conflit ouvert."};
+   if(s.trust>=3 && s.aether>=1) return {title:"LA VÉRITÉ D'ABORD",text:"Les personnages n'ont pas résolu tous leurs différends. Ils ont néanmoins préservé une méthode : écouter, vérifier et choisir sans imposer."};
+   if(s.maileiz<=-2) return {title:"LES MOTS MANQUANTS",text:"L'amour n'a pas disparu, mais la distance s'est installée. MAILEIZ refuse de suspendre sa vie aux hésitations d'un dieu."};
+   return {title:"L'ÉQUILIBRE FRAGILE",text:"Un avenir reste ouvert entre sentiments, loyautés et secrets. Rien n'est acquis, et aucun personnage n'a perdu sa liberté."};
+ }
+ function showFinal(){
+   const outcome=ending();el("final-heading").textContent=outcome.title;el("final-text").textContent=outcome.text;
+   const list=el("final-log");list.replaceChildren();
+   narrativeSummary().forEach(part=>{const li=document.createElement("li");li.textContent=part;list.append(li)});
+   el("final-screen").hidden=false;
+ }
+ function render(){
+   const ep=episode(),n=node();
+   renderEpisodes();renderStats();
+   el("stage-number").textContent="ÉPISODE "+ep.number;
+   el("scene-title").textContent=ep.title;
+   el("scene-subtitle").textContent=ep.subtitle;
+   const background=portraitFor(ep.background);
+   if(background)el("stage-backdrop").style.backgroundImage="linear-gradient(90deg,#0c0b12b8,#0c0b129e),url('"+background+"')";
+   const actor=book.actors[n.speaker]||book.actors.narration;
+   el("speaker").textContent=actor.name;
+   el("speaker").style.color=actor.color;
+   el("dialogue-text").textContent=n.text;
+   const image=el("actor-portrait");if(actor.image){image.src=portraitFor(n.speaker);image.alt="Portrait de "+actor.name;image.hidden=false}else{image.hidden=true;image.removeAttribute("src")}
+   const choices=el("scene-choices");choices.replaceChildren();
+   const next=el("scene-next");next.hidden=Boolean(n.choices||n.ending);
+   next.textContent="CONTINUER →";
+   if(n.choices){
+     n.choices.forEach((choice,i)=>{
+       const b=document.createElement("button");b.type="button";b.className="choice";
+       const label=document.createElement("strong");label.textContent=(i+1)+". "+choice.label;
+       const hint=document.createElement("span");hint.textContent=choice.hint||"";
+       b.append(label,hint);b.addEventListener("click",()=>makeChoice(choice));choices.append(b);
+     });
+   }
+   el("end-actions").hidden=!n.ending;el("scene-next").hidden=Boolean(n.choices||n.ending);
+   el("undo-choice").disabled=state.history.length===0 || state.finished;
+   el("final-screen").hidden=!state.finished;
+   el("episode-stage").dataset.ending=String(Boolean(n.ending));
+   if(state.finished)showFinal();
+   save();status("Progression sauvegardée sur cet appareil.");
+ }
+ function transition(target){if(!episode().nodes[target])return;state.node=target;render();}
+ function makeChoice(choice){
+   state.history.push(snapshot());
+   for(const [stat,delta] of Object.entries(choice.effects||{}))state.stats[stat]=clamp((state.stats[stat]||0)+delta);
+   for(const flag of choice.flags||[])if(!state.flags.includes(flag))state.flags.push(flag);
+   state.log.push({episode:episode().title,choice:choice.label,hint:choice.hint||""});
+   transition(choice.next);
+ }
+ function finishEpisode(){
+   const current=episode();
+   if(!state.completed.includes(current.id))state.completed.push(current.id);
+   if(state.episode>=book.episodes.length-1){state.finished=true;state.history=[];render();el("final-screen").scrollIntoView({behavior:"smooth",block:"start"});return}
+   state.episode+=1;state.node=episode().start;state.history=[];render();el("episode-stage").scrollIntoView({behavior:"smooth",block:"start"});
+ }
+ el("scene-next").addEventListener("click",()=>{const n=node();if(n.next)transition(n.next)});
+ el("episode-continue").addEventListener("click",finishEpisode);
+ el("undo-choice").addEventListener("click",()=>{const prior=state.history.pop();if(!prior)return;const history=state.history;state={...prior,history};render()});
+ document.querySelectorAll("[data-episode]").forEach((b,i)=>b.addEventListener("click",()=>{
+   if(i!==state.episode || state.finished){status("Termine le chapitre actuel pour avancer, ou recommence la saison pour changer un choix.");return}
+   el("episode-stage").scrollIntoView({behavior:"smooth",block:"start"});
+ }));
+ function restart(){state=initial();render();el("episode-stage").scrollIntoView({behavior:"smooth",block:"start"})}
+ el("restart-story").addEventListener("click",()=>{if(window.confirm("Recommencer la saison ? La progression et les décisions enregistrées seront effacées."))restart()});
+ el("restart-ending").addEventListener("click",restart);
+ el("ending-review").addEventListener("click",()=>{el("story-report").hidden=!el("story-report").hidden});
+ el("journal-toggle").addEventListener("click",()=>{
+   const panel=el("journal");panel.hidden=!panel.hidden;
+   const list=el("journal-list");list.replaceChildren();
+   if(!state.log.length){const li=document.createElement("li");li.textContent="Aucune décision enregistrée.";list.append(li)}
+   state.log.forEach(entry=>{const li=document.createElement("li");const title=document.createElement("strong");title.textContent=entry.episode;const detail=document.createElement("p");detail.textContent=entry.choice;li.append(title,detail);list.append(li)});
+   el("journal-toggle").setAttribute("aria-expanded",String(!panel.hidden));
+ });
+ const menu=el("menu"),links=el("links");
+ menu.addEventListener("click",()=>{const open=links.classList.toggle("open");menu.setAttribute("aria-expanded",String(open))});
+ links.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{links.classList.remove("open");menu.setAttribute("aria-expanded","false")}));
+ render();
+})();
