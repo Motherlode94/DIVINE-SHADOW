@@ -5,15 +5,15 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v5", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v6", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const initialResources=()=>Object.fromEntries(Object.entries(C.roster||{}).map(([id,actor])=>[id,actor.initial]));
-const fresh=mode=>({version:5,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
+const fresh=mode=>({version:6,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
- flags:[],log:[],battle:null,finished:false,ending:null,spent:0,maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
+ flags:[],log:[],battle:null,finished:false,ending:null,spent:0,fallen:[],grief:0,fury:0,defianceCount:0,lastDefiance:"",maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==5||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
+if(!S||S.version!==6||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -120,19 +120,48 @@ function criticalMaileiz(choice){
  S.maileizFate=outcome;
  log("CHOIX CRITIQUE — MAILEIZ : "+outcome.result+".");
 }
+function honorFallen(id){
+ if(!C.allies?.[id]||S.fallen.includes(id))return;
+ S.fallen.push(id);S.grief++;
+ S.fury=clamp(S.fury+18,0,100);
+ S.city=clamp(S.city-2,0,100);
+ S.npc[id]="tombé au cours du conflit";
+ log("DEUIL : "+C.allies[id].name+" a perdu la vie. Sa disparition est définitive dans cette continuité.");
+}
+function canDefy(scene,choice){
+ // CHAYAH ne désobéit pas arbitrairement : seulement quand le deuil a ébranlé sa maîtrise.
+ if(S.grief<3||S.fury<36||!scene.choices||scene.loss)return false;
+ return choice.defianceRisk===true || (S.grief>=7&&scene.id==="s15"&&choice.flags?.includes("ecouteFrere"));
+}
+function defyPlayer(scene,choice){
+ S.defianceCount++;
+ const original=choice.label;
+ const ex="CHAYAH refuse : « Non. Plus cette fois. » La mémoire de "+S.fallen.slice(-2).map(id=>C.allies[id]?.name).filter(Boolean).join(" et ")+" l'emporte sur son hésitation. Il agit seul, contre la décision proposée.";
+ S.lastDefiance=ex;
+ S.beat=ex+" Une vague écarlate fend la pierre ; les troupes ennemies reculent devant cette force déchaînée. AETHER tente de lui rappeler qu'une victoire sans limites n'est pas une justice.";
+ S.fury=clamp(S.fury-28,0,100);S.energy=clamp(S.energy-27,0,100);
+ S.trust=clamp(S.trust-2,-10,10);S.city=clamp(S.city-3,0,100);
+ S.intel=clamp(S.intel+2,0,30);
+ flag("chayahDefiance");
+ log("RUPTURE DE VOLONTÉ : CHAYAH a refusé le choix « "+original+" ». L'ennemi a subi sa fureur, mais la ville en paye le prix.");
+}
 function choose(choice){
  if(S.battle||S.finished)return;
  if(choice.requires&&!has(choice.requires))return;
  const current=C.scenes[S.index];const number=current.choices.indexOf(choice);
+ const override=canDefy(current,choice);
  S.beat=choice.after||choiceBeats[current.id]?.[number]||"Ce choix modifiera les réactions des autres personnages.";
+ if(current.loss)honorFallen(current.loss);
+ if(override)defyPlayer(current,choice);
  if(choice.critical)criticalMaileiz(choice);
- applyDelta(choice.delta);(choice.flags||[]).forEach(flag);
+ if(!override){applyDelta(choice.delta);(choice.flags||[]).forEach(flag);}else{flag("choiceOverridden"+current.id)}
  // En combat ou en secours, l'effort des mortels réduit leur Force.
  if(current.id==="s01"&&number===0)spendForce("maileiz",8);
  if(current.id==="s03")spendForce("maileiz",number===0?18:26);
  if(current.id==="s04")spendForce("general",12);
  if(current.id==="s07"&&S.maileizStatus!=="morte")restoreForce("maileiz",12);
- advanceClock(1);log("CHAYAH : "+choice.label);
+ advanceClock(1);
+ log(override?"CHAYAH agit selon sa propre volonté.":"CHAYAH : "+choice.label);
  if(has("evacuation")&&current.id==="s02")S.civiliansSaved+=20;
  if(has("couloir")&&current.id==="s03")S.civiliansSaved+=12;
  if(has("barricades")&&current.id==="s04")S.npc.general="défend la porte avec les gardes";
@@ -311,7 +340,7 @@ function render(){
  "Frère aux pactes : "+(has("ecouteFrere")?"entendu":has("sceauBrise")?"sceau brisé":"mystère ouvert")
  ];points.forEach(x=>{const li=document.createElement("li");li.textContent=x;clues.append(li)});
  const relations=$("relation-list");relations.replaceChildren();
- const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense};
+ const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense,DEUIL:S.grief,FUREUR:S.fury,DÉSOBÉISSANCES:S.defianceCount};
  Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
  const list=$("character-list");if(list){
   list.replaceChildren();
