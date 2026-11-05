@@ -62,9 +62,20 @@ for(let a=0;a<arcs.length;a++){
     ];
   }
   let third,after;
-  const battle=Boolean(arc.enemy&&(j===4||j===9||j===13));
+  const selectedBattles={
+ 45:"legion",50:"legion",
+ 60:"beasts",66:"beasts",70:"legion",
+ 80:"cursed",84:"cursed",
+ 105:"cursed",112:"cursed",115:"cursed",
+ 119:"legion",122:"beasts",124:"cursed",126:"legion",129:"legion",
+ 143:"cursed",144:"cursed",
+ 150:"ancien",
+ 169:"beasts"
+ };
+ const battleEnemy=selectedBattles[ep];
+ const battle=Boolean(battleEnemy);
   if(battle){
-   third={...common,id:id+"-bataille",place:place+" — attaque",who:"NARRATEUR",text:"Des escouades ennemies attaquent sous le commandement de généraux. Les civils cherchent refuge. CHAYAH choisit ses attaques et ses défenses, chaque capacité consommant de l'énergie et risquant d'endommager son corps.",battle:{enemy:arc.enemy,turnLimit:11,next:null}};
+   third={...common,id:id+"-bataille",place:place+" — attaque",who:"NARRATEUR",text:hook+" La tension s'embrase: des formations ennemies attaquent la position, chacune sous un commandement. CHAYAH doit choisir quand attaquer ou se faire bouclier pour protéger les mortels. Chaque technique consomme de l'énergie et peut blesser son corps immortel.",battle:{enemy:battleEnemy,turnLimit:11,next:null}};
    after={...common,id:id+"-apres",place:place+" — conséquences",who:arc.who,text:"Les formations se replient. Les survivants doivent encore secourir leurs camarades; une victoire ne fait pas revivre les morts.",choices:[
     co("Soigner les blessés des deux camps.","Préserver des vies après la bataille.",{city:2,trust:1},[id+"-soin"],"SELMA et les secours prennent les blessés en charge."),
     co("Préserver les preuves et sécuriser les routes.","Empêcher une nouvelle attaque.",{intel:2,defense:1},[id+"-preuve"],"Les éclaireurs isolent les sceaux et consignent les ordres ennemis.")
