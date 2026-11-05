@@ -160,7 +160,7 @@ function respondToCity(reqId,accept){
  const r=C.war.requests.find(x=>x.id===reqId);if(!r||S.aidDecisions[r.id])return;
  const target=S.cityStates[r.city],city=C.war.cities[r.city];
  const cost=Math.min(S.troops,r.units);
- S.aidDecisions[r.id]=accept?"accepted":"refused";
+ S.aidDecisions[r.id]=accept?(cost>=r.units?"accepted":"partial"):"refused";
  if(accept){
    const adequate=cost>=r.units,shortfall=r.units-cost;
    S.troops=clamp(S.troops-cost,0,16);
@@ -408,7 +408,7 @@ function render(){
  "Progression des assaillants : "+S.enemyAdvance,
  "Alliés tombés : "+S.fallen.length+" / 15",
  "Renforts disponibles : "+S.troops,
- "Appels acceptés : "+Object.values(S.aidDecisions).filter(x=>x==="accepted").length+" / "+(C.war?.requests?.length||0)
+ "Renforts complets : "+Object.values(S.aidDecisions).filter(x=>x==="accepted").length+" / "+(C.war?.requests?.length||0)+", partiels : "+Object.values(S.aidDecisions).filter(x=>x==="partial").length
  ];objectivesText.forEach(x=>{const li=document.createElement("li");li.textContent=x;objectives.append(li)});
  const clues=$("clue-list");clues.replaceChildren();const points=[
  "Porte : "+(has("barricades")?"fortifiée":has("alertePrecoce")?"alerte avancée":"vulnérable"),
