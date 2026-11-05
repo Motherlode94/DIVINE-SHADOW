@@ -201,3 +201,14 @@ Le dépôt est également compatible avec un hébergement statique équivalent.
 Ambiance dark fantasy cinématique : fond obsidienne, portraits détaillés, typographie forte et couleurs propres à chaque identité. Les nouveaux personnages doivent avoir des **visages, silhouettes, âges apparents, origines visuelles, costumes et attitudes distincts**, sans répétition mécanique des mêmes traits.
 
 **Principe de gouvernance :** le créateur du projet décide du canon, des illustrations officielles et de toute modification de personnage.
+
+
+## Population originale — 40 habitants
+
+La page d’accueil présente désormais une section **Peuples & civils** (`#peuples`) avec quarante habitants de la planche d’origine : personnes africaines, arabes, hispaniques/latino-américaines, asiatiques, européennes et personnages des peuples fantastiques. Les filtres permettent de consulter chaque origine sans en déduire une allégeance ou un niveau de pouvoir.
+
+**MARIN** est le père adoptif de CHAYAH, agriculteur africain bantou et **légataire de la Mère**. Cette relation canonique est présentée séparément en haut de la galerie. Les portraits principaux de CHAYAH, AETHER, MAILEIZ et des autres personnages validés restent inchangés.
+
+- `site-population-data.js` : personnages, métiers, origines et relation familiale de MARIN.
+- `site-population.js` : cartes de galerie, filtres et coordonnées des quarante vignettes.
+- `assets/population/population-atlas.webp` : atlas optimisé issu de la planche originale, utilisé comme source des portraits. L’atlas est une prévisualisation compressée : des portraits haute définition individuels seront nécessaires pour une qualité d’affichage maximale.
