@@ -7,3 +7,7 @@
 .chayah .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.25),transparent 55%),url('./assets/chayah-portrait.svg');background-size:cover;background-position:center}
 .aether .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.25),transparent 55%),url('./assets/aether-portrait.svg');background-size:cover;background-position:center}
 .aether .character-art .figure,.aether .character-art .orb{display:none}
+
+/* Portraits cinématiques exacts — remplacer les SVG provisoires après dépôt des PNG */
+.chayah .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/chayah-exact-capture.png')}
+.aether .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.20),transparent 55%),url('./assets/aether-exact-capture.png')}
