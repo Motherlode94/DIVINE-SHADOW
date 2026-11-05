@@ -60,6 +60,12 @@
 5. **Images avec texte intégré :** le CSS ne supprime pas le lettrage déjà inscrit dans un PNG. Une version de l'illustration sans texte est préférable à un recadrage excessif ; une image d'origine peu définie ne gagne pas en netteté par simple agrandissement.
 6. **Versionnement du cache :** actualiser les références CSS/JS dans les pages concernées après une modification afin d'éviter l'affichage d'anciens fichiers.
 
+## Portraits des antagonistes : sources et versions sans texte
+
+Les affiches d'origine `vaelkor_portrait.png`, `nyssara_portrait.png` et `orvann_portrait.png` sont conservées dans `assets/` à titre d'archives. Les cartes et fiches utilisent désormais **`vaelkor_clean.png`**, **`nyssara_clean.png`** et **`orvann_clean.png`** : recadrages sans texte de ces mêmes images, sans changement des visages.
+
+Le script `scripts/clean-antagonist-portraits.py` produit les trois variantes à partir des sources par découpe identique de la partie inférieure contenant le lettrage. Le workflow GitHub Actions `.github/workflows/clean-antagonist-portraits.yml` exécute ce traitement lors de la modification du script ou des affiches et enregistre les résultats dans GitHub. **Ne pas remplacer les PNG propres par les affiches titrées** dans `index.html` ou `profile.js`.
+
 ## Lancer en local
 
 Le site utilise **HTML, CSS et JavaScript natifs**, sans compilation, dépendance npm ni étape de build.
