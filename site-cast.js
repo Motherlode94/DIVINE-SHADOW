@@ -12,10 +12,14 @@ let selected="allies";
 function itemCard(item,category,index){
  const article=document.createElement("article");article.className="cast-item";article.dataset.category=category;
  const art=document.createElement("div");art.className="cast-item-art "+(category==="enemy"?"cast-enemy":category==="civic"?"cast-civic":"cast-ally");
- const crest=document.createElement("span");crest.className="cast-crest";crest.textContent=category==="enemy"?"✦":category==="civic"?"◆":"◇";crest.setAttribute("aria-hidden","true");
- const initials=document.createElement("span");initials.className="cast-initials";initials.textContent=item.name.replace(/^(LE |LA |GÉNÉRAL |GÉNÉRALE |PRÉLAT )/,"").split(/\s+/).map(s=>s[0]).filter(Boolean).slice(0,2).join("").toUpperCase();initials.setAttribute("aria-hidden","true");
- const note=document.createElement("small");note.textContent="PORTRAIT OFFICIEL À DÉFINIR";
- art.append(crest,initials,note);
+ if(typeof window.DS_renderPose==="function"){
+  art.innerHTML=window.DS_renderPose(item,category);
+ }else{
+  const fallback=document.createElement("p");fallback.textContent="Illustration en préparation";art.append(fallback);
+ }
+ const artLabel=document.createElement("small");artLabel.className="cast-art-note";
+ artLabel.textContent="ILLUSTRATION DE POSTURE — CONCEPT";
+ art.append(artLabel);
  const body=document.createElement("div");body.className="cast-item-body";
  const label=document.createElement("span");label.className="cast-item-meta";label.textContent=category==="enemy"?"COMMANDANT / CONSPIRATEUR":category==="civic"?"VIE DE LA CITÉ":"ALLIÉ / "+(item.entry?"ENTRÉE ÉP. "+String(item.entry).padStart(2,"0"):"NOVELA");
  const heading=document.createElement("h3");heading.textContent=item.name;
