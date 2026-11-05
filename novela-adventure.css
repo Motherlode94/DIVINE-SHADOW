@@ -176,3 +176,12 @@
 @keyframes battle-pulse{0%,100%{transform:rotate(-19deg) scale(.8);opacity:.4}50%{transform:rotate(-19deg) scale(1.22);opacity:1}}
 @keyframes battle-sweep{from{transform:translateX(-60px)}to{transform:translateX(60px)}}
 @media(prefers-reduced-motion:reduce){.battle-flare,.battle-ring,.battle-spark{animation:none}}
+
+/* Fenêtre de statut isekai — niveaux non dévoilés et compétences réellement liées au gameplay. */
+.divinity-status-list{display:grid;gap:12px}
+.isekai-status{padding:18px;border:1px solid #9474c384;background:linear-gradient(125deg,#1d1730,#110f1d);box-shadow:inset 0 1px #ffffff12;display:grid;gap:12px}
+.isekai-status-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #d7b7f83e;padding-bottom:10px}
+.isekai-status-header strong{font-size:17px;letter-spacing:.025em}
+.isekai-status-header span{font:800 11px/1.4 monospace;color:#d7b3ef;background:#30203e;padding:7px 9px;border:1px solid #8a659d55}
+.isekai-status p{font-size:12px;line-height:1.75;color:#e0d0e7;margin:0}
+.isekai-status .isekai-attributes{font-family:monospace;line-height:2;color:#bdacde;word-spacing:3px}
