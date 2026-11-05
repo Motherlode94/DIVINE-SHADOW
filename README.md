@@ -77,6 +77,17 @@ Le joueur peut choisir **Frappe ciblée, Void Step, Garde, Contre d'appui, Rempa
 - Les effets de scène (impacts, anneaux d'énergie, mouvements) sont des animations CSS stylisées. Il ne s'agit **pas de séquences vidéo animées** ou de chorégraphies 3D.
 - La sauvegarde passe à `divine-shadow-campaign-v8` pour ne pas mélanger les anciennes parties sans gestion des blessures.
 
+### Fenêtre de statut isekai et compétences
+
+Le menu **Informations → Personnages → Statut — Divinités** présente un affichage inspiré des RPG isekai : **LVL, rang, classe, titre, PV, PM, caractéristiques (FOR, END, AGI, MAG, RES, PER) et liste de compétences**. Les valeurs non établies sont marquées **???**, pas inventées. **Le niveau n'est pas la réserve de PM, et la réserve de PM n'est pas la puissance totale**.
+
+- **CHAYAH** : immortalité confirmée ; pouvoirs partiels de modification du réel, Void Step, sceau et rempart. Son potentiel véritable reste caché.
+- **AETHER** : analyse des lois et matérialisation de constructions d'énergie. En combat, l'**Analyse des lois** affaiblit la cible et fournit du renseignement pour **15 PM d'AETHER** ; la **Construction d'énergie** blesse et gêne la formation adverse pour **24 PM d'AETHER**.
+- **SERAPHYRA** : pouvoir non officiellement fixé, donc aucune compétence magique arbitraire n'est ajoutée.
+- **MAILEIZ** : **mortelle**, mais possède **Pyro-Genesis**, utilisable lors de combats où elle est présente : attaque de flammes et suppression pour **28 points de Force**. Son pouvoir ne lui confère pas l'immortalité.
+
+Ces aptitudes ont des effets de jeu concrets et des coûts propres à chaque personnage. L'interface est un prototype de système de statut, et non un classement canonique des divinités.
+
 ### Mécaniques et conséquences
 
 - **CHAYAH** est le protagoniste principal ; son HUD conserve la **Vitalité** et la **Puissance divine** visibles.
