@@ -252,7 +252,9 @@ function battleTurn(action){
  counter:"Il attend le dernier instant, détourne la lame et frappe en retour. L'élan ennemi lui tord le poignet.",
  ward:"Un rempart translucide jaillit entre la colonne et les habitants. La surface résiste ; l'onde de retour traverse les côtes de CHAYAH.",
  fury:"Sa colère fend la poussière en une onde écarlate contrôlée. Le sol vibre, les ennemis reculent, mais CHAYAH refuse de libérer ce qui sommeille en lui.",
- shadowBind:"AETHER frappe le sol de sa paume. Les ombres des assaillants se soudent en chaînes vivantes ; leurs jambes cèdent sous l'entrave. CHAYAH profite de l'ouverture sans prétendre contrôler le pouvoir de son ami.",
+ energyConstruct:"AETHER observe la forme du choc, puis matérialise une structure d’énergie devant les assaillants. Des lignes lumineuses s’assemblent et se referment sur leur formation.",
+ lawAnalysis:"Le regard d’AETHER suit les lignes du phénomène. Il repère une faille dans la loi qui soutient la défense ennemie et transmet son analyse à CHAYAH.",
+ pyroGenesis:"MAILEIZ avance et fait jaillir des flammes de ses paumes. La chaleur repousse la première ligne. Elle halète : sa puissance ne lui accorde aucune immortalité.",
   parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
  };
  if(action==="strike"){damage=22-fatigue;S.energy=clamp(S.energy+4,0,100)}
@@ -267,14 +269,27 @@ function battleTurn(action){
   S.fury=clamp(S.fury-32,0,100);S.trust=clamp(S.trust-1,-10,10);
   log("RAGE CONTENUE : puissance non révélée ; dégâts et contrecoup physiques.");
  }
- if(action==="shadowBind"){
-  const available=S.resources.aether??0;
-  if(available<24)return;
-  S.resources.aether=clamp(available-24,0,100);
-  damage=Math.max(4,13-fatigue);b.weak=2;
+ if(action==="energyConstruct"){
+  if((S.resources.aether??0)<24)return;
+  S.resources.aether=clamp(S.resources.aether-24,0,100);
+  damage=Math.max(4,15-fatigue);b.weak=2;
   S.aether=clamp(S.aether+1,-10,10);
-  S.beat="AETHER étire l'ombre des soldats en filaments noirs. Chaque mouvement adverse tend les liens jusqu'à ralentir la charge. Le sort absorbe sa propre énergie divine, pas celle de CHAYAH.";
-  log("AETHER — NEXUS UMBRA : -24 PM pour AETHER, entrave et dégâts, deux tours de faiblesse.");
+  log("AETHER — CONSTRUCTION ÉNERGÉTIQUE : -24 PM, impact et entrave de formation.");
+ }
+ if(action==="lawAnalysis"){
+  if((S.resources.aether??0)<15)return;
+  S.resources.aether=clamp(S.resources.aether-15,0,100);
+  b.weak=2;S.intel=clamp(S.intel+1,0,30);
+  log("AETHER — ANALYSE DES LOIS : -15 PM, faiblesse révélée et renseignement supplémentaire.");
+ }
+ if(action==="pyroGenesis"){
+  if(S.maileizStatus==="morte"||(S.resources.maileiz??0)<28)return;
+  S.resources.maileiz=clamp(S.resources.maileiz-28,0,100);
+  damage=18;b.weak=1;
+  S.maileiz=clamp(S.maileiz+1,-10,10);
+  // Le coût de Pyro-Genesis concerne une mortelle : sa fatigue et son corps.
+  S.health=clamp(S.health,0,100);
+  log("MAILEIZ — PYRO-GENESIS : -28 Force. Elle canalise les flammes malgré son épuisement physique.");
  }
  if(action==="retreat"){outcome("retreat");return}
  if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
@@ -427,7 +442,13 @@ function render(){
    button("REMPART DIVIN","Protéger les civils. Coût 23 : choc absorbé par CHAYAH.",()=>battleTurn("ward"),S.energy<23),
    button("SCEAU DU RÉEL","Sceau de ralentissement : 26 énergie et 5 vitalité.",()=>battleTurn("seal"),S.energy<26),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
-   ...(n.episode>=14&&n.episode<=38?[button("AETHER — NEXUS UMBRA","Entrave des ombres : dégâts et affaiblissement. Consomme 24 PM d'AETHER.",()=>battleTurn("shadowBind"),(S.resources.aether??0)<24)]:[]),
+   ...(n.episode>=14&&n.episode<=38?[
+    button("AETHER — CONSTRUCTION D'ÉNERGIE","Structure énergétique : dégâts et entrave. -24 PM d’AETHER.",()=>battleTurn("energyConstruct"),(S.resources.aether??0)<24),
+    button("AETHER — ANALYSE DES LOIS","Identifie la faiblesse ennemie. -15 PM d’AETHER.",()=>battleTurn("lawAnalysis"),(S.resources.aether??0)<15)
+   ]:[]),
+   ...(n.episode>=14&&n.episode<=19&&S.maileizStatus!=="morte"?[
+    button("MAILEIZ — PYRO-GENESIS","Flammes et suppression. Consomme 28 Force de MAILEIZ.",()=>battleTurn("pyroGenesis"),(S.resources.maileiz??0)<28)
+   ]:[]),
    button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
    ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
   );
