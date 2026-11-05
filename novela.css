@@ -48,3 +48,8 @@
 @media(max-width:1050px){.reading-layout{grid-template-columns:1fr}.story-sidebar{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:800px){.episode-list,.novela-principles{grid-template-columns:1fr}.novela-hero{min-height:550px;padding:125px 24px 65px}.chapter-top{align-items:start;flex-direction:column}.save-box{align-items:start}.dialogue-stage{grid-template-columns:1fr;margin:22px 15px 15px}.character-frame{min-height:180px;max-height:180px}.character-frame img{object-position:center 26%}.scene-heading{padding:15px 19px}.stage-top{padding:22px 19px}.story-sidebar{grid-template-columns:1fr}.episode-card{min-height:130px}.text-frame{padding:20px}.novela-stage{min-height:550px}}
 @media(prefers-reduced-motion:reduce){.choice,.episode-card,.stat-meter span{transition:none}}
+
+/* Narration sans personnage affiché : pas d'espace portrait vide. */
+.dialogue-stage.narration-only{grid-template-columns:minmax(0,1fr)}
+.dialogue-stage.narration-only .character-frame{display:none}
+@media(max-width:800px){.dialogue-stage.narration-only .text-frame{min-height:220px}}
