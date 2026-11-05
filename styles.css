@@ -65,3 +65,32 @@
 
 .people .character .portrait-photo{object-position:center top}
 .people .character .char-content h3 em{font-size:clamp(25px,2.1vw,36px);overflow-wrap:break-word}
+
+/* Casting étendu : personnages secondaires effectivement présents dans la Novela. */
+.expanded-cast-section{background:radial-gradient(circle at 15% 15%,#3b23304a,transparent 40%),#0e0c13}
+.expanded-cast-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:12px 0 18px}
+.expanded-cast-count{font-size:12px;letter-spacing:.1em;color:#bcb0c4;text-transform:uppercase}
+.expanded-cast-head .explore{font-size:11px;white-space:normal}
+.expanded-cast-filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:26px}
+.expanded-cast-filters button{background:#201923;border:1px solid #ffffff38;color:#e5d7e4;padding:14px 19px;font-size:12px;font-weight:800;cursor:pointer;transition:border-color .2s,background .2s}
+.expanded-cast-filters button:hover{border-color:#d76a87}
+.expanded-cast-filters button.selected,.expanded-cast-filters button[aria-pressed=true]{background:#60253a;border-color:#e0698c;color:white}
+.expanded-cast-filters button:focus-visible{outline:2px solid #ff94b0;outline-offset:3px}
+.expanded-cast-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px}
+.cast-item{display:flex;flex-direction:column;min-width:0;background:#17121a;border:1px solid #ffffff29;overflow:hidden}
+.cast-item-art{height:165px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;gap:5px}
+.cast-ally{background:radial-gradient(circle at 50% 40%,#82503d80,transparent 60%),linear-gradient(145deg,#251c20,#0d0b12)}
+.cast-civic{background:radial-gradient(circle at 50% 40%,#3d709080,transparent 60%),linear-gradient(145deg,#18232a,#0c0c14)}
+.cast-enemy{background:radial-gradient(circle at 50% 40%,#922d4880,transparent 60%),linear-gradient(145deg,#281219,#0e0911)}
+.cast-crest{position:absolute;inset:10px auto auto 14px;font:28px Georgia,serif;color:#ffffff78}
+.cast-initials{font:900 clamp(60px,6vw,100px)/1 Georgia,serif;letter-spacing:-.09em;color:#ffffffbb;text-shadow:0 4px 25px #000b}
+.cast-item-art small{font-size:9px;letter-spacing:.15em;color:#ffffffab}
+.cast-item-body{padding:19px;display:flex;flex-direction:column;align-items:start;gap:9px;flex:1}
+.cast-item-meta{color:#df819c;font-size:10px;font-weight:850;letter-spacing:.12em}
+.cast-item-body h3{font-size:clamp(23px,2.4vw,35px);line-height:1.07;letter-spacing:-.02em;overflow-wrap:anywhere;margin:0}
+.cast-item-body>strong{font-size:12px;color:#e4c2ce}
+.cast-item-body p{color:#c3b8c5;font-size:12px;line-height:1.7;flex:1;margin:0}
+.cast-story{font-size:10px;letter-spacing:.05em;color:#ad98aa;border-top:1px solid #ffffff20;width:100%;padding-top:12px}
+@media(max-width:720px){.expanded-cast-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cast-item-art{height:130px}.cast-item-body{padding:13px}.cast-item-body h3{font-size:22px}.expanded-cast-filters button{padding:12px;font-size:11px}}
+@media(max-width:420px){.expanded-cast-grid{grid-template-columns:1fr}.cast-item-art{height:160px}.cast-item-body h3{font-size:28px}}
+@media(prefers-reduced-motion:reduce){.expanded-cast-filters button{transition:none}}
