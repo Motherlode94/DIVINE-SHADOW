@@ -47,3 +47,6 @@
 @media(max-width:850px){.profile-intro h1.long-subtitle em{font-size:clamp(27px,6vw,42px)}}
 
 .profile-visual img{object-position:center top}
+
+/* Mobile : un cadre uniforme au format des portraits propres, sans recadrage latéral excessif. */
+@media(max-width:850px){.profile-visual{min-height:0;aspect-ratio:724/520}.profile-visual img{object-position:center top}}
