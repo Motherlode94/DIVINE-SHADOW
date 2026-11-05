@@ -78,6 +78,10 @@ python -m http.server 8000
 
 Puis ouvrir `http://localhost:8000`.
 
+### Portraits des antagonistes
+
+VAELKOR, NYSSARA et ORVANN utilisent désormais les portraits recadrés **sans bande typographique** : `assets/vaelkor_clean.png`, `assets/nyssara_clean.png` et `assets/orvann_clean.png`. Ces fichiers sont les images réellement utilisées dans `index.html` et `profile.js` ; les originaux `*_portrait.png` sont conservés à titre de source. Il n'est plus nécessaire d'utiliser un traitement de recadrage JavaScript ou des réglages de taille propres aux antagonistes.
+
 ## Vérifications avant publication
 
 - Confirmer la présence des images référencées dans `assets/`, avec leurs noms et leur casse exacts.
