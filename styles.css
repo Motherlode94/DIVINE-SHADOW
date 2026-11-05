@@ -26,3 +26,9 @@
 /* Correction : un seul portrait par carte, aucun carrelage d'image */
 .chayah .character-art,.aether .character-art{background-repeat:no-repeat;background-size:cover;background-position:center center}
 .chayah .character-art .art-caption,.aether .character-art .art-caption{display:none}
+
+/* Portraits féminins fournis et présents dans le dépôt GitHub */
+.maileiz .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.18),transparent 60%),url("./assets/Guerri%C3%A8re%20de%20feu%20dans%20les%20ruines%20en%20flammes.png");background-size:cover;background-position:center 30%;background-repeat:no-repeat;display:block}
+.seraphyra .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.18),transparent 60%),url("./assets/Image%20ChatGPT%205%20nov.%202026%2C%2017_14_06.png");background-size:cover;background-position:center 30%;background-repeat:no-repeat;display:block}
+.maileiz .character-art .maileiz-sigil,.seraphyra .character-art .seraphyra-sigil{display:none}
+.maileiz .character-art .art-caption,.seraphyra .character-art .art-caption{display:none}
