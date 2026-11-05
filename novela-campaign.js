@@ -5,15 +5,15 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v7", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v8", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const initialResources=()=>Object.fromEntries(Object.entries(C.roster||{}).map(([id,actor])=>[id,actor.initial]));
-const fresh=mode=>({version:7,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
+const fresh=mode=>({version:8,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
- flags:[],log:[],battle:null,finished:false,ending:null,spent:0,fallen:[],grief:0,fury:0,defianceCount:0,cityStates:Object.fromEntries(Object.entries(C.war?.cities||{}).map(([id,c])=>[id,{trust:c.trust,threat:c.threat,security:c.strength,alignment:c.alignment}])),aidDecisions:{},troops:8,warInfluence:0,provenPatrons:0,lastDefiance:"",maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
+ flags:[],log:[],battle:null,finished:false,ending:null,spent:0,injuryLevel:0,injuryNotes:[],battleTone:'idle',fallen:[],grief:0,fury:0,defianceCount:0,cityStates:Object.fromEntries(Object.entries(C.war?.cities||{}).map(([id,c])=>[id,{trust:c.trust,threat:c.threat,security:c.strength,alignment:c.alignment}])),aidDecisions:{},troops:8,warInfluence:0,provenPatrons:0,lastDefiance:"",maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==7||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
+if(!S||S.version!==8||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -242,46 +242,64 @@ function outcome(kind){
 }
 function battleTurn(action){
  const b=S.battle;if(!b||S.finished)return;
- const e=C.enemies[b.enemy];let damage=0,guard=false,dodge=false;
- if(action==="strike"){damage=20+((b.turn*3)%5);S.energy=clamp(S.energy+6,0,100)}
- if(action==="void"){if(S.energy<18)return;S.energy-=18;damage=29;dodge=true}
- if(action==="seal"){if(S.energy<25)return;S.energy-=25;damage=18;b.weak=2}
- if(action==="guard"){guard=true;S.energy=clamp(S.energy+14,0,100)}
- if(action==="fury"&&S.grief>=3&&S.fury>=32){
-  damage=48+Math.min(22,S.grief*2);
-  S.fury=clamp(S.fury-32,0,100);
-  S.energy=clamp(S.energy-24,0,100);
-  S.trust=clamp(S.trust-1,-10,10);
-  S.city=clamp(S.city-2,0,100);
-  log("FUREUR TRANSCENDANTE : les défenses ennemies se brisent, mais la violence déstabilise la cité.");
+ const e=C.enemies[b.enemy];let damage=0,guard=false,dodge=false,recoil=0,cost=0;
+ const fatigue=Math.min(12,S.injuryLevel*2);
+ const narrative={
+ strike:"CHAYAH glisse au ras des pavés. Ses talons arrachent des étincelles et sa frappe percute la ligne des boucliers. Le choc traverse la place comme un coup de tonnerre.",
+ void:"Le monde semble perdre une image. CHAYAH réapparaît derrière les lances, mais le déplacement laisse un goût de sang au fond de sa gorge.",
+ guard:"Il se campe devant ses alliés. Des impacts font trembler ses épaules ; protéger n'a jamais voulu dire ne rien ressentir.",
+ seal:"Des glyphes s'enroulent autour de son avant-bras et ralentissent la charge. La chaleur surnaturelle lui déchire la peau.",
+ counter:"Il attend le dernier instant, détourne la lame et frappe en retour. L'élan ennemi lui tord le poignet.",
+ ward:"Un rempart translucide jaillit entre la colonne et les habitants. La surface résiste ; l'onde de retour traverse les côtes de CHAYAH.",
+ fury:"Sa colère fend la poussière en une onde écarlate contrôlée. Le sol vibre, les ennemis reculent, mais CHAYAH refuse de libérer ce qui sommeille en lui.",
+ parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
+ };
+ if(action==="strike"){damage=22-fatigue;S.energy=clamp(S.energy+4,0,100)}
+ if(action==="void"){cost=19;if(S.energy<cost)return;damage=27-fatigue;dodge=true;recoil=3}
+ if(action==="seal"){cost=26;if(S.energy<cost)return;damage=17-fatigue;b.weak=2;recoil=5}
+ if(action==="guard"){guard=true;S.energy=clamp(S.energy+8,0,100)}
+ if(action==="counter"){cost=9;if(S.energy<cost)return;damage=24-fatigue;guard=true;recoil=5}
+ if(action==="ward"){cost=23;if(S.energy<cost)return;damage=6;guard=true;recoil=7;S.city=clamp(S.city+1,0,100)}
+ if(action==="fury"){
+  if(S.grief<3||S.fury<32||S.energy<29)return;
+  cost=29;damage=Math.max(10,Math.min(38,29+S.grief)-fatigue);recoil=13;
+  S.fury=clamp(S.fury-32,0,100);S.trust=clamp(S.trust-1,-10,10);
+  log("RAGE CONTENUE : puissance non révélée ; dégâts et contrecoup physiques.");
  }
  if(action==="retreat"){outcome("retreat");return}
- if(action==="parley"){
-  if(b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
-  b.last="Le capitaine refuse l'offre : il maintient ses ordres. L'ombre ne peut pas négocier.";
- }
+ if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
+ S.energy=clamp(S.energy-cost,0,100);
+ damage=Math.max(0,damage);
  b.hp=clamp(b.hp-Math.max(0,damage-e.armor),0,b.max);
- if(b.hp===0){outcome("win");return}
- // Humains : chaque attaque dépense de la Force et la fatigue réduit l'efficacité.
- if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
- let blow=e.damage+(b.turn%2?2:0);
- if(e.resource==="force"&&b.force<30)blow=Math.max(3,blow-5);
- if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
- if(dodge){blow=0;b.last="VOID STEP : CHAYAH échappe à la riposte."}
- if(guard){blow=Math.ceil(blow*.25);b.last="La garde absorbe presque toute l'attaque."}
- if(!guard&&!dodge&&action!=="parley")b.last="L'ennemi riposte après "+Math.max(0,damage-e.armor)+" dégâts reçus.";
- S.health=clamp(S.health-blow,0,100);
- S.spent++;
- advanceClock(1);
+ let blow=0;
+ if(b.hp>0){
+  if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
+  blow=e.damage+(b.turn%2?2:0);
+  if(e.resource==="force"&&b.force<30)blow=Math.max(3,blow-5);
+  if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
+  if(dodge)blow=0;
+  if(guard)blow=Math.ceil(blow*(action==="ward"?.18:action==="counter"?.45:.27));
+ }
+ const physical=blow+recoil;S.health=clamp(S.health-physical,0,100);
+ if(physical>=11){
+  S.injuryLevel=clamp(S.injuryLevel+(physical>=25?2:1),0,8);
+  S.injuryNotes.unshift((physical>=25?"Fracture et tissu déchiré":"Contusion profonde")+" — "+(action==="ward"?"contrecoup du rempart":action==="seal"?"sceau divin":"attaque ennemie"));
+  S.injuryNotes=S.injuryNotes.slice(0,8);
+  log("BLESSURE : le corps immortel de CHAYAH conserve ses lésions.");
+ }
+ b.last=(narrative[action]||"Les deux camps hésitent.")+" "+(physical>0?"La riposte frappe son corps. Immortel, il saigne et vacille sans mourir.":"L'adversaire manque sa cible.")+" "+(S.injuryLevel>=3?"Ses anciennes blessures limitent désormais sa vitesse.":"");
+ S.beat=b.last;S.battleTone=action==="ward"?"defense":action==="fury"?"fury":action==="void"?"speed":physical>=15?"impact":"attack";
+ S.spent++;advanceClock(1);
+ if(b.hp<=0){outcome("win");return}
  const prepared=S.defense+(has("barricades")?5:0);
  const attrition=Math.max(0,Math.ceil((b.turn+S.enemyAdvance)/3)-(prepared>=5?2:0));
  if(b.enemy==="raider"){S.city=clamp(S.city-attrition,0,100);if(attrition>=2)S.injuries++}
  if(b.enemy==="shade")S.energy=clamp(S.energy-3,0,100);
  b.turn++;
- if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("L’ennemi a atteint son objectif avant d’être arrêté : la défense doit décrocher.");outcome("retreat");return;}
+ if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("L'ennemi gagne du terrain ; les défenseurs doivent décrocher.");outcome("retreat");return}
  if(S.health===0){
-  if(S.mode==="ruthless"){S.finished=true;S.ending="defeat";S.injuries+=6;log("CHAYAH est neutralisé ; la ville affronte l'attaque sans lui.");S.battle=null;render();return}
-  S.health=38;S.energy=35;S.injuries+=3;flag("blessureDurable");log("La garde recueille CHAYAH. La défaite coûte du temps, et des civils sont blessés.");outcome("retreat");return;
+  if(S.mode==="ruthless"){S.finished=true;S.ending="defeat";S.injuries+=6;S.battle=null;log("CHAYAH EST NEUTRALISÉ, NON MORT. La cité perd son défenseur.");render();return}
+  S.health=30;S.energy=Math.min(S.energy,30);S.injuryLevel=clamp(S.injuryLevel+2,0,8);flag("blessureDurable");log("Ses compagnons évacuent CHAYAH inconscient. Ses blessures ne disparaissent pas.");outcome("retreat");return
  }
  render();
 }
@@ -396,7 +414,7 @@ function render(){
    button("SCEAU DU RÉEL","Affaiblit les prochaines frappes. Coût : 25.",()=>battleTurn("seal"),S.energy<25),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
    button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
-   ...(S.grief>=3?[button("FUREUR TRANSCENDANTE","Frappe extrêmement puissante, mais coûteuse pour la confiance et la cité. Requiert 32 Fureur.",()=>battleTurn("fury"),S.fury<32)]:[])
+   ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
   );
  }
  const objectives=$("chapter-objectives");objectives.replaceChildren();
