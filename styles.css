@@ -53,10 +53,12 @@
 @media(min-width:1050px){.antagonist-section .character-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
-/* Antagonistes : appliquer le cadre identique aux autres cartes.
-   Le recadrage supérieur élimine le cartouche inclus dans les PNG. */
-.antagonist-section .villain-card .character-art{height:305px;aspect-ratio:auto;position:relative;overflow:hidden;background:#101018}
-.antagonist-section .villain-card .portrait-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
-.antagonist-section .villain-card .char-content h3{font-size:clamp(32px,3.15vw,52px);line-height:1.03;margin:18px 0 20px;overflow-wrap:normal;word-break:normal}
-.antagonist-section .villain-card .char-content h3 em{display:block;font-size:.86em;line-height:1.1;overflow-wrap:break-word}
-@media(max-width:800px){.antagonist-section .villain-card .character-art{height:auto;aspect-ratio:3/2}.antagonist-section .villain-card .char-content h3{font-size:clamp(32px,8vw,52px)}}
+/* Galeries communes : personnages et antagonistes utilisent les mêmes mesures.
+   Seuls les accents chromatiques propres à chaque identité changent. */
+.people .character-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:15px}
+.people .character .character-art{height:305px;aspect-ratio:auto;position:relative;overflow:hidden}
+.people .character .portrait-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center center}
+.people .character .char-content{padding:22px}
+.people .character .char-content h3{font-size:clamp(31px,3vw,52px);line-height:1.05;margin:18px 0 20px;overflow-wrap:break-word;word-break:normal}
+.people .character .char-content h3 em{display:block;font-size:.9em;line-height:1.12}
+@media(max-width:800px){.people .character-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}.people .character .character-art{height:330px}}
