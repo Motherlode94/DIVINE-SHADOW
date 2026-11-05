@@ -150,7 +150,7 @@ function go(id){
 }
 function startBattle(config){
  const enemy=C.enemies[config.enemy];
- S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),turn:1,weak:0,guard:false,dodge:false,
+ S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),force:enemy.resource==="force"?enemy.force:null,turn:1,weak:0,guard:false,dodge:false,
  objective:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
  last:"Le combat commence. Pendant chaque tour, l'adversaire agit et la ville subit la pression de l'affrontement."};
 }
@@ -177,7 +177,10 @@ function battleTurn(action){
  }
  b.hp=clamp(b.hp-Math.max(0,damage-e.armor),0,b.max);
  if(b.hp===0){outcome("win");return}
+ // Humains : chaque attaque dépense de la Force et la fatigue réduit l'efficacité.
+ if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
  let blow=e.damage+(b.turn%2?2:0);
+ if(e.resource==="force"&&b.force<30)blow=Math.max(3,blow-5);
  if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
  if(dodge){blow=0;b.last="VOID STEP : CHAYAH échappe à la riposte."}
  if(guard){blow=Math.ceil(blow*.25);b.last="La garde absorbe presque toute l'attaque."}
@@ -239,6 +242,8 @@ function render(){
   $("enemy-desc").textContent=b.objective+" · Les ennemis conservent leur initiative.";
   $("enemy-hp").textContent=b.hp+" / "+b.max;
   $("enemy-hp-fill").style.width=100*b.hp/b.max+"%";
+  $("enemy-force-panel").hidden=e.resource!=="force";
+  if(e.resource==="force"){$("enemy-force").textContent=b.force??100;$("enemy-force-fill").style.width=(b.force??100)+"%"}
   $("combat-turn").textContent="TOUR "+b.turn+" / "+b.limit;
   $("combat-log").textContent=b.last;
   const skills=$("combat-actions");skills.replaceChildren(
