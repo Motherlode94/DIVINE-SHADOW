@@ -1,6 +1,21 @@
 /* DIVINE SHADOW — campagne narrative pilote. Continuité exploratoire. */
 window.DS_CAMPAIGN={
- chapters:[{title:"I — LA NUIT DES PORTES",goal:"Sortir du palais, protéger le marché, résister au siège et enquêter sur le but de l'attaque."},{title:"II — LA ROUTE DES CENDRES",goal:"Suivre les indices, éviter une seconde offensive, puis décider ce que la ville apprendra."}],
+ // Ressources distinctes selon la nature du personnage, jamais partagées.
+ // Les valeurs sont des paramètres de simulation, pas une échelle canonique.
+ roster:{
+ chayah:{name:"CHAYAH VEHUHIA",nature:"immortal",resource:"energy",resourceLabel:"Puissance divine",initial:100},
+ aether:{name:"AETHER",nature:"immortal",resource:"energy",resourceLabel:"Puissance divine",initial:100},
+ seraphyra:{name:"SERAPHYRA",nature:"immortal",resource:"energy",resourceLabel:"Puissance divine",initial:100},
+ maileiz:{name:"MAILEIZ",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ general:{name:"LE GÉNÉRAL",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ eleaonor:{name:"ÉLÉAONOR",nature:"unspecified",resource:null,resourceLabel:"Nature à confirmer",initial:null},
+ miren:{name:"MIREN",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ selma:{name:"SELMA",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ tomas:{name:"TOMAS",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ nadir:{name:"NADIR",nature:"human",resource:"force",resourceLabel:"Force",initial:100},
+ brother:{name:"LE FRÈRE AUX PACTES",nature:"unspecified",resource:null,resourceLabel:"Nature à confirmer",initial:null}
+ },
+  chapters:[{title:"I — LA NUIT DES PORTES",goal:"Sortir du palais, protéger le marché, résister au siège et enquêter sur le but de l'attaque."},{title:"II — LA ROUTE DES CENDRES",goal:"Suivre les indices, éviter une seconde offensive, puis décider ce que la ville apprendra."}],
  characters:{
   general:{name:"LE GÉNÉRAL",role:"Commandant de la garde",confirmed:false},
   eleaonor:{name:"ÉLÉAONOR",role:"Figure du Conseil — fonction exacte à valider",confirmed:false},
