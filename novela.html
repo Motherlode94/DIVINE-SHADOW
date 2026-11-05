@@ -1,3 +1,64 @@
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090d"><meta name="description" content="DIVINE SHADOW : épisodes, alliances et intrigues de la novela divine"><title>La Novela — DIVINE SHADOW</title><link rel="stylesheet" href="./styles.css"><style>
-.novela-hero{padding:145px clamp(24px,8vw,140px) 86px;background:radial-gradient(circle at 75% 30%,#8029446b,transparent 42%),#0b0a10}.novela-hero h1{font-size:clamp(65px,12vw,160px)}.novela-hero>p:last-child{max-width:630px;line-height:1.8;color:#b7aeba}.episode-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.episode{background:#151219;border:1px solid #ffffff20;padding:28px;display:flex;flex-direction:column;gap:16px}.episode h3{font-size:36px;line-height:1}.episode p{color:#c0b7c0;font-size:13px;line-height:1.8}.episode button{margin-top:auto;background:transparent;color:#f4d7df;border:1px solid #a9496088;padding:14px;text-align:left;font-weight:700}.episode button:hover{background:#702b40}.episode-stage{background:#1a131d;border:1px solid #b44c6750;padding:30px;margin-top:26px}.episode-stage h3{font-size:40px;margin:18px 0}.scene-lines{display:grid;gap:14px}.scene-lines article{border-left:2px solid #d34b64;padding:12px 18px;background:#ffffff06}.scene-lines strong{font-size:11px;letter-spacing:.13em;color:#f29fb2}.scene-lines p{color:#e5dce4;line-height:1.8}.canon-note{color:#a99ca9;line-height:1.8;font-size:13px}.relationship-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.relationship-summary article{background:#ffffff08;padding:20px;border-top:2px solid #a63f58}.relationship-summary p{line-height:1.7;color:#baadb9}@media(max-width:900px){.episode-list,.relationship-summary{grid-template-columns:1fr}}@media(max-width:800px){.novela-hero{padding-top:125px}}
-</style></head><body><header class="nav"><a class="brand" href="./index.html"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a><button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button><nav id="links"><a href="./index.html#personnages">PERSONNAGES</a><a href="./relations.html">RELATIONS</a><a href="./novela.html" aria-current="page">NOVELA</a></nav></header><main><section class="novela-hero"><p class="eyebrow">DIVINE SHADOW / SAISON 01</p><h1>LES<br><em>NON-DITS</em></h1><p>Amour, amitié, jalousie et loyauté. Les divinités peuvent façonner le réel, mais leurs décisions ont toujours des conséquences. Découvre trois scènes d'ouverture exploratoires.</p></section><section class="section people"><p class="eyebrow">01 / LES ÉPISODES</p><h2 style="font-size:clamp(52px,8vw,105px);margin:20px 0 38px">SAISON <em>UNE</em></h2><div class="episode-list"><article class="episode"><span class="number">ÉPISODE 01</span><h3>LE REGARD QUI RESTE</h3><p>MAILEIZ attend une réponse de CHAYAH. SERAPHYRA observe une complicité qui la trouble.</p><button data-episode="regard" aria-controls="episode-stage">LIRE LA SCÈNE ↗</button></article><article class="episode"><span class="number">ÉPISODE 02</span><h3>DEUX DIVINITÉS, UNE PROMESSE</h3><p>CHAYAH et AETHER parlent de loyauté : même les meilleurs amis ne sont pas toujours d'accord.</p><button data-episode="promesse" aria-controls="episode-stage">LIRE LA SCÈNE ↗</button></article><article class="episode"><span class="number">ÉPISODE 03</span><h3>LA COUR DES SILENCES</h3><p>Une cérémonie rassemble les divinités. Les apparences restent intactes, les tensions aussi.</p><button data-episode="cour" aria-controls="episode-stage">LIRE LA SCÈNE ↗</button></article></div><div id="episode-stage" class="episode-stage" aria-live="polite"><p class="eyebrow">SCÈNE EXPLORATOIRE — NON CANONIQUE</p><h3 id="scene-title">LE REGARD QUI RESTE</h3><div id="scene-lines" class="scene-lines"></div><p class="canon-note">Ces scènes sont des propositions narratives, pas des événements officiellement survenus. Elles ne révèlent aucun secret privé dans le canon.</p></div></section><section class="section lore"><div class="lore-inside"><p class="eyebrow">02 / LA TOILE DES LIENS</p><h2>AMOUR.<br><em>FRATERNITÉ.</em><br>JALOUSIE.</h2><div class="relationship-summary"><article><strong>CHAYAH & AETHER</strong><p>Meilleurs amis, divinités libres et égales en dignité.</p></article><article><strong>CHAYAH & MAILEIZ</strong><p>Amour réciproque. CHAYAH hésite à s'engager.</p></article><article><strong>SERAPHYRA & MAILEIZ</strong><p>SERAPHYRA ressent une jalousie cachée. MAILEIZ n'en connaît pas l'origine.</p></article></div><p class="canon-note">Les personnages ne lisent pas les pensées des autres : leurs connaissances dépendent de ce qu'ils ont réellement découvert.</p></div></section></main><footer><a class="brand" href="./index.html"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a><p>FICTION INTERACTIVE · CANON SOUS AUTORITÉ DU CRÉATEUR</p></footer><script src="./novela.js" defer></script></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08090d">
+<meta name="description" content="DIVINE SHADOW — Les Non-Dits, une novela jouable avec choix, relations et conséquences persistantes.">
+<title>Les Non-Dits — Novela interactive | DIVINE SHADOW</title>
+<link rel="stylesheet" href="./styles.css?v=novela-s1">
+<link rel="stylesheet" href="./novela.css?v=1">
+</head>
+<body>
+<header class="nav">
+<a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
+<button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
+<nav id="links"><a href="./index.html#personnages">PERSONNAGES</a><a href="./index.html#antagonistes">ANTAGONISTES</a><a href="./relations.html">RELATIONS</a><a href="./novela.html" aria-current="page">NOVELA</a></nav>
+</header>
+<main>
+<section class="novela-hero">
+<div class="novela-hero-copy">
+<p class="eyebrow">DIVINE SHADOW / FICTION INTERACTIVE / SAISON 01</p>
+<h1>LES<br><em>NON-DITS</em></h1>
+<p>Trois épisodes. Des choix difficiles. Une histoire qui change en fonction de tes décisions : amour, amitié, jalousie, loyauté et vérité.</p>
+<div class="hero-notes"><span>3 ÉPISODES</span><span>8 DÉCISIONS</span><span>PLUSIEURS CONCLUSIONS</span><span>SAUVEGARDE LOCALE</span></div>
+<p class="canon-note">Mode exploration : tes décisions font évoluer cette version de l'histoire, mais ne modifient pas le canon officiel sans validation du créateur.</p>
+<a class="btn primary" href="#episode-stage">ENTRER DANS L'HISTOIRE ↘</a>
+</div>
+</section>
+<section class="section people novela-content">
+<div class="chapter-top"><div><p class="eyebrow">01 / TON PARCOURS</p><h2>CHOISIS.<br><em>ASSUME.</em></h2></div><div class="save-box"><span id="save-status" role="status">Chargement de la progression…</span><button type="button" id="restart-story">RECOMMENCER LA SAISON ↺</button></div></div>
+<div class="episode-list" aria-label="Parcours des épisodes">
+<button type="button" data-episode="regard" class="episode-card"><span class="number">ÉPISODE 01</span><strong>LE REGARD QUI RESTE</strong><small>La relation entre CHAYAH et MAILEIZ</small><span class="ep-state">EN COURS</span></button>
+<button type="button" data-episode="promesse" class="episode-card"><span class="number">ÉPISODE 02</span><strong>DEUX DIVINITÉS, UNE PROMESSE</strong><small>La franchise d'AETHER</small><span class="ep-state">VERROUILLÉ</span></button>
+<button type="button" data-episode="cour" class="episode-card"><span class="number">ÉPISODE 03</span><strong>LA COUR DES SILENCES</strong><small>Une cérémonie, des secrets, des tensions</small><span class="ep-state">VERROUILLÉ</span></button>
+</div>
+<div class="reading-layout">
+<section id="episode-stage" class="novela-stage" aria-labelledby="scene-title" tabindex="-1">
+<div class="stage-backdrop" id="stage-backdrop"></div>
+<div class="stage-top"><span class="eyebrow" id="stage-number">ÉPISODE 01</span><span>SAISON 01 / FICTION EXPLORATOIRE</span></div>
+<div class="scene-heading"><h3 id="scene-title">LE REGARD QUI RESTE</h3><p id="scene-subtitle">Le balcon des aveux</p></div>
+<div class="dialogue-stage">
+<div class="character-frame"><img id="actor-portrait" alt="" hidden></div>
+<div class="text-frame">
+<p id="speaker">NARRATION</p>
+<p id="dialogue-text" aria-live="polite">Ouverture de l'histoire…</p>
+<div id="scene-choices" class="scene-choices" aria-label="Tes décisions"></div>
+<div class="stage-controls">
+<button type="button" id="scene-next">CONTINUER →</button>
+<button type="button" id="undo-choice" disabled>ANNULER LE DERNIER CHOIX ↶</button>
+</div>
+<div id="end-actions" hidden><p>Épisode terminé. Tes décisions ont été sauvegardées pour la suite.</p><button type="button" id="episode-continue">POURSUIVRE L'HISTOIRE →</button></div>
+</div>
+</div>
+</section>
+<aside class="story-sidebar">
+<div class="side-panel"><div class="side-title"><span class="eyebrow">ÉTAT DE TON HISTOIRE</span><span>−5 / +5</span></div><div id="story-stats" class="story-stats"></div><p class="sidebar-hint">Ces indicateurs montrent les effets de tes décisions. Ils ne représentent pas le libre arbitre des personnages.</p></div>
+<div class="side-panel"><h3>LES CONSÉQUENCES</h3><p>Les décisions modifient les relations, les échanges et la conclusion. Aucun personnage n'est obligé de t'obéir.</p><button type="button" id="journal-toggle" aria-expanded="false" aria-controls="journal">VOIR LE JOURNAL DES CHOIX ↓</button><div id="journal" hidden><ol id="journal-list"></ol></div></div>
+</aside>
+</div>
+<section id="final-screen" class="final-screen" hidden aria-live="polite"><p class="eyebrow">FIN DE LA SAISON 01 / TON PARCOURS</p><h2 id="final-heading"></h2><p id="final-text"></p><div id="story-report"><h3>TON HISTOIRE</h3><ul id="final-log"></ul></div><div class="final-actions"><button type="button" id="ending-review">MASQUER / AFFICHER LE BILAN</button><button type="button" id="restart-ending">EXPLORER UNE AUTRE VOIE ↺</button></div><p class="canon-note">Cette fin dépend de tes choix et ne constitue pas un événement canonique automatique.</p></section>
+</section>
+<section class="section lore"><div class="lore-inside"><p class="eyebrow">02 / LES RÈGLES NARRATIVES</p><h2>LE CHOIX<br><em>A UN PRIX.</em></h2><div class="novela-principles"><article><strong>CONSÉQUENCES</strong><p>Un choix peut améliorer une relation, détériorer la confiance ou accroître la tension de la cour.</p></article><article><strong>LIBRE ARBITRE</strong><p>MAILEIZ reste mortelle et indépendante. AETHER et CHAYAH demeurent des divinités libres et égales en dignité.</p></article><article><strong>SECRETS</strong><p>Les personnages n'apprennent pas automatiquement ce que les autres cachent. Les révélations nécessitent des faits.</p></article></div></div></section>
+</main>
+<footer><a class="brand" href="./index.html"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a><p>FICTION INTERACTIVE · LES NON-DITS · CANON SOUS AUTORITÉ DU CRÉATEUR</p></footer>
+<script src="./novela-data.js?v=1" defer></script><script src="./novela.js?v=2" defer></script>
+</body></html>
