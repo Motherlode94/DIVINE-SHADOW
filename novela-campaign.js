@@ -407,11 +407,15 @@ function render(){
   if(e.resource==="force"){$("enemy-force").textContent=b.force??100;$("enemy-force-fill").style.width=(b.force??100)+"%"}
   $("combat-turn").textContent="TOUR "+b.turn+" / "+b.limit;
   $("combat-log").textContent=b.last;
+  $("combat-panel").dataset.impact=S.battleTone||"idle";
+  const wounds=$("combat-wounds");if(wounds)wounds.textContent="LÉSIONS : "+S.injuryLevel+"/8 — "+(S.injuryNotes[0]||"Aucune blessure durable");
   const skills=$("combat-actions");skills.replaceChildren(
    button("FRAPPE CIBLÉE","Dégâts stables ; récupère un peu d'énergie.",()=>battleTurn("strike")),
-   button("VOID STEP","29 dégâts, esquive la riposte. Coût : 18 énergie.",()=>battleTurn("void"),S.energy<18),
+   button("VOID STEP","Esquive et contre, 19 énergie, 3 vitalité de contrecoup.",()=>battleTurn("void"),S.energy<19),
    button("GARDE","Réduit la prochaine attaque ; récupère de l'énergie.",()=>battleTurn("guard")),
-   button("SCEAU DU RÉEL","Affaiblit les prochaines frappes. Coût : 25.",()=>battleTurn("seal"),S.energy<25),
+   button("CONTRE D'APPUI","Dévier et frapper. Coût 9 : contrecoup physique.",()=>battleTurn("counter"),S.energy<9),
+   button("REMPART DIVIN","Protéger les civils. Coût 23 : choc absorbé par CHAYAH.",()=>battleTurn("ward"),S.energy<23),
+   button("SCEAU DU RÉEL","Sceau de ralentissement : 26 énergie et 5 vitalité.",()=>battleTurn("seal"),S.energy<26),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
    button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
    ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
@@ -425,6 +429,7 @@ function render(){
  "Blessures civiles recensées : "+S.injuries,
  "Progression des assaillants : "+S.enemyAdvance,
  "Alliés tombés : "+S.fallen.length+" / 15",
+ "Lésions de CHAYAH : "+S.injuryLevel+" / 8",
  "Renforts disponibles : "+S.troops,
  "Renforts complets : "+Object.values(S.aidDecisions).filter(x=>x==="accepted").length+" / "+(C.war?.requests?.length||0)+", partiels : "+Object.values(S.aidDecisions).filter(x=>x==="partial").length
  ];objectivesText.forEach(x=>{const li=document.createElement("li");li.textContent=x;objectives.append(li)});
@@ -435,7 +440,7 @@ function render(){
  "Frère aux pactes : "+(has("ecouteFrere")?"entendu":has("sceauBrise")?"sceau brisé":"mystère ouvert")
  ];points.forEach(x=>{const li=document.createElement("li");li.textContent=x;clues.append(li)});
  const relations=$("relation-list");relations.replaceChildren();
- const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense,DEUIL:S.grief,FUREUR:S.fury,DÉSOBÉISSANCES:S.defianceCount};
+ const stats={"BLESSURES DE CHAYAH":S.injuryLevel,MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense,DEUIL:S.grief,FUREUR:S.fury,DÉSOBÉISSANCES:S.defianceCount};
  Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
  const list=$("character-list");if(list){
   list.replaceChildren();
