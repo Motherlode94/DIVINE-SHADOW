@@ -21,20 +21,21 @@ const presets={
  unknown:{pose:"watch",prop:"none",outfit:"travel"}
 };
 const resolve=(item,category)=>{
- const t=(item.role+" "+item.description).toLowerCase();
- if(/général|générale|commandant|commandante|capitaine des ponts|cheffe des sentinelles|commandement/.test(t))return presets.command;
- if(/maudit|mystique|prélat|serment/.test(t))return presets.ritual;
- if(/meute|monstre/.test(t))return presets.beast;
- if(/archer/.test(t))return presets.archer;
- if(/éclaireur|éclaireuse|navigatrice|frontière|maître des éclaireurs/.test(t))return presets.scout;
- if(/messager/.test(t))return presets.courier;
- if(/médecin|apothicaire|secours|soins/.test(t))return presets.medic;
- if(/forgeron|ingénieur|intendant|réserves/.test(t))return presets.crafter;
- if(/cartographe|archiviste|chroniqueuse|érudit/.test(t))return presets.scholar;
- if(/juge|diplomate|conseil|autorité|tribunal|bienfaitrice/.test(t))return presets.diplomat;
- if(/marchand|banquier|aubergiste/.test(t))return presets.merchant;
- if(/gardien|gardienne|soldat/.test(t))return presets.guard;
- if(/frère|entité|pactes/.test(t))return presets.ritual;
+ const role=item.role.toLowerCase();
+ if(/général|générale|commandant|commandante|capitaine des ponts|cheffe des sentinelles/.test(role))return presets.command;
+ if(/médecin|apothicaire|secours|soins/.test(role))return presets.medic;
+ if(/messager/.test(role))return presets.courier;
+ if(/navigatrice|cartographe/.test(role))return {...presets.scout,prop:"map"};
+ if(/archer/.test(role))return presets.archer;
+ if(/éclaireur|éclaireuse/.test(role))return presets.scout;
+ if(/forgeron|ingénieur|intendant|réserves/.test(role))return presets.crafter;
+ if(/archiviste|chroniqueuse|érudit/.test(role))return presets.scholar;
+ if(/juge|diplomate|conseil|autorité|tribunal|bienfaitrice/.test(role))return presets.diplomat;
+ if(/banquier|aubergiste/.test(role))return presets.merchant;
+ if(/gardien|gardienne|soldat/.test(role))return presets.guard;
+ if(/meute|monstre/.test(role))return presets.beast;
+ if(/maudit|mystique|prélat|serment|pacte/.test(role))return presets.ritual;
+ if(/conducteur|convoi/.test(role))return {...presets.scout,prop:"map"};
  return category==="enemy"?presets.command:presets.unknown;
 };
 const gear={
