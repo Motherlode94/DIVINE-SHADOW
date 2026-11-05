@@ -151,3 +151,6 @@
 @media(max-width:850px){.opening-cinematic{min-height:620px}.cinematic-content{padding:30px 21px}.episode-progress{align-items:start}.episode-progress #episode-arc{margin-left:0;width:100%}.adventure-panels #world-actions{grid-template-columns:1fr}}
 @media(max-width:540px){.opening-cinematic{min-height:660px}.cinematic-content h2{font-size:clamp(55px,13vw,78px)}#cinematic-narration{font-size:16px;line-height:1.8}.cinematic-controls button{padding:13px 14px}.info-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.info-tabs button{padding:11px 5px}}
 @media(prefers-reduced-motion:reduce){.cinematic-backdrop{animation:none}}
+
+/* Keep narrator and chapter text clear of fixed mobile navigation. */
+@media(max-width:540px){.opening-cinematic{min-height:760px;align-items:center;padding-top:95px}.cinematic-content{padding:20px 21px 35px}.cinematic-controls{gap:9px}.cinematic-caption{margin-top:6px}}
