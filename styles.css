@@ -13,3 +13,12 @@
 .maileiz-sigil{font-family:serif;font-size:clamp(130px,16vw,220px);color:#f2797988;text-shadow:0 0 45px #ee364a75;user-select:none}
 .maileiz .char-content h3 em{color:#e66a62}
 .character-art .art-caption{z-index:2;text-shadow:0 1px 7px #000}
+
+/* Ajouts : SERAPHYRA et vitrine de la novela */
+.seraphyra-art{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 48% 35%,#a787bc50,transparent 47%),linear-gradient(140deg,#241a2d,#090b12 75%);border-bottom:1px solid #8969a045}
+.seraphyra-sigil{font-family:serif;font-size:clamp(125px,15vw,220px);color:#d8bce48c;text-shadow:0 0 40px #a174c26b;user-select:none}
+.seraphyra .char-content h3 em{color:#ae8bc1}
+@media(min-width:1050px){.character-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.character-art{height:305px}.char-content{padding:22px}.char-content h3{font-size:clamp(41px,4.2vw,61px)}.char-content p{font-size:12px}}
+.novela-teaser{background:radial-gradient(ellipse at 70% 45%,#5a243c55,transparent 48%),#151019}
+.novela-teaser h2{font-size:clamp(52px,9vw,120px);margin:24px 0}
+.novela-teaser>p:not(.eyebrow){max-width:650px;line-height:1.9;color:#bdb0be;margin-bottom:30px}
