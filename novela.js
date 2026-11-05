@@ -95,7 +95,7 @@
    el("speaker").textContent=actor.name;
    el("speaker").style.color=actor.color;
    el("dialogue-text").textContent=contextualDialogue(state.node,n.text);
-   const image=el("actor-portrait");if(actor.image){image.src=portraitFor(n.speaker);image.alt="Portrait de "+actor.name;image.hidden=false}else{image.hidden=true;image.removeAttribute("src")}
+   const image=el("actor-portrait");document.querySelector(".dialogue-stage").classList.toggle("narration-only",!actor.image);if(actor.image){image.src=portraitFor(n.speaker);image.alt="Portrait de "+actor.name;image.hidden=false}else{image.hidden=true;image.removeAttribute("src")}
    const choices=el("scene-choices");choices.replaceChildren();
    const next=el("scene-next");next.hidden=Boolean(n.choices||n.ending);
    next.textContent="CONTINUER →";
