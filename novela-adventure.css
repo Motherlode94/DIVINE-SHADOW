@@ -53,3 +53,9 @@
 .scene-view{background:linear-gradient(130deg,#110e19ed,#25121ccc),url('./assets/chayah_hd_candidate.jpg') center 36%/cover}
 .adventure-hero{background-position:center center}
 @media(max-width:700px){#world-locations{grid-template-columns:1fr;max-height:180px}.adventure-status{grid-template-columns:1fr 1fr}}
+
+/* Les conséquences immédiates sont lisibles comme des scènes, pas uniquement comme des chiffres. */
+#story-event{white-space:pre-line;line-height:1.9;font-size:14px;padding:20px 22px;border-left:3px solid #eb7591}
+#npc-status-list{display:grid;gap:4px}
+#npc-status-list li{border-bottom:1px solid #ffffff12;padding:7px 0}
+.simulation-note{font-size:11px;color:#bbb0bb;line-height:1.7}
