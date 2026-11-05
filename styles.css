@@ -43,3 +43,11 @@
 .concept-art .art-caption{color:#d7cfd9}
 .new-character .char-content h3 em{color:var(--concept-color,#a48fbb)}
 @media(min-width:1050px){.character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* DIVINE SHADOW — section antagonistes */
+.antagonist-section{background:radial-gradient(ellipse at 50% 20%,#531e3550,transparent 65%),#0c0a10}
+.antagonist-art{background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--villain-accent) 32%,transparent),transparent 56%),#0d0b12;display:flex;align-items:center;justify-content:center;position:relative}
+.antagonist-glyph{font:normal clamp(110px,11vw,180px) Georgia,serif;color:var(--villain-accent);text-shadow:0 0 50px color-mix(in srgb,var(--villain-accent) 55%,transparent);opacity:.8}
+.villain-card .char-content h3 em{color:var(--villain-accent)}
+.roster-note{font-size:12px;color:#aaa0ab;margin-top:24px;line-height:1.8}
+@media(min-width:1050px){.antagonist-section .character-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
