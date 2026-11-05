@@ -9,7 +9,7 @@ const KEY="divine-shadow-campaign-v2", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const fresh=mode=>({version:2,mode,index:0,tick:0,health:100,energy:100,city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
- flags:[],log:[],battle:null,finished:false,ending:null,spent:0,
+ flags:[],log:[],battle:null,finished:false,ending:null,spent:0,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
 if(!S||S.version!==2||!C.scenes[S.index]||!S.npc)S=fresh(null);
@@ -56,9 +56,12 @@ function reaction(){
  if(id==="s17")return S.city<50?" Les commerçants réclament des comptes pour les morts et les disparitions.":" Les marchands demandent une aide durable, pas un récit héroïque.";
  return "";
 }
+const choiceBeats={"s01":["MAILEIZ suit CHAYAH de son propre gré. Elle veut aider, pas se faire protéger de force.","L'alerte parvient au Général avant les premières flèches. MAILEIZ sort tout de même pour aider les blessés."],"s02":["MIREN ouvre son auberge. TOMAS guide les familles dans les ruelles. Plusieurs commerçants refusent d'abandonner leurs voisins.","Des silhouettes approchent des remparts tandis que le marché manque de bras pour évacuer les familles."],"s03":["SELMA fait traverser les blessés sous le passage protégé. Elle remercie CHAYAH, sans cacher ceux qu'elle n'a pas encore sauvés.","Le mur protège la voie principale, mais les secours cherchent encore un chemin vers les maisons basses."],"s04":["Le Général répartit ses escouades et fait dégager un corridor pour les civils.","Les réserves se cachent dans les ruelles. Le quartier avancé devra tenir avec moins de gardes."],"s06":["NADIR recevra le brassard sous scellés. Les témoignages sont recueillis séparément.","CHAYAH aide SELMA aux brancards. Les familles retiennent davantage ses actes que son rang."],"s07":["MAILEIZ décide de poursuivre malgré la douleur. CHAYAH la laisse maître de son choix.","MAILEIZ se raidit : « Je ne suis pas ton sujet, CHAYAH. » Elle quitte l'entretien sans renoncer aux secours."],"s08":["AETHER vérifie les sceaux avec NADIR. Une piste se dessine, pas encore une condamnation.","AETHER ferme le registre : « Un symbole ne remplace pas une preuve. »"],"s09":["ÉLÉAONOR approuve l'enquête et confie la reconstruction des quartiers au Général.","Le Général ne peut quitter les remparts sans relève. Le Conseil considère la décision trop risquée."],"s11":["Les voyageurs reprennent la route, mais la colonne ennemie gagne du temps.","AETHER relève les marques des roues. Une famille reste derrière eux, exposée."],"s12":["ORVANN accepte l'examen. Ses réponses soulèvent de nouvelles questions.","ORVANN proteste et demande un témoin. La méfiance entravera ses prochaines négociations.","La maison de soins accueille les survivants du convoi avant toute accusation."],"s13":["Les réserves ennemies sont dispersées et les sentinelles se retirent pour les récupérer.","AETHER repère les positions des archers. L'encerclement sera moins improvisé."],"s15":["Le frère détourne les yeux. La présence derrière la pierre semble réagir.","AETHER évacue les personnes à proximité tandis que CHAYAH sécurise le seuil.","Le sceau éclate et une onde traverse le sanctuaire."],"s17":["Le Conseil publie les faits vérifiés et reconnaît les zones d'ombre.","ÉLÉAONOR accepte les scellés, mais la population réclame des réponses.","Les matériaux sont affectés aux quartiers détruits avant les monuments."]};
 function choose(choice){
  if(S.battle||S.finished)return;
  if(choice.requires&&!has(choice.requires))return;
+ const current=C.scenes[S.index];const number=current.choices.indexOf(choice);
+ S.beat=choiceBeats[current.id]?.[number]||"Ce choix modifiera les réactions des autres personnages.";
  applyDelta(choice.delta);(choice.flags||[]).forEach(flag);
  advanceClock(1);log("CHAYAH : "+choice.label);
  if(has("evacuation")&&S.index===1)S.civiliansSaved+=20;
@@ -84,7 +87,7 @@ function startBattle(config){
 }
 function outcome(kind){
  const battle=S.battle;if(!battle)return;
- S.battle=null;
+ S.battle=null;S.beat=kind==="win"?"La victoire ne met pas fin aux secours. Les gardes cherchent les personnes isolées.":kind==="parley"?"L’adversaire se retire mais ne devient pas un allié.":"Le repli laisse des blessés et un passage vulnérable.";
  if(kind==="win"){S.city=clamp(S.city+3,0,100);log("L'ennemi recule après avoir été vaincu.")}
  if(kind==="parley"){S.trust=clamp(S.trust+1,-10,10);log("L'adversaire accepte de se retirer, sans devenir l'allié de CHAYAH.")}
  if(kind==="retreat"){S.city=clamp(S.city-12,0,100);S.injuries+=3;log("La retraite laisse des blessés et un passage fragilisé.")}
@@ -115,7 +118,7 @@ function battleTurn(action){
  advanceClock(1);
  const prepared=S.defense+(has("barricades")?5:0);
  const attrition=Math.max(0,Math.ceil((b.turn+S.enemyAdvance)/3)-(prepared>=5?2:0));
- if(b.enemy==="raider")S.city=clamp(S.city-attrition,0,100);
+ if(b.enemy==="raider"){S.city=clamp(S.city-attrition,0,100);if(attrition>=2)S.injuries++}
  if(b.enemy==="shade")S.energy=clamp(S.energy-3,0,100);
  b.turn++;
  if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("Le combat s'étire : des blessés supplémentaires sont évacués.");}
@@ -143,7 +146,7 @@ function render(){
  $("chapter-desc").textContent=chapter.goal;
  $("current-place").textContent=n.place;
  $("place-desc").textContent=n.text+reaction();
- $("story-event").textContent="SITUATION • "+n.who+" • Temps écoulé : "+S.tick+" phases • "+(S.battle?"Combats actifs.":"Les habitants et ennemis poursuivent leurs activités.");
+ $("story-event").textContent=(S.beat||"")+"\n\nSITUATION • "+n.who+" • "+S.tick+" phases écoulées.";
  $("mode-name").textContent=S.mode==="ruthless"?"IMPITOYABLE":"HISTOIRE";
  $("hp").textContent=S.health;$("energy").textContent=S.energy;$("hp-fill").style.width=S.health+"%";$("energy-fill").style.width=S.energy+"%";
  $("city-state").textContent=S.city+" / 100";
@@ -189,6 +192,7 @@ function render(){
  const relations=$("relation-list");relations.replaceChildren();
  const stats={MAILEIZ:S.maileiz,AETHER:S.aether,CONSEIL:S.council,CONFIANCE:S.trust,DÉFENSE:S.defense};
  Object.entries(stats).forEach(([k,v])=>{const li=document.createElement("li");li.textContent=k+" : "+(v>0?"+":"")+v;relations.append(li)});
+ const npcList=$("npc-status-list");if(npcList){npcList.replaceChildren();Object.entries(S.npc).forEach(([name,activity])=>{const li=document.createElement("li");li.textContent=name.toUpperCase()+" : "+activity;npcList.append(li)})}
  const journal=$("adventure-journal");journal.replaceChildren();
  [ ...S.log.slice(0,12), ...Object.entries(S.npc).map(([k,v])=>k.toUpperCase()+" : "+v)].forEach(line=>{const li=document.createElement("li");li.textContent=line;journal.append(li)});
  const ending=$("adventure-ending");ending.hidden=!S.finished;
