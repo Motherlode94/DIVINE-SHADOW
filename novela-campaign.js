@@ -347,8 +347,13 @@ function finish(){
  else if(has("transparence")&&S.trust>=3&&S.city>=58){title="LA VILLE SE RELÈVE";text="Les habitants voient une alliance entre preuves, secours et responsabilité. Le mystère du pacte demeure, mais la cité peut envisager demain.";}
  else if(has("sceauBrise")||has("secret")){title="LES SERMENTS INACHEVÉS";text="La cité est sauvée pour l'heure, mais les secrets et les blessures nourrissent de nouvelles tensions.";}
  else {title="LA TRÊVE FRAGILE";text="La bataille s'achève sans effacer les contradictions. La ville a besoin de soins, d'enquête et de choix futurs.";}
+ if(priorTruth)text+=" SAMA connaît désormais la vérité; elle conserve le droit de s'éloigner, de pardonner ou de refuser ce qui lui a été caché.";
+ else text+=" SAMA n'a jamais reçu de révélation sur les sentiments entre CHAYAH et MAILEIZ dans ce parcours; le silence reste une responsabilité non résolue.";
+ if(powerRevealed)text+=" Lors de l'affrontement à l'épisode 150, CHAYAH a dévoilé une partie de sa puissance réelle. Cette intervention laisse des cicatrices sur son corps immortel et dans le monde.";
+ else text+=" CHAYAH a retenu sa véritable puissance devant l'Ancien, et des innocents en ont payé le prix.";
+ text+=" MARIN, père adoptif de CHAYAH et légataire de la Mère, retourne à la terre. Le destin des cités appartient à leurs habitants.";
  S.ending={title,text};
- log("Fin de la campagne pilote : "+title+".");render();
+ log("Fin de la saison de 175 épisodes : "+title+".");render();
 }
 const introArt={
  chayah:"chayah_hd_candidate.jpg",
