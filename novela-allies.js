@@ -31,6 +31,22 @@ for(const [id,name,role,personality,entry,death,reason] of raw){
  ]);
  scene.loss=id;entries.push({episode:death,kind:"loss",scene});
 }
+const crises=[
+ {ep:20,id:"crisis-20",place:"La route des compagnons",text:"Une patrouille ennemie bloque l'accès aux blessés. CHAYAH reconnaît le blason associé à la perte de ses amis. AETHER voudrait négocier avant toute riposte.",options:[
+ ["Protéger les blessés et tenter une négociation.",{city:2,trust:2},true],
+ ["Désarmer la patrouille et enquêter.",{intel:2,defense:1},false]]},
+ {ep:24,id:"crisis-24",place:"Le col des familles",text:"Des familles sont bloquées entre deux armées. Le Général demande une escorte, mais CHAYAH sent le souvenir des alliés disparus prendre le dessus.",options:[
+ ["Escorter les familles avec les gardes.",{city:3,trust:1},true],
+ ["Neutraliser les armes adverses.",{defense:2,intel:1},false]]},
+ {ep:26,id:"crisis-26",place:"Les responsabilités",text:"Un officier ennemi veut témoigner. Le Conseil exige des preuves. CHAYAH peut-il encore choisir une voie mesurée après toutes les pertes de son entourage ?",options:[
+ ["Accepter la reddition et demander un procès.",{trust:2,council:2},true],
+ ["Faire sécuriser les témoins et interroger l'officier.",{intel:2,council:1},false]]}
+];
+for(const w of crises){
+ const scene=make(w.id,w.ep,w.place,"CHAYAH / AETHER",w.text,w.options.map((a,i)=>[a[0],"CHAYAH réagit selon son état émotionnel.",a[1],["crisis"+w.ep+"-"+i],"Cette décision marque les survivants."]));
+ scene.choices.forEach((choice,i)=>{choice.defianceRisk=w.options[i][2]});
+ entries.push({episode:w.ep,kind:"crisis",scene});
+}
 const byEp=new Map();
 for(const item of entries){const group=byEp.get(item.episode)||[];group.push(item);byEp.set(item.episode,group)}
 const original=[...C.scenes];const result=[];
@@ -40,8 +56,9 @@ for(const ep of C.season.episodes){
  // Introductions happen early and deaths interrupt the episode, before its climax.
  const intro=add.filter(x=>x.kind==="intro").map(x=>x.scene);
  const loss=add.filter(x=>x.kind==="loss").map(x=>x.scene);
+ const crisis=add.filter(x=>x.kind==="crisis").map(x=>x.scene);
  result.push(...intro);
- if(loss.length){result.push(...current.slice(0,1),...loss,...current.slice(1))}
+ if(loss.length||crisis.length){result.push(...current.slice(0,1),...loss,...crisis,...current.slice(1))}
  else result.push(...current);
 }
 for(let i=0;i<result.length;i++){
