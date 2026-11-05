@@ -1,14 +1,12 @@
-/* DIVINE SHADOW — système des divinités.
- * Niveaux OBSERVÉS pour le jeu, jamais puissance totale ni hiérarchie canonique.
- * Le voile de SERAPHYRA est provisoire, en attente de validation de l'auteur. */
+/* Statut isekai : niveaux et rangs NON ATTRIBUÉS sans validation canonique.
+   LVL n'est pas l'énergie disponible ni une révélation du potentiel caché. */
 (()=>{
- const C=window.DS_CAMPAIGN;if(!C)return;
- C.divinities={
-  chayah:{name:"CHAYAH VEHUHIA",level:38,ceiling:"INCONNU",domain:"Altération locale du réel",status:"Capacités partielles seulement",power:"RÉÉCRITURE LOCALISÉE",role:"Contrôle du terrain, protection et contrepartie physique",provisional:false},
-  aether:{name:"AETHER",level:44,ceiling:"INCONNU",domain:"Nexus Umbra — ombres et liens",status:"Interprétation jouable à confirmer",power:"LIENS D'OMBRE",role:"Entrave, interception et collecte de preuves",provisional:true},
-  seraphyra:{name:"SERAPHYRA",level:34,ceiling:"INCONNU",domain:"Voile des serments",status:"Pouvoir provisoire à valider",power:"VOILE DES SERMENTS",role:"Protection indirecte, occultation et diversion",provisional:true}
- };
- C.roster.chayah.level=C.divinities.chayah.level;
- C.roster.aether.level=C.divinities.aether.level;
- C.roster.seraphyra.level=C.divinities.seraphyra.level;
+const C=window.DS_CAMPAIGN;if(!C)return;
+C.statusSystem={stats:["PV","PM","FOR","END","AGI","MAG","RES","PER"],ranks:["F","E","D","C","B","A","S","SS","SSS","EX"],levelCap:null};
+C.divinities={
+ chayah:{name:"CHAYAH VEHUHIA",level:null,rank:null,className:"Divinité",title:"Statut scellé",power:"Altération du réel",skills:[{id:"realityWard",name:"Rempart de réalité",active:true},{id:"void",name:"Void Step",active:true},{id:"seal",name:"Sceau du réel",active:true}],knownStats:{},hidden:true},
+ aether:{name:"AETHER",level:null,rank:null,className:"Divinité",title:"Gardien des liens",power:"Nexus Umbra — ombres et liens",skills:[{id:"shadowBind",name:"Entrave des ombres",active:true}],knownStats:{},hidden:true},
+ seraphyra:{name:"SERAPHYRA",level:null,rank:null,className:"Divinité",title:"Compétences à confirmer",power:null,skills:[],knownStats:{},hidden:true}
+};
+for(const [id,data] of Object.entries(C.divinities)){if(C.roster[id]){C.roster[id].level=data.level;C.roster[id].rank=data.rank}}
 })();
