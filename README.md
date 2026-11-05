@@ -10,7 +10,7 @@
 - **10 personnages présentés**, dont **3 antagonistes**, chacun avec une fiche individuelle.
 - Portraits intégrés dans la galerie et les pages de personnage, à partir des fichiers du dossier `assets/`.
 - Sections d'accueil : personnages, antagonistes, univers et rencontre CHAYAH–AETHER.
-- Pages **Relations** et **Novela**, avec des scènes interactives exploratoires.
+- Pages **Relations** et **Novela**, avec une saison jouable à choix et conséquences.
 - Interface responsive et présentation cinématique commune aux fiches.
 - **Aucun système d'authentification ni moteur de jeu** : c'est actuellement un site statique narratif.
 
@@ -36,6 +36,23 @@
 - SERAPHYRA appartient à la même **famille divine** que CHAYAH, sans parenté biologique. Certains de ses sentiments et secrets ne sont pas connus de tous les personnages.
 - Les biographies, alliances et capacités marquées **« concept »** ou **« proposition »** restent à valider par le créateur. L'ajout d'une fiche n'officialise pas automatiquement toutes ses hypothèses.
 - Les personnages conservent leur libre arbitre ; les conflits et conséquences ne sont pas déterminés à l'avance. Les scènes de la Novela sont exploratoires tant qu'elles ne sont pas validées comme canon.
+
+## Novela interactive — *Les Non-Dits* (Saison 1)
+
+La page [novela.html](./novela.html) est désormais une **fiction interactive jouable** et non un simple lecteur de scènes. Elle comprend :
+
+- **3 épisodes enchaînés** : *Le Regard qui reste*, *Deux divinités, une promesse*, *La Cour des silences* ;
+- **6 décisions à choix multiples**, avec des conséquences sur les relations, la franchise et les tensions ;
+- des **dialogues conditionnels** qui évoluent en fonction des réponses des épisodes précédents ;
+- un **journal des décisions**, des indicateurs de relations, un bouton d'annulation du dernier choix et plusieurs fins ;
+- une **sauvegarde automatique locale** via `localStorage`, ainsi qu'une commande pour recommencer ;
+- un lecteur responsive avec portraits, décor et dialogues, compatible avec les petits écrans.
+
+**Fichiers :** `novela.html` (interface), `novela.css` (présentation), `novela-data.js` (épisodes et embranchements), `novela.js` (moteur de lecture et sauvegarde).
+
+**Règle de continuité :** les décisions ne modifient que la partie en cours. Les scènes restent exploratoires et ne sont pas automatiquement ajoutées au canon officiel. MAILEIZ demeure mortelle, chaque personnage conserve son libre arbitre, et les secrets ne sont pas révélés sans événement narratif explicite.
+
+Pour tester : terminer les trois épisodes avec différentes décisions, confirmer des fins différentes, recharger la page pour retrouver sa progression, puis vérifier l'affichage sur mobile.
 
 ## Architecture du site
 
