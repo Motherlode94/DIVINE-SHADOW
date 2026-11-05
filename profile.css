@@ -34,24 +34,20 @@
 .profile-visual.portrait-pending::before{content:"ILLUSTRATION OFFICIELLE À VALIDER";position:relative;z-index:1;max-width:280px;text-align:center;letter-spacing:.23em;font-size:12px;font-weight:800;line-height:2;color:#d1c6d2}
 .profile-visual.portrait-pending::after{display:none}
 
-/* Dossiers des antagonistes : lisibilité du titre et cadrage sans le cartouche imprimé */
-body[data-character="vaelkor"] .profile-visual img,
-body[data-character="nyssara"] .profile-visual img,
-body[data-character="orvann"] .profile-visual img{
-  object-position:center top;
+
+/* Règle commune à toutes les fiches : même portrait plein cadre, texte séparé.
+   Les images avec lettrage incorporé sont cadrées sur la partie haute,
+   sans déplacer le titre ni changer l'architecture des pages. */
+.profile-intro h1{overflow-wrap:normal;word-break:normal}
+.profile-intro h1 em{line-height:1.06}
+.profile-intro h1.long-subtitle em{font-size:clamp(32px,3.65vw,58px);line-height:1.12;overflow-wrap:normal}
+.profile-visual[data-artwork="poster"] img{
+  top:0;bottom:auto;left:0;right:0;
+  width:100%;height:145%;
+  object-fit:cover;object-position:center top;
 }
-body[data-character="orvann"] .profile-intro h1{
-  font-size:clamp(62px,6.6vw,103px);
-  line-height:.96;
-}
-body[data-character="orvann"] .profile-intro h1 em{
-  font-size:clamp(35px,3.65vw,57px);
-  line-height:1.12;
-  overflow-wrap:normal;
-  hyphens:none;
-  max-width:100%;
-}
+.profile-visual[data-artwork="poster"]::after{background:linear-gradient(0deg,#090a1230,transparent 27%)}
 @media(max-width:850px){
-  body[data-character="orvann"] .profile-intro h1{font-size:clamp(61px,12vw,91px)}
-  body[data-character="orvann"] .profile-intro h1 em{font-size:clamp(32px,7vw,52px)}
+ .profile-intro h1.long-subtitle em{font-size:clamp(32px,6.7vw,54px)}
+ .profile-visual[data-artwork="poster"] img{height:145%}
 }
