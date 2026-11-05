@@ -22,3 +22,7 @@
 .novela-teaser{background:radial-gradient(ellipse at 70% 45%,#5a243c55,transparent 48%),#151019}
 .novela-teaser h2{font-size:clamp(52px,9vw,120px);margin:24px 0}
 .novela-teaser>p:not(.eyebrow){max-width:650px;line-height:1.9;color:#bdb0be;margin-bottom:30px}
+
+/* Correction : un seul portrait par carte, aucun carrelage d'image */
+.chayah .character-art,.aether .character-art{background-repeat:no-repeat;background-size:cover;background-position:center center}
+.chayah .character-art .art-caption,.aether .character-art .art-caption{display:none}
