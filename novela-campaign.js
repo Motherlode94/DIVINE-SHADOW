@@ -29,11 +29,14 @@ function advanceClock(n=1){
   S.tick++;
   if(S.tick%5===0&&S.maileizStatus!=="morte")restoreForce("maileiz",6);
   if(S.tick%4===0)restoreForce("general",4);
-  // Les autres acteurs agissent sans attendre une permission du joueur.
-  if((C.scenes[S.index]?.episode||1)>=8&&(C.scenes[S.index]?.episode||1)<=17){
+  // La ville vit avant le conflit. L'attrition ne commence PAS au prologue.
+  const ep=C.scenes[S.index]?.episode||1;
+  if(ep<8){
+   if(S.tick%4===0){S.npc.miren="accueille les voyageurs";S.npc.tomas="transmet les nouvelles des routes";log("Dans la ville encore paisible, les artisans ouvrent leurs échoppes et les messagers circulent.");}
+  }else if(ep<=19){
    if(S.tick%3===0){S.enemyAdvance++;S.city=clamp(S.city-(has("evacuation")?1:3),0,100);log("Les assaillants cherchent un passage ; les secouristes poursuivent l'évacuation.")}
-   if(S.tick===5 || (C.scenes[S.index]?.id==="s04"&&!has("militiaDeployed"))){flag("militiaDeployed");S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
-   if(S.tick===8 || (C.scenes[S.index]?.episode===10&&!has("refugeesArrived"))){flag("refugeesArrived");S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
+   if(ep>=12&&!has("militiaDeployed")){flag("militiaDeployed");S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
+   if(ep>=10&&!has("refugeesArrived")){flag("refugeesArrived");S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
   }else{
    if(S.tick%4===0){S.enemyAdvance++;S.city=clamp(S.city-2,0,100);log("Des messagers signalent de nouveaux mouvements ennemis aux frontières.")}
    if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
