@@ -202,6 +202,14 @@ function battleTurn(action){
  if(action==="void"){if(S.energy<18)return;S.energy-=18;damage=29;dodge=true}
  if(action==="seal"){if(S.energy<25)return;S.energy-=25;damage=18;b.weak=2}
  if(action==="guard"){guard=true;S.energy=clamp(S.energy+14,0,100)}
+ if(action==="fury"&&S.grief>=3&&S.fury>=32){
+  damage=48+Math.min(22,S.grief*2);
+  S.fury=clamp(S.fury-32,0,100);
+  S.energy=clamp(S.energy-24,0,100);
+  S.trust=clamp(S.trust-1,-10,10);
+  S.city=clamp(S.city-2,0,100);
+  log("FUREUR TRANSCENDANTE : les défenses ennemies se brisent, mais la violence déstabilise la cité.");
+ }
  if(action==="retreat"){outcome("retreat");return}
  if(action==="parley"){
   if(b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
@@ -322,7 +330,8 @@ function render(){
    button("GARDE","Réduit la prochaine attaque ; récupère de l'énergie.",()=>battleTurn("guard")),
    button("SCEAU DU RÉEL","Affaiblit les prochaines frappes. Coût : 25.",()=>battleTurn("seal"),S.energy<25),
    button("SOMMATION","Possible pour un ennemi humain en position faible.",()=>battleTurn("parley")),
-   button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat"))
+   button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
+   ...(S.grief>=3?[button("FUREUR TRANSCENDANTE","Frappe extrêmement puissante, mais coûteuse pour la confiance et la cité. Requiert 32 Fureur.",()=>battleTurn("fury"),S.fury<32)]:[])
   );
  }
  const objectives=$("chapter-objectives");objectives.replaceChildren();
@@ -331,7 +340,8 @@ function render(){
  "Civils évacués : "+S.civiliansSaved,
  "MAILEIZ : "+(S.maileizStatus==="morte"?"DÉCÉDÉE":S.maileizStatus==="blessee"?"BLESSÉE":"EN VIE"),
  "Blessures civiles recensées : "+S.injuries,
- "Progression des assaillants : "+S.enemyAdvance
+ "Progression des assaillants : "+S.enemyAdvance,
+ "Alliés tombés : "+S.fallen.length+" / 15"
  ];objectivesText.forEach(x=>{const li=document.createElement("li");li.textContent=x;objectives.append(li)});
  const clues=$("clue-list");clues.replaceChildren();const points=[
  "Porte : "+(has("barricades")?"fortifiée":has("alertePrecoce")?"alerte avancée":"vulnérable"),
@@ -368,6 +378,20 @@ function render(){
    if(id==="maileiz"&&S.maileizStatus!=="saine"){const health=document.createElement("small");health.textContent="État : "+(S.maileizStatus==="morte"?"décédée":"blessée");item.append(health)}
    list.append(item);
   }
+ }
+ const alliesPanel=$("allies-list");
+ if(alliesPanel){
+  alliesPanel.replaceChildren();
+  const members=Object.values(C.allies||{}).filter(a=>a.entry<=n.episode);
+  for(const a of members){
+   const row=document.createElement("div");row.className="ally-record"+(S.fallen.includes(a.id)?" fallen":"");
+   const title=document.createElement("strong");title.textContent=a.name;
+   const meta=document.createElement("span");meta.textContent=a.role+" • "+(S.fallen.includes(a.id)?"TOMBÉ AU COMBAT":"EN VIE");
+   const story=document.createElement("p");story.textContent=a.personality;
+   row.append(title,meta,story);
+   alliesPanel.append(row);
+  }
+  const count=$("allies-counter");if(count)count.textContent=members.length+" / 20 connus • "+S.fallen.length+" disparus";
  }
  const npcList=$("npc-status-list");if(npcList){npcList.replaceChildren();Object.entries(S.npc).forEach(([name,activity])=>{const li=document.createElement("li");li.textContent=name.toUpperCase()+" : "+activity;npcList.append(li)})}
  const journal=$("adventure-journal");journal.replaceChildren();
