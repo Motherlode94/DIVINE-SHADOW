@@ -5,14 +5,14 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v2", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v3", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-const fresh=mode=>({version:2,mode,index:0,tick:0,health:100,energy:100,city:70,defense:35,intel:0,
+const fresh=mode=>({version:3,mode,index:0,tick:0,health:100,energy:100,city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
  flags:[],log:[],battle:null,finished:false,ending:null,spent:0,maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==2||!C.scenes[S.index]||!S.npc)S=fresh(null);
+if(!S||S.version!==3||!C.scenes[S.index]||!S.npc)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
