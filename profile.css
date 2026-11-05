@@ -45,3 +45,10 @@
 /* QA navigateur : sous-titres longs, même règle pour tous les personnages */
 .profile-intro h1.long-subtitle em{display:block;font-size:clamp(27px,2.65vw,42px);line-height:1.22;letter-spacing:0;white-space:normal;overflow-wrap:break-word;word-break:normal;max-width:100%;}
 @media(max-width:850px){.profile-intro h1.long-subtitle em{font-size:clamp(27px,6vw,42px)}}
+
+/* Toute fiche possède les mêmes dimensions. Les posters historiques
+   restent invisibles pendant leur recadrage exact par portrait-crop.js. */
+body[data-character="vaelkor"] #profile-image:not([data-portrait-cropped="yes"]),
+body[data-character="nyssara"] #profile-image:not([data-portrait-cropped="yes"]),
+body[data-character="orvann"] #profile-image:not([data-portrait-cropped="yes"]){opacity:0}
+.profile-visual img{object-position:center top}
