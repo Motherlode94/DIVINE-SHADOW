@@ -5,15 +5,15 @@
 (() => {
 "use strict";
 const C=window.DS_CAMPAIGN;if(!C)return;
-const KEY="divine-shadow-campaign-v6", $=id=>document.getElementById(id);
+const KEY="divine-shadow-campaign-v7", $=id=>document.getElementById(id);
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const initialResources=()=>Object.fromEntries(Object.entries(C.roster||{}).map(([id,actor])=>[id,actor.initial]));
-const fresh=mode=>({version:6,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
+const fresh=mode=>({version:7,mode,introDone:false,introFrame:0,index:0,tick:0,health:100,energy:100,resources:initialResources(),city:70,defense:35,intel:0,
  trust:0,maileiz:0,aether:0,council:0,civiliansSaved:0,injuries:0,enemyAdvance:0,
- flags:[],log:[],battle:null,finished:false,ending:null,spent:0,fallen:[],grief:0,fury:0,defianceCount:0,lastDefiance:"",maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
+ flags:[],log:[],battle:null,finished:false,ending:null,spent:0,fallen:[],grief:0,fury:0,defianceCount:0,cityStates:Object.fromEntries(Object.entries(C.war?.cities||{}).map(([id,c])=>[id,{trust:c.trust,threat:c.threat,security:c.strength,alignment:c.alignment}])),aidDecisions:{},troops:8,warInfluence:0,provenPatrons:0,lastDefiance:"",maileizStatus:"saine",maileizFate:null,beat:"La réception est encore paisible. Dehors, les premières inquiétudes n’ont pas atteint les invités.",
  npc:{general:"mobilise la garde",eleaonor:"prépare le Conseil",selma:"ouvre le dispensaire",miren:"accueille des réfugiés",tomas:"livre des nouvelles",aether:"examine les archives"}});
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
-if(!S||S.version!==6||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
+if(!S||S.version!==7||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
@@ -38,7 +38,18 @@ function advanceClock(n=1){
    if(ep>=12&&!has("militiaDeployed")){flag("militiaDeployed");S.npc.general=has("alertePrecoce")?"les barricades sont prêtes":"la garnison arrive en retard";log("Le Général redéploie ses compagnies dans la ville.")}
    if(ep>=10&&!has("refugeesArrived")){flag("refugeesArrived");S.npc.miren="les réfugiés remplissent l'auberge";S.civiliansSaved+=has("evacuation")?12:5;log("MIREN accueille des familles dans son auberge.")}
   }else{
-   if(S.tick%4===0){S.enemyAdvance++;S.city=clamp(S.city-2,0,100);log("Des messagers signalent de nouveaux mouvements ennemis aux frontières.")}
+   if(S.tick%4===0){
+    S.enemyAdvance++;S.city=clamp(S.city-2,0,100);
+    if(ep>=28){
+      for(const [id,c] of Object.entries(S.cityStates)){
+       if(c.alignment!=="enemy"){
+        c.threat=clamp(c.threat+2,0,100);
+        if(c.threat>65)c.security=clamp(c.security-2,0,100);
+       }
+      }
+    }
+    log("Des messagers signalent de nouveaux mouvements ennemis aux frontières.");
+   }
    if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
   }
  }
@@ -145,6 +156,33 @@ function defyPlayer(scene,choice){
  flag("chayahDefiance");
  log("RUPTURE DE VOLONTÉ : CHAYAH a refusé le choix « "+original+" ». L'ennemi a subi sa fureur, mais la ville en paye le prix.");
 }
+function respondToCity(reqId,accept){
+ const r=C.war.requests.find(x=>x.id===reqId);if(!r||S.aidDecisions[r.id])return;
+ const target=S.cityStates[r.city],city=C.war.cities[r.city];
+ const cost=Math.min(S.troops,r.units);
+ S.aidDecisions[r.id]=accept?"accepted":"refused";
+ if(accept){
+   S.troops=clamp(S.troops-r.units,0,16);
+   target.trust=clamp(target.trust+3,-10,10);
+   target.threat=clamp(target.threat-17,0,100);
+   target.security=clamp(target.security+8,0,100);
+   S.defense=clamp(S.defense-2,0,30);
+   S.trust=clamp(S.trust+1,-10,10);
+   S.warInfluence++;
+   S.beat="CHAYAH accepte l'appel de "+city.name+". "+cost+" unités disponibles partent réellement, au risque d'affaiblir les frontières de sa cité. Les habitants saluent le secours ; les ennemis préparent une riposte.";
+   log("SECOURS ENVOYÉS À "+city.name+": "+cost+" unités ; menace réduite, troupes locales diminuées.");
+ }else{
+   target.trust=clamp(target.trust-4,-10,10);
+   target.threat=clamp(target.threat+24,0,100);
+   target.security=clamp(target.security-14,0,100);
+   S.troops=clamp(S.troops+1,0,16);
+   S.warInfluence--;
+   S.beat="CHAYAH refuse la demande de "+city.name+". Les gardes locaux restent disponibles, mais la cité assiégée doit lutter seule. Les émissaires repartent sans cacher leur colère. La Coalition apprend qu'elle est isolée.";
+   log("SECOURS REFUSÉS À "+city.name+": confiance effondrée, menace accrue, ressources locales préservées.");
+ }
+ advanceClock(2);
+ const current=C.scenes[S.index];go(current.choices?.[0]?.next);
+}
 function choose(choice){
  if(S.battle||S.finished)return;
  if(choice.requires&&!has(choice.requires))return;
@@ -183,7 +221,7 @@ function go(id){
 function startBattle(config){
  const enemy=C.enemies[config.enemy];
  S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),force:enemy.resource==="force"?enemy.force:null,turn:1,weak:0,guard:false,dodge:false,
- objective:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
+ objective:C.war?.armies?.[config.enemy]?"AFFRONTER "+C.war.armies[config.enemy].groups+" GROUPES SOUS LES ORDRES DE "+C.war.armies[config.enemy].general:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
  last:"Le combat commence. Pendant chaque tour, l'adversaire agit et la ville subit la pression de l'affrontement."};
 }
 function outcome(kind){
@@ -192,6 +230,10 @@ function outcome(kind){
  if(kind==="win"){S.city=clamp(S.city+3,0,100);log("L'ennemi recule après avoir été vaincu.")}
  if(kind==="parley"){S.trust=clamp(S.trust+1,-10,10);log("L'adversaire accepte de se retirer, sans devenir l'allié de CHAYAH.")}
  if(kind==="retreat"){S.city=clamp(S.city-12,0,100);S.injuries+=3;log("La retraite laisse des blessés et un passage fragilisé.")}
+ if(C.war?.armies?.[battle.enemy]){
+   if(kind==="win"||kind==="parley"){S.warInfluence+=2;S.provenPatrons+=1;log("Formation ennemie dispersée, ordre mystique récupéré et chaîne de commandement mieux connue.");}
+   if(kind==="retreat"){S.warInfluence-=2;S.troops=clamp(S.troops-1,0,16);log("Les escouades adverses maintiennent leur position après le repli.");}
+ }
  const chapterBattle=C.scenes[S.index].battle;
  if(chapterBattle)go(chapterBattle.next);else render();
 }
@@ -243,7 +285,16 @@ function battleTurn(action){
 function finish(){
  S.finished=true;
  let title,text;
- if(S.maileizStatus==="morte"){title="LE PRIX DU SILENCE";text="La cité survit, mais MAILEIZ est morte en sauvant une enfant. Son absence pèse sur le Conseil, les secours et CHAYAH. La mort de cette mortelle reste définitive dans cette continuité.";}
+ const rescued=Object.values(S.aidDecisions).filter(v=>v==="accepted").length;
+ const refused=Object.values(S.aidDecisions).filter(v=>v==="refused").length;
+ const neutralTrust=["brumelac","asterne"].reduce((total,id)=>total+(S.cityStates[id]?.trust||0),0);
+ if(S.maileizStatus==="morte"&&S.fury>=40){title="LES CENDRES DE LA VENGEANCE";text="CHAYAH a écrasé ses ennemis, mais la disparition de MAILEIZ et la rage ont brisé plusieurs alliances. Les cités redoutent désormais celui qui prétendait les protéger.";}
+ else if(rescued>=5&&S.trust>=0&&has("trial")&&S.provenPatrons>=2){title="LA LIGUE DES CITÉS LIBRES";text="CHAYAH a aidé la plupart des cités, et des preuves ont conduit les commanditaires devant la justice. Les alliances restent indépendantes, mais un ordre nouveau se dessine.";}
+ else if(refused>=4){title="LES PORTES CLOSES";text="CHAYAH a privilégié la défense de sa ville. Les voisins abandonnés ferment leurs routes et de nouveaux ennemis encerclent ses frontières.";}
+ else if(neutralTrust<=-5){title="LA PAIX SANS LES NEUTRES";text="La guerre s'apaise, mais les villes neutres refusent la protection de CHAYAH après les décisions qui les ont laissées seules.";}
+ else if(S.provenPatrons>=3&&S.intel>=12){title="LES MASQUES TOMBENT";text="Les ordres mystiques et les financiers cachés sont révélés. La victoire appartient aux témoins autant qu'aux armes.";}
+ else if(S.cityStates.valedor.security<=30||S.cityStates.solenne.security<=30){title="LE PRIX DES FRONTIÈRES";text="Des villes alliées ont été ravagées. La victoire militaire n'efface pas les familles perdues ni la confiance trahie.";}
+ else if(S.maileizStatus==="morte"){title="LE PRIX DU SILENCE";text="La cité survit, mais MAILEIZ est morte en sauvant une enfant. Son absence pèse sur le Conseil, les secours et CHAYAH. La mort de cette mortelle reste définitive dans cette continuité.";}
  else if(S.city<=38||S.injuries>=12){title="UNE VICTOIRE AMÈRE";text="La ville survit, mais le prix humain est lourd. Les civils exigent des comptes et le Conseil n'accorde aucune absolution.";}
  else if(has("transparence")&&S.trust>=3&&S.city>=58){title="LA VILLE SE RELÈVE";text="Les habitants voient une alliance entre preuves, secours et responsabilité. Le mystère du pacte demeure, mais la cité peut envisager demain.";}
  else if(has("sceauBrise")||has("secret")){title="LES SERMENTS INACHEVÉS";text="La cité est sauvée pour l'heure, mais les secrets et les blessures nourrissent de nouvelles tensions.";}
@@ -310,7 +361,18 @@ function render(){
  });
  $("game-root").classList.toggle("critical-moment",Boolean(n.critical));
  const actions=$("world-actions");actions.replaceChildren();
- if(n.choices&&!S.battle&&!S.finished)n.choices.forEach((c,i)=>actions.append(button((i+1)+". "+c.label,c.hint,()=>choose(c),Boolean(c.requires&&!has(c.requires)))));
+ if(n.request&&!S.battle&&!S.finished){
+  const r=C.war.requests.find(x=>x.id===n.request);
+  const city=r&&C.war.cities[r.city];const cstate=r&&S.cityStates[r.city];
+  if(r&&city){
+    actions.append(button("OUI — ENVOYER DES RENFORTS À "+city.name,
+       "Coût : "+r.units+" unités de garde. Menace réduite, confiance renforcée, mais une autre frontière devient vulnérable.",
+       ()=>respondToCity(r.id,true)));
+    actions.append(button("NON — REFUSER L'APPEL DE "+city.name,
+       "Conserve tes troupes. Cette ville risque de perdre ses défenses et de se détourner de CHAYAH.",
+       ()=>respondToCity(r.id,false)));
+  }
+ }else if(n.choices&&!S.battle&&!S.finished)n.choices.forEach((c,i)=>actions.append(button((i+1)+". "+c.label,c.hint,()=>choose(c),Boolean(c.requires&&!has(c.requires)))));
  if(n.ending&&!S.finished)actions.append(button("CONCLURE CETTE CAMPAGNE","Le bilan tient compte des blessures, du temps et de l'état de la ville.",finish));
  $("exploration-panel").hidden=Boolean(S.battle)||Boolean(S.finished);
  const combat=$("combat-panel");combat.hidden=!S.battle;
@@ -341,7 +403,9 @@ function render(){
  "MAILEIZ : "+(S.maileizStatus==="morte"?"DÉCÉDÉE":S.maileizStatus==="blessee"?"BLESSÉE":"EN VIE"),
  "Blessures civiles recensées : "+S.injuries,
  "Progression des assaillants : "+S.enemyAdvance,
- "Alliés tombés : "+S.fallen.length+" / 15"
+ "Alliés tombés : "+S.fallen.length+" / 15",
+ "Renforts disponibles : "+S.troops,
+ "Appels acceptés : "+Object.values(S.aidDecisions).filter(x=>x==="accepted").length+" / "+(C.war?.requests?.length||0)
  ];objectivesText.forEach(x=>{const li=document.createElement("li");li.textContent=x;objectives.append(li)});
  const clues=$("clue-list");clues.replaceChildren();const points=[
  "Porte : "+(has("barricades")?"fortifiée":has("alertePrecoce")?"alerte avancée":"vulnérable"),
@@ -392,6 +456,17 @@ function render(){
    alliesPanel.append(row);
   }
   const count=$("allies-counter");if(count)count.textContent=members.length+" / 20 connus • "+S.fallen.length+" disparus";
+ }
+ const cityList=$("city-diplomacy-list");
+ if(cityList&&C.war){
+  cityList.replaceChildren();
+  for(const [id,city] of Object.entries(C.war.cities)){
+   const state=S.cityStates[id];
+   const item=document.createElement("div");item.className="city-record";
+   const title=document.createElement("strong");title.textContent=city.name+" · "+(state.alignment==="allied"?"ALLIÉE":state.alignment==="neutral"?"NEUTRE":"ENNEMIE");
+   const detail=document.createElement("p");detail.textContent="Défense "+state.security+"/100 · Menace "+state.threat+"/100 · Confiance "+state.trust;
+   item.append(title,detail);cityList.append(item);
+  }
  }
  const npcList=$("npc-status-list");if(npcList){npcList.replaceChildren();Object.entries(S.npc).forEach(([name,activity])=>{const li=document.createElement("li");li.textContent=name.toUpperCase()+" : "+activity;npcList.append(li)})}
  const journal=$("adventure-journal");journal.replaceChildren();
