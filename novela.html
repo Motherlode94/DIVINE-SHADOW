@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=9"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=10"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -18,6 +18,12 @@
 <button id="history-mode" type="button" class="mode-choice"><strong>MODE HISTOIRE</strong><span>Défaite récupérable. Les blessures et les relations persistent, sans fin de partie immédiate.</span></button>
 <button id="ruthless-mode" type="button" class="mode-choice"><strong>MODE IMPITOYABLE</strong><span>Perte d'un combat : fin possible de cette route, victimes civiles et conséquences graves.</span></button>
 </div></section>
+<section id="opening-cinematic" class="opening-cinematic" hidden aria-label="Cinématique d'ouverture">
+<div class="cinematic-backdrop" id="cinematic-backdrop"></div><div class="cinematic-content">
+<span class="eyebrow" id="cinematic-kicker">PROLOGUE</span><p class="cinematic-caption">DIVINE SHADOW • LE NARRATEUR</p>
+<h2 id="cinematic-title"></h2><p id="cinematic-narration" aria-live="polite"></p>
+<div class="cinematic-controls"><span id="cinematic-count">01 / 05</span><button type="button" id="cinematic-next">CONTINUER →</button><button type="button" id="cinematic-skip">PASSER LE PROLOGUE</button></div>
+</div></section>
 <div id="game-root" hidden>
 <div class="adventure-chapter"><div><span class="eyebrow">SIMULATION NARRATIVE / PROTAGONISTE : CHAYAH</span><h2 id="chapter-title"></h2><p id="chapter-desc"></p></div><div class="adventure-top-actions"><span id="mode-name"></span><button id="reset-adventure" type="button">NOUVELLE PARTIE ↺</button></div></div>
 <div class="player-hud" aria-label="Statut du personnage joué">
@@ -31,9 +37,9 @@
 <div class="adventure-layout">
 <section class="adventure-main">
 <div class="scene-view"><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div>
+<div class="episode-progress"><span id="episode-label">ÉPISODE 01 / 25</span><strong id="episode-name">AVANT LES SIRÈNES</strong><span id="episode-arc">LES VISAGES DE LA CITÉ</span></div>
 <div class="adventure-panels">
-<div class="adventure-panel"><h3>CHEMINEMENT DE L'INTRIGUE</h3><div id="world-locations" class="adventure-actions" aria-label="Carte des lieux accessibles"></div></div>
-<div class="adventure-panel" id="exploration-panel"><h3>DÉCISIONS DANS LA SITUATION</h3><div id="world-actions" class="adventure-actions"></div></div>
+<div class="adventure-panel" id="exploration-panel"><h3>QUE DÉCIDE CHAYAH ?</h3><div id="world-actions" class="adventure-actions"></div></div>
 </div>
 <section id="combat-panel" class="combat-panel" hidden aria-live="polite">
 <span class="eyebrow">ALERTE / COMBAT TACTIQUE AU TOUR PAR TOUR</span>
@@ -48,6 +54,7 @@
 <button type="button" role="tab" id="info-tab-city" aria-selected="true" aria-controls="info-city" data-info-tab="city">VILLE</button>
 <button type="button" role="tab" id="info-tab-characters" aria-selected="false" aria-controls="info-characters" data-info-tab="characters">PERSONNAGES</button>
 <button type="button" role="tab" id="info-tab-relations" aria-selected="false" aria-controls="info-relations" data-info-tab="relations">RELATIONS</button>
+<button type="button" role="tab" id="info-tab-episodes" aria-selected="false" aria-controls="info-episodes" data-info-tab="episodes">ÉPISODES</button>
 <button type="button" role="tab" id="info-tab-journal" aria-selected="false" aria-controls="info-journal" data-info-tab="journal">JOURNAL</button>
 </div>
 <section id="info-city" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-city">
@@ -60,6 +67,8 @@
 <div class="adventure-panel"><h3>VILLE VIVANTE — PNJ</h3><ul id="npc-status-list"></ul></div>
 </section>
 <section id="info-relations" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-relations" hidden><div class="adventure-panel"><h3>RELATIONS ET DÉFENSE</h3><ul id="relation-list"></ul></div></section>
+<section id="info-episodes" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-episodes" hidden>
+<div class="adventure-panel"><h3>SAISON 1 — 25 ÉPISODES</h3><p class="simulation-note">La progression suit l'histoire. Les épisodes suivants ne peuvent pas être sautés.</p><div id="world-locations" class="adventure-actions episode-index"></div></div></section>
 <section id="info-journal" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-journal" hidden><div class="adventure-panel"><h3>JOURNAL DES ÉVÉNEMENTS</h3><ol id="adventure-journal"></ol></div></section>
 </aside>
 </div>
@@ -70,5 +79,6 @@
 <div id="encounter-modal" class="encounter-modal" hidden role="dialog" aria-modal="true" aria-labelledby="encounter-title"><div class="encounter-box"><button id="encounter-close" type="button" class="encounter-close" aria-label="Fermer">✕</button><span class="eyebrow">RENCONTRE / PERSONNAGE</span><h2 id="encounter-title"></h2><p id="encounter-text"></p><div id="encounter-options" class="adventure-actions"></div></div></div>
 <footer><a class="brand" href="./index.html"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a><p>CAMPAGNE EXPLORATOIRE · CHOIX ET CONSÉQUENCES</p></footer>
 <script src="./novela-campaign-data.js?v=3" defer></script>
-<script src="./novela-campaign.js?v=7" defer></script>
+<script src="./novela-season-25.js?v=1" defer></script>
+<script src="./novela-campaign.js?v=8" defer></script>
 </body></html>
