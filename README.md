@@ -43,7 +43,7 @@
 
 ### Progression de la saison
 
-La saison comporte actuellement **27 épisodes scénarisés et 54 scènes jouables** (soit davantage que le minimum de 25 épisodes demandé), regroupés en cinq mouvements narratifs. **Cela ne signifie pas 27 épisodes d'une heure** : les scènes sont des prototypes courts à développer davantage.
+La saison comporte actuellement **40 épisodes scénarisés et 104 scènes jouables** (soit davantage que le minimum de 25 épisodes demandé), regroupés en cinq mouvements narratifs. **Cela ne signifie pas 40 épisodes d'une heure** : les scènes sont des prototypes courts à développer davantage.
 
 | Épisodes | Mouvement | Objectifs narratifs |
 | --- | --- | --- |
@@ -51,7 +51,10 @@ La saison comporte actuellement **27 épisodes scénarisés et 54 scènes jouabl
 | 08–14 | Les Premières Cendres | Réception, disparition de documents, marché, reconnaissances, organisation défensive, première bataille |
 | 15–19 | Le Prix des Choix | Secours, reconstruction, découverte de l'arme ennemie, seconde attaque, **choix mortel de MAILEIZ (épisode 19)** |
 | 20–24 | Les Enquêtes | Archives, Conseil, expédition, ORVANN, Cendres, contre-opération, frère aux pactes |
-| 25–27 | Les Derniers Serments | Sanctuaire, conséquences des pactes, retour devant les habitants, mémoire et épilogue |
+| 25–27 | Les Derniers Serments | Sanctuaire, conséquences des pactes, retour devant les habitants et transition vers la guerre des cités |
+| 28–32 | La Guerre des Cités | Appels de VALÉDOR, BRUMELAC, SOLENNE et armées humaines ou monstrueuses |
+| 33–38 | Les Ordres du Voile | Notables complices, ASTERNE, généraux maudits, secondes demandes de renforts |
+| 39–40 | Les Fins du Serment | Jugement des financeurs et assemblée des six cités |
 
 Le joueur sélectionne **Mode Histoire** ou **Mode Impitoyable**, puis découvre un **prologue cinématique en cinq tableaux** raconté par le narrateur : la ville, les divinités, la mortalité de MAILEIZ, les premiers signes de menace et la décision d'entrer dans le récit. Un bouton permet de passer cette introduction.
 
@@ -62,12 +65,22 @@ Le **cheminement des épisodes** n'encombre plus l'écran principal : il est con
 - **CHAYAH** est le protagoniste principal ; son HUD conserve la **Vitalité** et la **Puissance divine** visibles.
 - Les humains mortels tels que **MAILEIZ** utilisent leur **Force** ; efforts, repos et fatigue peuvent l'affecter. Ce sont des valeurs de jeu et non une classification canonique des puissances.
 - Le menu **Informations** contient Ville, Personnages, Relations, Épisodes et Journal.
-- Les choix influencent les secours, les témoignages, les relations, la défense des quartiers, l'avancée ennemie et l'issue des trois affrontements tactiques.
+- Les choix influencent les secours, les témoignages, les relations, la défense des quartiers, l'avancée ennemie et l'issue des six affrontements tactiques.
 - Les PNJ agissent selon des phases de temps. Il s'agit d'initiatives scriptées, **pas d'une IA autonome complète**.
 - Au cours de l'**épisode 19**, MAILEIZ, mortelle, se précipite pour protéger une enfant face à une lance ennemie. CHAYAH peut **s'interposer**, **projeter un bouclier et absorber le choc**, ou **ne pas intervenir**. Les blessures et, en mode Impitoyable, une mort possible restent persistantes dans la partie ; une MAILEIZ décédée ne participe plus aux scènes suivantes.
 - Les adversaires humains possèdent une jauge de **Force** distincte de la Puissance divine. Les créatures et personnages dont la nature reste à confirmer ne reçoivent pas automatiquement un statut immortel.
 
-La progression est stockée localement dans `localStorage`, sous la clé **`divine-shadow-campaign-v5`**. Le passage aux 27 épisodes a nécessité une nouvelle version : les index des anciennes parties ne sont pas importés automatiquement. Les sauvegardes ne sont pas synchronisées entre appareils.
+La progression est stockée localement dans `localStorage`, sous la clé **`divine-shadow-campaign-v7`**. Le passage aux 27 épisodes a nécessité une nouvelle version : les index des anciennes parties ne sont pas importés automatiquement. Les sauvegardes ne sont pas synchronisées entre appareils.
+
+### Guerre des cités et fins diplomatiques
+
+Six villes sont suivies séparément : VALÉDOR et SOLENNE (alliées), BRUMELAC et ASTERNE (neutres), KARTHOS et NÉRALIS (ennemies). Leur **confiance**, leur **sécurité** et leur **menace** évoluent.
+
+Six appels à l'aide ont lieu aux épisodes **28, 30, 32, 34, 37 et 38**, avec décisions **OUI / NON**. Envoyer des renforts protège la ville mais réduit les unités disponibles chez CHAYAH. Refuser préserve ses moyens mais peut fragiliser une ville et rompre la confiance.
+
+Trois généraux commandent des unités en groupes : DRAEVEN (trois escouades de 7 soldats humains), MORTHYS (deux meutes de 6 monstres), VELKHAR (trois cohortes de 5 maudits). CALDRA VOSS, EDRIC MORN et PRÉLAT VARESS se présentent publiquement comme bienfaiteurs et juges tout en commanditant des violences dans l'ombre. **Le combat représente actuellement un groupe par une réserve de PV agrégée, non une IA individuelle de chaque combattant.**
+
+Plusieurs conclusions sont calculées à partir des villes secourues ou abandonnées, de la diplomatie, des pertes, du sort de MAILEIZ et de la vérité découverte sur le complot. Les nouveaux noms et lieux restent **des propositions de simulation non canoniques**.
 
 ### Architecture de la Novela
 
@@ -77,6 +90,8 @@ La progression est stockée localement dans `localStorage`, sous la clé **`divi
 | `novela-adventure.css` | Styles responsive, prologue narratif, écran de jeu, combats et menu |
 | `novela-campaign-data.js` | Personnages, ressources, combats et scènes de base |
 | `novela-season-25.js` | Assemblage de la **saison actuelle de 27 épisodes**, avec 54 scènes et cinématique (nom historique du fichier) |
+| `novela-war-data.js` | Cités, armées en groupes, généraux et commanditaires |
+| `novela-war-episodes.js` | Épisodes 28–40 et demandes d'aide |
 | `novela-campaign.js` | Moteur de simulation : décisions, conséquences, progression, combats, sauvegarde et narration |
 | `novela-adventure.html` | Redirection vers la page officielle |
 | `novela.js`, `novela-data.js`, `novela-adventure.js`, `novela-adventure-data.js` | Anciennes versions conservées mais non chargées |
