@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=6"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=7"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -20,11 +20,13 @@
 </div></section>
 <div id="game-root" hidden>
 <div class="adventure-chapter"><div><span class="eyebrow">SIMULATION NARRATIVE / PROTAGONISTE : CHAYAH</span><h2 id="chapter-title"></h2><p id="chapter-desc"></p></div><div class="adventure-top-actions"><span id="mode-name"></span><button id="reset-adventure" type="button">NOUVELLE PARTIE ↺</button></div></div>
-<div class="adventure-status" aria-label="État du personnage">
+<div class="player-hud" aria-label="Statut du personnage joué">
+<div class="player-identity"><span class="eyebrow">PERSONNAGE JOUÉ</span><strong>CHAYAH VEHUHIA</strong><span>IMMORTEL · DIVINITÉ</span></div>
+<div class="adventure-status">
 <div class="status-panel"><span>VITALITÉ</span><strong id="hp">100</strong><div class="progress-track"><i id="hp-fill"></i></div></div>
-<div class="status-panel"><span>ÉNERGIE DIVINE</span><strong id="energy">100</strong><div class="progress-track energy"><i id="energy-fill"></i></div></div>
-<div class="status-panel"><span>ÉTAT DE LA CITÉ</span><strong id="city-state">FRAGILE</strong></div>
-<div class="status-panel"><span>RENSEIGNEMENT</span><strong id="evidence-count">0 / 2</strong></div>
+<div class="status-panel"><span>PUISSANCE DIVINE <small>(ÉNERGIE)</small></span><strong id="energy">100</strong><div class="progress-track energy"><i id="energy-fill"></i></div></div>
+</div>
+<button id="info-menu-toggle" class="info-menu-toggle" type="button" aria-controls="info-drawer" aria-expanded="false">☷ INFORMATIONS <span id="info-menu-indicator">OUVRIR</span></button>
 </div>
 <div class="adventure-layout">
 <section class="adventure-main">
@@ -40,12 +42,25 @@
 <p id="combat-log" class="event-message"></p><div id="combat-actions" class="combat-actions" aria-label="Capacités de combat"></div>
 </section>
 </section>
-<aside class="adventure-sidebar">
-<div class="adventure-panel"><span class="eyebrow">OBJECTIFS</span><h3>CONSÉQUENCES EN DIRECT</h3><ol id="chapter-objectives"></ol></div>
+<aside id="info-drawer" class="adventure-sidebar info-drawer" hidden aria-label="Informations de la campagne">
+<div class="info-drawer-head"><h3>DOSSIER DE CAMPAGNE</h3><button id="info-menu-close" type="button" aria-label="Fermer les informations">FERMER ✕</button></div>
+<div class="info-tabs" role="tablist" aria-label="Catégories d'informations">
+<button type="button" role="tab" id="info-tab-city" aria-selected="true" aria-controls="info-city" data-info-tab="city">VILLE</button>
+<button type="button" role="tab" id="info-tab-characters" aria-selected="false" aria-controls="info-characters" data-info-tab="characters">PERSONNAGES</button>
+<button type="button" role="tab" id="info-tab-relations" aria-selected="false" aria-controls="info-relations" data-info-tab="relations">RELATIONS</button>
+<button type="button" role="tab" id="info-tab-journal" aria-selected="false" aria-controls="info-journal" data-info-tab="journal">JOURNAL</button>
+</div>
+<section id="info-city" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-city">
+<div class="adventure-panel"><h3>ÉTAT DE LA VILLE</h3><p>Stabilité : <strong id="city-state">70 / 100</strong></p><p>Renseignement : <strong id="evidence-count">0</strong></p></div>
+<div class="adventure-panel"><h3>CONSÉQUENCES EN DIRECT</h3><ol id="chapter-objectives"></ol></div>
 <div class="adventure-panel"><h3>ÉTAT DE L'ENQUÊTE</h3><ul id="clue-list"></ul></div>
-<div class="adventure-panel"><h3>RELATIONS ET DÉFENSE</h3><ul id="relation-list"></ul></div>
-<div class="adventure-panel"><h3>VILLE VIVANTE — PNJ</h3><ul id="npc-status-list"></ul><p class="simulation-note">Les habitants et responsables agissent aussi lorsque CHAYAH ne leur parle pas.</p></div>
-<div class="adventure-panel"><button id="journal-button" type="button" aria-expanded="false" aria-controls="journal-panel">JOURNAL DES ÉVÉNEMENTS ↓</button><div id="journal-panel" hidden><ol id="adventure-journal"></ol></div></div>
+</section>
+<section id="info-characters" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-characters" hidden>
+<div class="adventure-panel"><h3>PERSONNAGES CONNUS</h3><p class="simulation-note">Les mortels utilisent leur <strong>Force</strong>, les immortels leur <strong>Puissance divine</strong>. Les ressources des autres personnages restent séparées de celles de CHAYAH.</p><div id="character-list" class="character-resource-list"></div></div>
+<div class="adventure-panel"><h3>VILLE VIVANTE — PNJ</h3><ul id="npc-status-list"></ul></div>
+</section>
+<section id="info-relations" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-relations" hidden><div class="adventure-panel"><h3>RELATIONS ET DÉFENSE</h3><ul id="relation-list"></ul></div></section>
+<section id="info-journal" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-journal" hidden><div class="adventure-panel"><h3>JOURNAL DES ÉVÉNEMENTS</h3><ol id="adventure-journal"></ol></div></section>
 </aside>
 </div>
 <section id="adventure-ending" class="adventure-ending" hidden aria-live="polite"><span class="eyebrow">FIN DE LA CAMPAGNE PILOTE</span><h2 id="ending-title"></h2><p id="ending-text"></p><p>Les personnages gardent leurs choix et leurs propres objectifs. Cette continuité n'est pas automatiquement intégrée à l'histoire officielle.</p></section>
@@ -55,5 +70,5 @@
 <div id="encounter-modal" class="encounter-modal" hidden role="dialog" aria-modal="true" aria-labelledby="encounter-title"><div class="encounter-box"><button id="encounter-close" type="button" class="encounter-close" aria-label="Fermer">✕</button><span class="eyebrow">RENCONTRE / PERSONNAGE</span><h2 id="encounter-title"></h2><p id="encounter-text"></p><div id="encounter-options" class="adventure-actions"></div></div></div>
 <footer><a class="brand" href="./index.html"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a><p>CAMPAGNE EXPLORATOIRE · CHOIX ET CONSÉQUENCES</p></footer>
 <script src="./novela-campaign-data.js?v=2" defer></script>
-<script src="./novela-campaign.js?v=5" defer></script>
+<script src="./novela-campaign.js?v=6" defer></script>
 </body></html>
