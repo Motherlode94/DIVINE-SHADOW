@@ -10,6 +10,7 @@
   const portrait=document.createElement("div");portrait.className="population-portrait";portrait.setAttribute("role","img");
   portrait.setAttribute("aria-label","Portrait de "+person.name+", "+person.origin+", "+person.role);
   const col=person.portraitIndex%10,row=Math.floor(person.portraitIndex/10);
+  portrait.dataset.atlasRow=String(row);
   portrait.style.backgroundPosition=(col/9*100).toFixed(4)+"% "+(row/3*100).toFixed(4)+"%";
   wrap.append(portrait);return wrap;
  };
