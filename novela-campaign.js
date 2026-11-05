@@ -121,7 +121,7 @@ function battleTurn(action){
  if(b.enemy==="raider"){S.city=clamp(S.city-attrition,0,100);if(attrition>=2)S.injuries++}
  if(b.enemy==="shade")S.energy=clamp(S.energy-3,0,100);
  b.turn++;
- if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("Le combat s'étire : des blessés supplémentaires sont évacués.");}
+ if(b.turn>b.limit){S.city=clamp(S.city-8,0,100);S.injuries+=2;log("L’ennemi a atteint son objectif avant d’être arrêté : la défense doit décrocher.");outcome("retreat");return;}
  if(S.health===0){
   if(S.mode==="ruthless"){S.finished=true;S.ending="defeat";S.injuries+=6;log("CHAYAH est neutralisé ; la ville affronte l'attaque sans lui.");S.battle=null;render();return}
   S.health=38;S.energy=35;S.injuries+=3;flag("blessureDurable");log("La garde recueille CHAYAH. La défaite coûte du temps, et des civils sont blessés.");outcome("retreat");return;
