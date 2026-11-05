@@ -63,8 +63,5 @@
 .people .character .char-content h3 em{display:block;font-size:.9em;line-height:1.12}
 @media(max-width:800px){.people .character-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))}.people .character .character-art{height:330px}}
 
-/* Sans texte d'affiche : afficher seulement les versions recadrées terminées.
-   Les trois personnages utilisent ensuite le même cadre que la galerie entière. */
-.antagonist-section .portrait-photo:not([data-portrait-cropped="yes"]){opacity:0}
 .people .character .portrait-photo{object-position:center top}
 .people .character .char-content h3 em{font-size:clamp(25px,2.1vw,36px);overflow-wrap:break-word}
