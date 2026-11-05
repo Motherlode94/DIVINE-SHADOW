@@ -59,3 +59,10 @@
 #npc-status-list{display:grid;gap:4px}
 #npc-status-list li{border-bottom:1px solid #ffffff12;padding:7px 0}
 .simulation-note{font-size:11px;color:#bbb0bb;line-height:1.7}
+
+/* Décisions critiques : distinguer immédiatement le danger mortel d'un dialogue banal. */
+.critical-moment .scene-view{border:2px solid #df405a;background-image:linear-gradient(125deg,#340b15e8,#160b12dd),url('./assets/Guerri%C3%A8re%20de%20feu%20dans%20les%20ruines%20en%20flammes.png')}
+.critical-moment #world-actions .adventure-action{border:1px solid #dd5878;background:linear-gradient(120deg,#441b2b,#1b121d);padding:23px}
+.critical-moment #world-actions .adventure-action:hover{background:#6c253d}
+.critical-moment #world-actions .adventure-action small{color:#f1c4d1}
+.critical-moment #story-event{border-color:#ff576d}
