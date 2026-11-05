@@ -37,78 +37,55 @@
 - Les biographies, alliances et capacités marquées **« concept »** ou **« proposition »** restent à valider par le créateur. L'ajout d'une fiche n'officialise pas automatiquement toutes ses hypothèses.
 - Les personnages conservent leur libre arbitre ; les conflits et conséquences ne sont pas déterminés à l'avance. Les scènes de la Novela sont exploratoires tant qu'elles ne sont pas validées comme canon.
 
-## Novela — un seul jeu, une seule page
+## Novela interactive — Saison 1 : *La Nuit des Serments*
 
-**[JOUER : novela.html](./novela.html)** est l'entrée officielle de la Novela interactive **La Nuit des Serments**. La précédente présentation « Les Non-Dits — 3 épisodes / 6 décisions » a été retirée de la page publique : elle ne correspondait plus à la campagne demandée.
+**[Jouer à la Novela](./novela.html)** : **une seule interface officielle**, sans la démo séparée « Les Non-Dits — trois épisodes / six décisions ». L'ancien chemin `novela-adventure.html` redirige vers `novela.html`.
 
-La campagne présente 19 situations liées chronologiquement, dont le choix critique pendant lequel CHAYAH doit protéger MAILEIZ d'une lance potentiellement mortelle. Le jeu intègre défense de la ville, évacuation des habitants, enquêtes, rencontres, combats, réactions des PNJ, mode Histoire/Impitoyable et sauvegarde locale. Il s'agit d'une **simulation narrative pilote scénarisée**, et non encore d'un monde ouvert autonome.
+### Progression de la saison
 
-- `novela.html` : **seule interface publique de jeu** ; les choix de mode et l'histoire y sont directement accessibles.
-- `novela-adventure.html` : ancien chemin conservé uniquement comme redirection vers `novela.html`.
-- `novela-adventure.css` : présentation de l'interface commune.
-- `novela-campaign-data.js` : texte et embranchements des situations.
-- `novela-campaign.js` : état de la ville, conséquences, combats, relations et sauvegarde (`divine-shadow-campaign-v3`).
-- `novela.js` et `novela-data.js` : anciennes sources conservées dans le dépôt mais **non chargées** sur la page officielle.
+La saison comporte actuellement **27 épisodes scénarisés et 54 scènes jouables** (soit davantage que le minimum de 25 épisodes demandé), regroupés en cinq mouvements narratifs. **Cela ne signifie pas 27 épisodes d'une heure** : les scènes sont des prototypes courts à développer davantage.
 
-Les personnages gardent leur libre arbitre. La simulation ne valide pas automatiquement ses événements comme canon.
+| Épisodes | Mouvement | Objectifs narratifs |
+| --- | --- | --- |
+| 01–07 | Les Visages de la Cité | Prologue, vie quotidienne, civils, relations, politique, AETHER et MAILEIZ |
+| 08–14 | Les Premières Cendres | Réception, disparition de documents, marché, reconnaissances, organisation défensive, première bataille |
+| 15–19 | Le Prix des Choix | Secours, reconstruction, découverte de l'arme ennemie, seconde attaque, **choix mortel de MAILEIZ (épisode 19)** |
+| 20–24 | Les Enquêtes | Archives, Conseil, expédition, ORVANN, Cendres, contre-opération, frère aux pactes |
+| 25–27 | Les Derniers Serments | Sanctuaire, conséquences des pactes, retour devant les habitants, mémoire et épilogue |
 
-## Campagne narrative simulée — *La Nuit des Serments* (prototype v2)
+Le joueur sélectionne **Mode Histoire** ou **Mode Impitoyable**, puis découvre un **prologue cinématique en cinq tableaux** raconté par le narrateur : la ville, les divinités, la mortalité de MAILEIZ, les premiers signes de menace et la décision d'entrer dans le récit. Un bouton permet de passer cette introduction.
 
-Accessible depuis [novela-adventure.html](./novela-adventure.html), cette campagne est une **tranche jouable** distincte du lecteur de la première saison. Elle suit une chaîne causale de **18 situations**, réparties sur **deux actes** :
+Le **cheminement des épisodes** n'encombre plus l'écran principal : il est consultable dans le menu **Informations → Épisodes**. Les décisions de la scène utilisent désormais toute la largeur disponible.
 
-1. Réception interrompue → sortie en ville → évacuation du marché → protection des blessés → organisation défensive du Général → bataille de la Porte Ouest → bilan humain → enquête avec AETHER et NADIR → décision du Conseil avec ÉLÉAONOR.
-2. Départ hors de la ville → protection ou abandon relatif de voyageurs → enquête au laboratoire d'ORVANN → reconnaissance des ruines → embuscade du capitaine des Cendres → rencontre du frère de CHAYAH lié aux pactes → confrontation de l'Ombre → retour devant le Conseil → épilogue selon le bilan.
+### Mécaniques et conséquences
 
-### Choix critique — MAILEIZ (nouveau)
+- **CHAYAH** est le protagoniste principal ; son HUD conserve la **Vitalité** et la **Puissance divine** visibles.
+- Les humains mortels tels que **MAILEIZ** utilisent leur **Force** ; efforts, repos et fatigue peuvent l'affecter. Ce sont des valeurs de jeu et non une classification canonique des puissances.
+- Le menu **Informations** contient Ville, Personnages, Relations, Épisodes et Journal.
+- Les choix influencent les secours, les témoignages, les relations, la défense des quartiers, l'avancée ennemie et l'issue des trois affrontements tactiques.
+- Les PNJ agissent selon des phases de temps. Il s'agit d'initiatives scriptées, **pas d'une IA autonome complète**.
+- Au cours de l'**épisode 19**, MAILEIZ, mortelle, se précipite pour protéger une enfant face à une lance ennemie. CHAYAH peut **s'interposer**, **projeter un bouclier et absorber le choc**, ou **ne pas intervenir**. Les blessures et, en mode Impitoyable, une mort possible restent persistantes dans la partie ; une MAILEIZ décédée ne participe plus aux scènes suivantes.
+- Les adversaires humains possèdent une jauge de **Force** distincte de la Puissance divine. Les créatures et personnages dont la nature reste à confirmer ne reçoivent pas automatiquement un statut immortel.
 
-Pendant la fuite de la rue des Tisserands, MAILEIZ, **mortelle**, se précipite pour sauver une enfant menacée par une lance ennemie mortelle pour les humains. CHAYAH doit choisir entre :
+La progression est stockée localement dans `localStorage`, sous la clé **`divine-shadow-campaign-v5`**. Le passage aux 27 épisodes a nécessité une nouvelle version : les index des anciennes parties ne sont pas importés automatiquement. Les sauvegardes ne sont pas synchronisées entre appareils.
 
-- **S'interposer physiquement** : MAILEIZ survit, CHAYAH subit une forte perte de vitalité et d'énergie.
-- **Projeter un bouclier à distance et encaisser son contrecoup** : MAILEIZ est protégée si CHAYAH possède l'énergie nécessaire ; sinon elle survit blessée.
-- **Ne pas intervenir** : MAILEIZ est grièvement blessée. En mode **Impitoyable**, elle peut mourir ; le risque est plus faible si l'évacuation a été préparée.
+### Architecture de la Novela
 
-Le résultat de ce choix est **enregistré une seule fois** dans la sauvegarde. Une MAILEIZ morte ne peut plus intervenir dans le dispensaire ou l'épilogue de cette continuité. Aucun retour à la vie automatique n'est prévu. La mort est une conséquence **fictionnelle de la partie**, et non un changement du canon officiel.
+| Fichier | Utilisation |
+| --- | --- |
+| `novela.html` | Page publique unique : choix du mode, prologue, scène, HUD, combat et menu d'informations |
+| `novela-adventure.css` | Styles responsive, prologue narratif, écran de jeu, combats et menu |
+| `novela-campaign-data.js` | Personnages, ressources, combats et scènes de base |
+| `novela-season-25.js` | Assemblage de la **saison actuelle de 27 épisodes**, avec 54 scènes et cinématique (nom historique du fichier) |
+| `novela-campaign.js` | Moteur de simulation : décisions, conséquences, progression, combats, sauvegarde et narration |
+| `novela-adventure.html` | Redirection vers la page officielle |
+| `novela.js`, `novela-data.js`, `novela-adventure.js`, `novela-adventure-data.js` | Anciennes versions conservées mais non chargées |
 
-**Compatibilité :** le nouveau passage ajoute une scène à la chronologie. La sauvegarde de la simulation utilise la nouvelle clé `divine-shadow-campaign-v3` : les anciennes parties v2 ne sont pas importées car leurs indices de scènes seraient décalés.
+### Principes de récit
 
-### Ressources des personnages et interface du joueur
+Les personnages doivent avoir une histoire personnelle, des objectifs, des failles, du libre arbitre et un parcours d'évolution. Les scènes suivent une causalité compréhensible : vie quotidienne → tension → sortie → attaque → défense → pertes → enquête → expédition → conséquences. Les choix critiques ne doivent pas survenir avant que le joueur connaisse les personnages concernés.
 
-- **CHAYAH et les autres immortels confirmés** : `Puissance divine` (jauge d'énergie). Les capacités divines consomment cette ressource.
-- **MAILEIZ et les autres humains mortels** : `Force` (effort physique et endurance), individuelle et distincte de l'énergie divine. Sauvetages et courses peuvent la réduire ; le repos peut la restaurer. Une MAILEIZ épuisée est plus vulnérable pendant le choix critique.
-- **Ennemis humains** : leur `Force` diminue pendant leurs attaques ; une forte fatigue réduit leurs dégâts. Les entités ou personnages dont la nature n'est pas validée ne sont pas classés immortels automatiquement.
-- **HUD permanent** : seules l'identité, la vitalité et la puissance divine du personnage joué (CHAYAH) restent visibles. Un bouton **Informations** ouvre un dossier latéral en quatre onglets : **Ville**, **Personnages**, **Relations**, **Journal**.
-- **Valeurs de Force/Puissance divine** : paramètres de gameplay du prototype, **pas des niveaux de puissance canonisés**.
-
-La structure des sauvegardes passe à `divine-shadow-campaign-v4`. Les anciennes sauvegardes de simulation ne sont pas importées automatiquement.
-
-### Ce qui est déjà simulé
-
-- **Temps par phases** : les décisions et les tours de combat font avancer la situation. Des attaques ou des initiatives secondaires se déclenchent selon la progression.
-- **État de la ville** : sécurité civile, évacués, blessures, défense et progression adverse. La bataille n'est pas indépendante des préparatifs.
-- **Initiative des PNJ** : le Général mobilise, MIREN abrite des réfugiés, SELMA soigne, ÉLÉAONOR organise l'aide, AETHER enquête. Leurs activités progressent selon les événements.
-- **Relations et conséquences** : MAILEIZ reste libre et mortelle, AETHER peut contester CHAYAH, le Conseil réagit à la façon de gérer les preuves.
-- **Combat tactique narratif** : trois affrontements scénarisés, avec attaque, Void Step, garde, sceau, sommation et repli ; les ennemis ripostent à chaque tour.
-- **Modes Histoire / Impitoyable** : récupération après défaite avec conséquences, ou fin de route si CHAYAH est neutralisé.
-- **Sauvegarde locale indépendante** sous `divine-shadow-campaign-v2`, sans authentification ni synchronisation.
-
-### Architecture
-
-- `novela-campaign-data.js` : chapitres, situations, texte, choix et batailles ;
-- `novela-campaign.js` : gestion d'état, chronologie, décisions, initiatives de la ville, combat, bilan et sauvegarde ;
-- `novela-adventure.html` et `novela-adventure.css` : interface adaptée ordinateur et mobile.
-
-L'ancien prototype d'exploration `novela-adventure.js` / `novela-adventure-data.js` est conservé dans le dépôt mais **n'est plus chargé** par la page de campagne.
-
-### Direction littéraire et simulation — principes de développement
-
-1. **Personnages autonomes** : motivations, contradictions, failles et décisions indépendantes ; une statistique de relation ne force jamais un sentiment ou un choix.
-2. **Récit incarné** : point de vue cohérent, scènes de vie, perception des émotions et conséquences observables, pas une succession de boîtes de dialogue.
-3. **Causalité** : une sortie entraîne une rencontre, qui peut déclencher un secours, une alerte, une bataille, une enquête et des conséquences politiques.
-4. **Ville vivante** : les habitants travaillent, se soignent, fuient, défendent leurs maisons et répondent aux événements. Le pouvoir divin de CHAYAH n'efface pas leur libre arbitre.
-5. **Ennemis motivés** : une embuscade, un repli ou une négociation doivent correspondre à des objectifs ; les antagonistes ne sont pas de simples réserves de points de vie.
-6. **Canon sous contrôle du créateur** : le Général, ÉLÉAONOR et le frère aux pactes sont inclus sans inventer de noms ou capacités non validés. MIREN, SELMA, TOMAS et NADIR sont des propositions de civils.
-
-**Limites connues du prototype :** les 18 situations sont encore des scènes scriptées et non un monde ouvert autonome ; l'initiative des PNJ est basée sur des phases, pas une IA de planification avancée ; les combats sont textuels au tour par tour et non des affrontements en temps réel. La profondeur psychologique, les sous-intrigues et la durée des épisodes doivent continuer à être développées.
+**Limites actuelles :** l'ouverture est une cinématique textuelle illustrée (pas une vidéo animée ni une narration vocale), les épisodes sont encore courts, et la simulation demeure fondée sur des événements scriptés. Les mécanismes et événements **exploratoires** ne modifient pas le canon sans validation du créateur.
 
 ## Architecture du site
 
