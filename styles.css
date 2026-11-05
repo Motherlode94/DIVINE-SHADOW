@@ -32,3 +32,7 @@
 .seraphyra .character-art{background-image:linear-gradient(0deg,rgba(7,8,13,.18),transparent 60%),url("./assets/Image%20ChatGPT%205%20nov.%202026%2C%2017_14_06.png");background-size:cover;background-position:center 30%;background-repeat:no-repeat;display:block}
 .maileiz .character-art .maileiz-sigil,.seraphyra .character-art .seraphyra-sigil{display:none}
 .maileiz .character-art .art-caption,.seraphyra .character-art .art-caption{display:none}
+
+/* Photos intégrées directement dans le HTML : cadrage stable et sans répétition */
+.maileiz .character-art,.seraphyra .character-art{background-image:none!important}
+.character-art .portrait-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:center 28%;border:0}
