@@ -35,19 +35,9 @@
 .profile-visual.portrait-pending::after{display:none}
 
 
-/* Règle commune à toutes les fiches : même portrait plein cadre, texte séparé.
-   Les images avec lettrage incorporé sont cadrées sur la partie haute,
-   sans déplacer le titre ni changer l'architecture des pages. */
-.profile-intro h1{overflow-wrap:normal;word-break:normal}
-.profile-intro h1 em{line-height:1.06}
-.profile-intro h1.long-subtitle em{font-size:clamp(32px,3.65vw,58px);line-height:1.12;overflow-wrap:normal}
-.profile-visual[data-artwork="poster"] img{
-  top:0;bottom:auto;left:0;right:0;
-  width:100%;height:145%;
-  object-fit:cover;object-position:center top;
-}
-.profile-visual[data-artwork="poster"]::after{background:linear-gradient(0deg,#090a1230,transparent 27%)}
-@media(max-width:850px){
- .profile-intro h1.long-subtitle em{font-size:clamp(32px,6.7vw,54px)}
- .profile-visual[data-artwork="poster"] img{height:145%}
-}
+/* Fiches uniformes : ces réglages s'appliquent à TOUS les personnages. */
+.profile-intro h1{overflow-wrap:normal;word-break:normal;line-height:.94}
+.profile-intro h1 em{line-height:1.1;overflow-wrap:break-word}
+.profile-intro h1.long-subtitle em{font-size:clamp(32px,3.65vw,58px)}
+.profile-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center}
+@media(max-width:850px){.profile-intro h1.long-subtitle em{font-size:clamp(32px,6.7vw,54px)}}
