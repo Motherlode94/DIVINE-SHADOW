@@ -13,7 +13,7 @@
     const cut = bottomByName.get(filename);
     if (!cut) return;
     if (!img.complete || !img.naturalWidth) { img.addEventListener("load", () => cropPortrait(img), {once:true}); return; }
-    img.dataset.portraitCropped = "yes";
+    img.dataset.portraitCropped = "processing";
     const sourceWidth = img.naturalWidth;
     const sourceHeight = img.naturalHeight;
     const canvas = document.createElement("canvas");
@@ -25,7 +25,7 @@
     canvas.toBlob(blob => {
       if (blob) {
         const url = URL.createObjectURL(blob);
-        img.addEventListener("load", () => URL.revokeObjectURL(url), {once:true});
+        img.addEventListener("load", () => {img.dataset.portraitCropped="yes";URL.revokeObjectURL(url)}, {once:true});
         img.src = url;
       }
     }, "image/png");
