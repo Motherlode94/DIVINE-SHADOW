@@ -40,6 +40,16 @@ for(const row of rows){
  choice("Garder les preuves et poursuivre l'enquête.","Préserver les traces du complot.",{intel:2},["records-"+ep],"Les archives consignent les faits vérifiés.")]}
  C.scenes.push(start,next);C.season.episodes.push(info);
 }
+// L'ancien épilogue de l'épisode 27 devient la fin du premier acte, pas de la saison.
+const oldFinal=C.scenes.find(scene=>scene.id==="s18");
+if(oldFinal){
+ oldFinal.ending=false;
+ oldFinal.text+=" Alors qu'ÉLÉAONOR ferme la séance, six messagers surgissent aux portes du Conseil. Les cités voisines demandent audience : la guerre déborde désormais les frontières.";
+ oldFinal.choices=[
+  {label:"Recevoir les délégations des cités voisines.",hint:"Ouvre la guerre des cités sans interrompre la campagne.",delta:{intel:1,council:1},flags:["citesAttendues"],after:"Le Conseil réserve un siège à chaque cité, même neutre, et prépare les cartes des frontières."},
+  {label:"Ordonner d'abord un bilan des pertes et des réserves.",hint:"La cité doit connaître ses moyens avant d'accueillir de nouveaux fronts.",delta:{defense:1,trust:1},flags:["bilanAvantFrontiere"],after:"Le Général rassemble les comptes des soldats, et SELMA remet la liste des blessés."}
+ ];
+}
 for(let i=0;i<C.scenes.length;i++){
  const x=C.scenes[i],next=C.scenes[i+1]?.id;
  if(x.choices&&next)x.choices.forEach(a=>a.next=next);
