@@ -19,8 +19,15 @@ window.DS_CAMPAIGN={
   {label:"Organiser l'évacuation avec MIREN et TOMAS.",hint:"Les familles seront plus nombreuses à atteindre un abri.",delta:{city:3,clock:2},flags:["evacuation"],next:"s03"},
   {label:"Courir reconnaître les silhouettes aux remparts.",hint:"Repérage utile, mais les civils manquent d'escorte.",delta:{intel:2,city:-2},flags:["recon"],next:"s03"}]},
  {id:"s03",chapter:0,place:"Rue des Tisserands",who:"SELMA",text:"Une pluie de carreaux frappe les pavés. SELMA, médecin de quartier, refuse de quitter une vieille femme qui ne peut plus marcher. MAILEIZ se précipite pour repousser les flammes. La ville n'est plus un décor : elle souffre et chacun agit pour survivre.",choices:[
-  {label:"Maintenir un passage protégé jusqu'au dispensaire.",hint:"Protège les blessés ; CHAYAH dépense de l'énergie.",delta:{city:3,energy:-16},flags:["couloir"],next:"s04"},
-  {label:"Barrer la rue d'un mur de réalité et poursuivre les assaillants.",hint:"Retarde l'ennemi, mais laisse les secours sous pression.",delta:{defense:2,energy:-25,city:-1},flags:["mur"],next:"s04"}]},
+  {label:"Maintenir un passage protégé jusqu'au dispensaire.",hint:"Protège les blessés ; CHAYAH dépense de l'énergie.",delta:{city:3,energy:-16},flags:["couloir"],next:"s03_critical"},
+  {label:"Barrer la rue d'un mur de réalité et poursuivre les assaillants.",hint:"Retarde l'ennemi, mais laisse les secours sous pression.",delta:{defense:2,energy:-25,city:-1},flags:["mur"],next:"s03_critical"}]},
+ {id:"s03_critical",chapter:0,place:"Rue des Tisserands — l'impact",who:"MAILEIZ / CHAYAH",critical:true,
+ text:"MAILEIZ aperçoit une fillette coincée derrière une charrette renversée. Sans demander l'autorisation de CHAYAH, elle s'élance la tête la première, traverse les flammes et pousse l'enfant hors du passage. À l'autre bout de la rue, un engin ennemi se déploie. Une lance de rupture divine part droit vers elle. L'impact tuerait probablement une mortelle. CHAYAH est à plusieurs mètres : il n'a que le temps d'une décision.",
+ choices:[
+ {label:"Bondir devant MAILEIZ et encaisser l'impact à sa place.",hint:"Protection directe, CHAYAH reçoit une frappe redoutable. Blessure grave et perte d'énergie garanties.",critical:"interpose",next:"s04"},
+ {label:"Projeter un bouclier de réalité jusqu'à elle, puis absorber le choc à distance.",hint:"CHAYAH prend le contrecoup du bouclier. Coût divin élevé ; l'énergie disponible compte.",critical:"shield",next:"s04"},
+ {label:"Ne pas intervenir et la laisser tenter de survivre.",hint:"MAILEIZ garde son initiative ; blessure grave possible. En mode Impitoyable, sa mort est possible et permanente.",critical:"leave",next:"s04"}
+ ]},
  {id:"s04",chapter:0,place:"Rempart occidental",who:"LE GÉNÉRAL",text:"Le Général pointe deux cartes tachées de cendre. « La garnison peut tenir le centre, mais pas le passage du marché et les maisons basses ensemble. Vos pouvoirs ne remplaceront pas des médecins, des sentinelles et des itinéraires. Décidez où envoyer les réserves. » Ses officiers n'attendent pas une longue conversation : la porte tremble déjà.",choices:[
   {label:"Former deux lignes de défense et protéger les voies d'évacuation.",hint:"Plus de défense, couverture des civils.",delta:{defense:3,city:1,clock:1},flags:["barricades"],next:"s05"},
   {label:"Garder l'unité de réserve pour surprendre l'assaillant.",hint:"Plus de puissance offensive, un quartier reste fragile.",delta:{intel:2,defense:-1},flags:["reserve"],next:"s05"}]},
