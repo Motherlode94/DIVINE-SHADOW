@@ -594,20 +594,20 @@ $("cinematic-skip").addEventListener("click",endCinematic);
 // Illustrations déjà présentes dans le dépôt : aucun personnage sans portrait validé
 // ne reçoit l'image d'un autre. La scène conserve une ambiance visuelle distincte.
 const SCENE_CAST_IMAGES={
- "ISHA N'DALA":"cast/isha.webp",
- "LUCIEN MOREAU":"cast/lucien.webp",
- "SAMIRA EL-KHOURY":"cast/samira.webp",
- "REN TAKEDA":"cast/ren.webp",
- "AMAKA OKON":"cast/amaka.webp",
- "DIEGO VARELA":"cast/diego.webp",
- "HANA SEO":"cast/hana.webp",
- "YOUSSEF BENALI":"cast/youssef.webp",
- "ALINA PETROVA":"cast/alina.webp",
- "KWAME BOATENG":"cast/kwame.webp",
- "LE GÉNÉRAL":"cast/general.webp","LE GENERAL":"cast/general.webp",
- "ÉLÉAONOR":"cast/eleaonor.webp","ELEAONOR":"cast/eleaonor.webp",
- "LE FRÈRE AUX PACTES":"cast/brother.webp",
- "MIREN":"cast/miren.webp","SELMA":"cast/selma.webp","TOMAS":"cast/tomas.webp","NADIR":"cast/nadir.webp",
+ "ISHA N'DALA":"cast/hd/isha.webp",
+ "LUCIEN MOREAU":"cast/hd/lucien.webp",
+ "SAMIRA EL-KHOURY":"cast/hd/samira.webp",
+ "REN TAKEDA":"cast/hd/ren.webp",
+ "AMAKA OKON":"cast/hd/amaka.webp",
+ "DIEGO VARELA":"cast/hd/diego.webp",
+ "HANA SEO":"cast/hd/hana.webp",
+ "YOUSSEF BENALI":"cast/hd/youssef.webp",
+ "ALINA PETROVA":"cast/hd/alina.webp",
+ "KWAME BOATENG":"cast/hd/kwame.webp",
+ "LE GÉNÉRAL":"cast/hd/general.webp","LE GENERAL":"cast/hd/general.webp",
+ "ÉLÉAONOR":"cast/hd/eleaonor.webp","ELEAONOR":"cast/hd/eleaonor.webp",
+ "LE FRÈRE AUX PACTES":"cast/hd/brother.webp",
+ "MIREN":"cast/hd/miren.webp","SELMA":"cast/hd/selma.webp","TOMAS":"cast/hd/tomas.webp","NADIR":"cast/hd/nadir.webp",
 
  "CHAYAH":"chayah_hd_candidate.jpg","CHAYAH VEHUHIA":"chayah_hd_candidate.jpg",
  "AETHER":"aether_hd_candidate.jpg","AMARA":"cast/amara.webp",
@@ -661,7 +661,7 @@ function renderDialogue(scene,sceneText){
  })[speaker];
  const img=$("dialogue-portrait"),placeholder=$("dialogue-placeholder");
  const verified=Boolean(portraitKey&&speaker!=="NARRATION");
- img.hidden=!verified;placeholder.hidden=verified;
+ img.hidden=!verified;placeholder.hidden=verified;img.onerror=()=>{if(portraitKey?.startsWith("cast/hd/")&&!img.dataset.fallback){img.dataset.fallback="true";img.src=img.src.replace("/cast/hd/","/cast/");return;}img.hidden=true;placeholder.hidden=false;placeholder.textContent=speaker.slice(0,2)};img.dataset.fallback="";
  if(verified){
   const path="./assets/"+portraitKey.split("/").map(encodeURIComponent).join("/");
   if(img.getAttribute("src")!==path)img.src=path;
@@ -730,6 +730,8 @@ function renderSceneArt(scene){
  stage.dataset.kind=kind;
  img.hidden=!portrait;
  if(portrait){
+  img.onerror=()=>{if(portrait.startsWith("cast/hd/")&&!img.dataset.fallback){img.dataset.fallback="true";img.src=img.src.replace("/cast/hd/","/cast/");return;}img.hidden=true;};
+  img.dataset.fallback="";
   img.src="./assets/"+portrait.split("/").map(encodeURIComponent).join("/");
   img.alt="Portrait illustratif de "+key;
  }else{img.removeAttribute("src");img.alt="";}
