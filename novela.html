@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=30"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=31"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -77,6 +77,7 @@
 <button type="button" role="tab" id="info-tab-quests" aria-selected="false" aria-controls="info-quests" data-info-tab="quests">QUÊTES</button>
 <button type="button" role="tab" id="info-tab-reputation" aria-selected="false" aria-controls="info-reputation" data-info-tab="reputation">RÉPUTATION</button>
 <button type="button" role="tab" id="info-tab-living" aria-selected="false" aria-controls="info-living" data-info-tab="living">MONDE VIVANT</button>
+<button type="button" role="tab" id="info-tab-arcs" aria-selected="false" aria-controls="info-arcs" data-info-tab="arcs">ARCS PERSONNAGES</button>
 <button type="button" role="tab" id="info-tab-journal" aria-selected="false" aria-controls="info-journal" data-info-tab="journal">JOURNAL</button>
 </div>
 <section id="info-city" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-city">
@@ -104,6 +105,8 @@
 <div class="adventure-panel"><h3>HABITANTS ET RÉGIONS</h3><p class="simulation-note">Les PNJ poursuivent leurs activités lorsque le temps avance. Les incidents peuvent être résolus par les habitants sans CHAYAH ; la simulation ne modifie pas les décès ou relations canoniques.</p><div id="living-overview" class="living-overview"></div></div>
 <div class="adventure-panel"><h3>CHRONIQUE RÉGIONALE</h3><ol id="living-history" class="living-history"></ol></div>
 </section>
+<section id="info-arcs" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-arcs" hidden>
+<div class="adventure-panel"><h3>PARCOURS DES PERSONNAGES</h3><p class="simulation-note">Introduction, désir, contradiction et évolution. Les parcours non encore atteints restent masqués pour éviter les révélations prématurées. Ce suivi ne modifie aucune décision.</p><div id="character-arcs-list" class="character-arcs-list"></div></div></section>
 <section id="info-journal" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-journal" hidden>
 <div class="adventure-panel"><h3>CHRONIQUE DES ÉVÉNEMENTS</h3><div class="journal-filters" role="group" aria-label="Filtrer le journal"><button type="button" data-journal-filter="all" aria-pressed="true">TOUT</button><button type="button" data-journal-filter="choice" aria-pressed="false">CHOIX</button><button type="button" data-journal-filter="travel" aria-pressed="false">VOYAGES</button><button type="button" data-journal-filter="combat" aria-pressed="false">COMBATS</button></div><ol id="adventure-journal"></ol></div></section>
 </aside>
@@ -131,10 +134,11 @@
 <script src="./novela-season-175.js?v=3" defer></script>
 <script src="./novela-season-200.js?v=1" defer></script>
 <script src="./novela-season-225.js?v=1" defer></script>
+<script src="./novela-literary-revision.js?v=1" defer></script>
 <script src="./novela-world-data.js?v=1" defer></script>
 <script src="./novela-dialogue-data.js?v=1" defer></script>
 <script src="./novela-living-world.js?v=1" defer></script>
 <script src="./novela-rpg-data.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=31" defer></script>
+<script src="./novela-campaign.js?v=32" defer></script>
 </body></html>
