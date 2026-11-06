@@ -594,6 +594,21 @@ $("cinematic-skip").addEventListener("click",endCinematic);
 // Illustrations déjà présentes dans le dépôt : aucun personnage sans portrait validé
 // ne reçoit l'image d'un autre. La scène conserve une ambiance visuelle distincte.
 const SCENE_CAST_IMAGES={
+ "ISHA N'DALA":"cast/isha.webp",
+ "LUCIEN MOREAU":"cast/lucien.webp",
+ "SAMIRA EL-KHOURY":"cast/samira.webp",
+ "REN TAKEDA":"cast/ren.webp",
+ "AMAKA OKON":"cast/amaka.webp",
+ "DIEGO VARELA":"cast/diego.webp",
+ "HANA SEO":"cast/hana.webp",
+ "YOUSSEF BENALI":"cast/youssef.webp",
+ "ALINA PETROVA":"cast/alina.webp",
+ "KWAME BOATENG":"cast/kwame.webp",
+ "LE GÉNÉRAL":"cast/general.webp","LE GENERAL":"cast/general.webp",
+ "ÉLÉAONOR":"cast/eleaonor.webp","ELEAONOR":"cast/eleaonor.webp",
+ "LE FRÈRE AUX PACTES":"cast/brother.webp",
+ "MIREN":"cast/miren.webp","SELMA":"cast/selma.webp","TOMAS":"cast/tomas.webp","NADIR":"cast/nadir.webp",
+
  "CHAYAH":"chayah_hd_candidate.jpg","CHAYAH VEHUHIA":"chayah_hd_candidate.jpg",
  "AETHER":"aether_hd_candidate.jpg","AMARA":"cast/amara.webp",
  "ARJUN":"cast/arjun.webp","ÉLIAS":"cast/elias.webp","ELIAS":"cast/elias.webp",
@@ -645,7 +660,7 @@ function renderDialogue(scene,sceneText){
   "SERAPHYRA":"Image ChatGPT 5 nov. 2026, 17_14_06.png"
  })[speaker];
  const img=$("dialogue-portrait"),placeholder=$("dialogue-placeholder");
- const verified=Boolean(portraitKey&&speaker!=="NARRATION"&&speaker!=="LE GÉNÉRAL");
+ const verified=Boolean(portraitKey&&speaker!=="NARRATION");
  img.hidden=!verified;placeholder.hidden=verified;
  if(verified){
   const path="./assets/"+portraitKey.split("/").map(encodeURIComponent).join("/");
