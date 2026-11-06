@@ -504,6 +504,13 @@ function render(){
  if(S.battle){
   const b=S.battle,e=C.enemies[b.enemy];
   $("enemy-name").textContent=e.name;
+  const enemyArts={raider:"raider",captain:"captain",shade:"shade",legion:"legion",beasts:"beasts",cursed:"cursed",ancien:"ancien"};
+  const portraitKey=enemyArts[b.enemy]||"shade";
+  const portrait=$("battle-opponent-image");
+  const portraitUrl="./assets/enemies/"+portraitKey+".svg";
+  if(portrait.getAttribute("src")!==portraitUrl)portrait.setAttribute("src",portraitUrl);
+  portrait.alt="Illustration stylisée : "+e.name;
+
   $("enemy-desc").textContent=b.objective+" · Les ennemis conservent leur initiative.";
   $("enemy-hp").textContent=b.hp+" / "+b.max;
   $("enemy-hp-fill").style.width=100*b.hp/b.max+"%";
