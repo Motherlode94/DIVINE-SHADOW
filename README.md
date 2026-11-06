@@ -59,6 +59,14 @@ Les personnages et intrigues non encore ratifiés par le créateur demeurent des
 
 La Novela dispose maintenant de réglages de lecture : augmentation/diminution de la taille du texte (14 à 22 px), masquage facultatif de l'illustration et dernier choix enregistré dans la partie. Les préférences visuelles sont enregistrées séparément dans `divine-shadow-reader-v1` pour éviter d'altérer la sauvegarde des décisions. L'historique conserve les 20 derniers choix narratifs par partie.
 
+## Monde vivant — simulation par phases
+
+La carte contient un simulateur de quartier : **6 régions, 18 lieux et 12 modèles d'événements locaux**. Les activités des habitants et des groupes évoluent avec les phases (aube, jour, crépuscule et nuit). Les incidents peuvent être réglés par les populations locales à expiration, même sans intervention de CHAYAH. L'aide et l'observation sont des options facultatives, avec coût d'énergie ou gain modéré de renseignement ; aucune décision n'impose une victoire militaire, une relation ou une résurrection.
+
+La simulation dépend du **temps de jeu**, pas de l'horloge réelle : elle progresse pendant les actions et les voyages. Les incidents durent huit phases ; leurs résultats sont consignés dans les sauvegardes et accessibles via **Informations → Monde vivant**. L'interface de la carte montre les habitants, leurs occupations et les incidents actifs. Les régions débloquent leurs activités suivant la progression de l'histoire.
+
+Cette première version est un **modèle de simulation narratif**, pas encore une IA qui déplace physiquement des PNJ sur une scène 3D. Les événements sont des propositions de gameplay et ne changent pas le canon établi.
+
 ## Systèmes RPG — inventaire, réputation, quêtes et journal
 
 Le dossier **Informations** propose désormais trois onglets supplémentaires : **Inventaire**, **Quêtes** et **Réputation**, ainsi qu'un journal d'événements filtrable.
