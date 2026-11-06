@@ -59,6 +59,17 @@ Les personnages et intrigues non encore ratifiés par le créateur demeurent des
 
 La Novela dispose maintenant de réglages de lecture : augmentation/diminution de la taille du texte (14 à 22 px), masquage facultatif de l'illustration et dernier choix enregistré dans la partie. Les préférences visuelles sont enregistrées séparément dans `divine-shadow-reader-v1` pour éviter d'altérer la sauvegarde des décisions. L'historique conserve les 20 derniers choix narratifs par partie.
 
+## Systèmes RPG — inventaire, réputation, quêtes et journal
+
+Le dossier **Informations** propose désormais trois onglets supplémentaires : **Inventaire**, **Quêtes** et **Réputation**, ainsi qu'un journal d'événements filtrable.
+
+- **Inventaire documentaire** : preuves, notes de terrain, documents du Conseil et archives apparaissent seulement lorsque leurs conditions de découverte sont réellement remplies. On peut les sélectionner pour examiner leur provenance. Aucun équipement ou pouvoir non validé n'est accordé.
+- **Réputation par cité** : combine la confiance diplomatique déjà calculée par le moteur avec la reconnaissance des habitants (au plus +4 par région), obtenue seulement la première fois que l'on aide dans un lieu. Une visite répétée ne donne pas une récompense supplémentaire.
+- **Quêtes** : six objectifs liés aux flags et aux données de la campagne (évacuation, enquête, Conseil, renforts, exploration des cités et des lieux). Le joueur peut épingler une quête, visible près des décisions. La progression suit les événements existants, sans créer de scènes ni forcer de choix.
+- **Journal** : affiche les événements persistants et permet de filtrer les choix, les voyages et les combats. Le journal existant de sauvegarde reste la source des événements.
+
+Les nouveaux champs sont initialisés à la demande dans la **sauvegarde v8** : les parties existantes ne sont pas remises à zéro. Les documents acquis antérieurement sont déduits des drapeaux et des visites présents.
+
 ## Modes et combat
 
 **Mode Histoire :** la défaite peut permettre une continuation avec blessures et conséquences. **Mode Impitoyable :** la neutralisation peut clore la route ; les victimes et décisions restent importantes.
