@@ -285,3 +285,42 @@
 .continent-encounter{font-size:12px;line-height:1.7;color:#f2d9c5;border-left:3px solid #e9b17e;padding:12px 15px;background:#5b413455}
 @media(max-width:900px){.continent-layout{grid-template-columns:1fr}.continent-map{min-height:260px}.continent-sites{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.continent-regions,.continent-sites{grid-template-columns:1fr}.continent-pin{padding:5px;font-size:8px}.continent-map{min-height:240px}}
+
+/* Novela 225 — parcours lecture et hiérarchie éditoriale */
+.adventure-main{display:flex;flex-direction:column;gap:0}
+.novela-reading-nav{position:sticky;top:71px;z-index:12;display:flex;gap:5px;flex-wrap:wrap;align-items:center;padding:8px 10px;margin:0 0 12px;background:#0e111cfa;border:1px solid #86627d8c;box-shadow:0 6px 23px #0007;backdrop-filter:blur(12px)}
+.novela-reading-nav a{padding:10px 13px;color:#f3dfe8;text-decoration:none;border-radius:4px;font-size:11px;font-weight:900;letter-spacing:.045em;transition:background .2s}
+.novela-reading-nav a:hover,.novela-reading-nav a:focus-visible{background:#6d334d;color:#fff;outline:2px solid #f3afce;outline-offset:2px}
+.episode-progress{display:block;margin:0 0 12px;padding:18px 22px 15px;border:1px solid #895b7c91;background:linear-gradient(125deg,#231825,#101521);scroll-margin-top:135px}
+.episode-heading{display:flex;gap:8px 17px;flex-wrap:wrap;align-items:baseline}
+#episode-label{color:#ffc0d0;font-size:12px}
+#episode-name{flex:1 1 270px;font-size:clamp(28px,3.5vw,45px);line-height:1.08}
+#episode-arc{margin-left:auto;color:#ebbdca;font-size:11px}
+.episode-trajectory{height:5px;margin:16px 0 0;border-radius:8px;overflow:hidden;background:#ffffff26}
+.episode-trajectory i{display:block;height:100%;width:0;background:linear-gradient(90deg,#a84e76,#ffc5ab);transition:width .3s}
+.scene-view{border-radius:8px;box-shadow:0 13px 34px #0006}
+.scene-illustration{height:clamp(275px,42vw,485px);background-position:center 28%}
+.scene-view>#place-desc{font-size:clamp(15px,1.45vw,18px);line-height:1.85;color:#f3e7ed;letter-spacing:.005em}
+.scene-view>#story-event{white-space:pre-line;line-height:1.7;font-size:12px}
+#adventure-game{scroll-margin-top:96px}
+#exploration-panel{border-color:#885b77;background:linear-gradient(130deg,#211723,#15131e);border-radius:8px;scroll-margin-top:130px}
+#exploration-panel h3{font-size:clamp(25px,3vw,38px);margin:0 0 19px}
+#world-actions .adventure-action{border-radius:6px;min-height:82px;border-left:3px solid #b65d7c;background:#2a1d2c}
+#world-actions .adventure-action:hover:not(:disabled){background:#58304b;border-left-color:#ffbad0;transform:translateY(-1px)}
+.adventure-action:focus-visible,.continent-pin:focus-visible,#continent-toggle:focus-visible{outline:3px solid #ffc3ce;outline-offset:3px}
+.continent-explorer{scroll-margin-top:130px;border-radius:8px;overflow:hidden}
+.continent-top{background:linear-gradient(105deg,#292034,#141d2b)}
+.continent-legend{display:flex;gap:16px;flex-wrap:wrap;padding:12px 3px;color:#dacece;font-size:11px}
+.continent-legend span{display:flex;align-items:center;gap:7px}
+.legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#90c9ae}
+.legend-dot.neutral{background:#e5be90}
+.legend-dot.enemy{background:#ec9282}
+.continent-compass{position:absolute;right:12px;top:11px;z-index:1;border:1px solid #ffffff50;padding:5px 9px;font:800 12px monospace;color:#fff}
+.continent-pin{font-size:clamp(10px,1.15vw,13px);min-height:31px;box-shadow:0 5px 18px #0008}
+.continent-pin[aria-current="location"]{z-index:3;background:#3b4e39;color:white}
+.continent-site{border-radius:7px;transition:border-color .2s}
+.continent-site:hover{border-color:#ecc4ab}
+.continent-local h4{line-height:1.15}
+@media(max-width:760px){.novela-reading-nav{top:62px}.episode-progress{padding:14px 16px}.episode-heading{display:grid;gap:8px}#episode-arc{margin-left:0}.scene-illustration{height:275px}.scene-view>#place-desc{font-size:15px}}
+@media(max-width:520px){.novela-reading-nav{gap:2px;justify-content:space-around}.novela-reading-nav a{padding:9px 6px;font-size:9px}.continent-map{min-height:260px}.continent-pin{font-size:9px;min-height:29px}#world-actions .adventure-action{min-height:70px}}
+@media(prefers-reduced-motion:reduce){.episode-trajectory i,.novela-reading-nav a,.continent-site{transition:none}}
