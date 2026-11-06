@@ -217,3 +217,7 @@
 .cast-item-art:has(.cast-real-portrait) .cast-art-note{position:absolute;left:0;right:0;bottom:0;z-index:2;background:linear-gradient(0deg,#0c0a13f0,#0c0a1388);padding:8px 5px;text-align:center;font-size:9px;color:#f2d9df}
 .cast-item-art:has(.cast-real-portrait) .cast-vector-illustration{display:none!important}
 @media(max-width:720px){.cast-item-art:has(.cast-real-portrait){height:240px}}
+
+/* Restored portraits: high-density x4 files, correctly paired to each character */
+.cast-item-art:has(img.cast-real-portrait){background:#17131e}
+.cast-item-art img.cast-real-portrait{object-fit:cover;object-position:50% 23%;width:100%;height:100%;filter:none;image-rendering:auto}
