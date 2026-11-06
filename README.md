@@ -55,6 +55,10 @@ L'épisode 150 confronte CHAYAH à une présence antérieure à lui ; ses choix 
 
 Les personnages et intrigues non encore ratifiés par le créateur demeurent des **propositions** : ne pas les traiter comme canon automatiquement.
 
+### Préférences de lecture (v1)
+
+La Novela dispose maintenant de réglages de lecture : augmentation/diminution de la taille du texte (14 à 22 px), masquage facultatif de l'illustration et dernier choix enregistré dans la partie. Les préférences visuelles sont enregistrées séparément dans `divine-shadow-reader-v1` pour éviter d'altérer la sauvegarde des décisions. L'historique conserve les 20 derniers choix narratifs par partie.
+
 ## Modes et combat
 
 **Mode Histoire :** la défaite peut permettre une continuation avec blessures et conséquences. **Mode Impitoyable :** la neutralisation peut clore la route ; les victimes et décisions restent importantes.
