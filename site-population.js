@@ -7,11 +7,25 @@
  let current="Tous";
  const picture=(person)=>{
   const wrap=document.createElement("div");wrap.className="population-art";
-  const portrait=document.createElement("div");portrait.className="population-portrait";portrait.setAttribute("role","img");
-  portrait.setAttribute("aria-label","Portrait de "+person.name+", "+person.origin+", "+person.role);
-  const col=person.portraitIndex%10,row=Math.floor(person.portraitIndex/10);
-  portrait.dataset.atlasRow=String(row);
-  portrait.style.backgroundPosition=(col/9*100).toFixed(4)+"% "+(row/3*100).toFixed(4)+"%";
+  const portrait=document.createElement("img");
+  portrait.className="population-portrait population-photo";
+  portrait.alt="Portrait de "+person.name+", "+person.origin+", "+person.role;
+  portrait.loading="lazy";
+  portrait.decoding="async";
+  const index=Number(person.portraitIndex);
+  if(!Number.isInteger(index)||index<0||index>39)return wrap;
+  portrait.src="./assets/population/hd/portrait-"+String(index).padStart(2,"0")+".webp";
+  portrait.onerror=()=>{
+    portrait.remove();
+    const fallback=document.createElement("div");
+    fallback.className="population-portrait population-atlas-fallback";
+    fallback.setAttribute("role","img");
+    fallback.setAttribute("aria-label",portrait.alt);
+    const col=index%10,row=Math.floor(index/10);
+    fallback.dataset.atlasRow=String(row);
+    fallback.style.backgroundPosition=(col/9*100).toFixed(4)+"% "+(row/3*100).toFixed(4)+"%";
+    wrap.append(fallback);
+  };
   wrap.append(portrait);return wrap;
  };
  const build=(person)=>{
