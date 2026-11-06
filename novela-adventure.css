@@ -236,3 +236,18 @@
 #combat-panel[data-phase="2"] .battle-fighter{z-index:3;filter:drop-shadow(0 8px 21px #000a)}
 #combat-panel[data-phase="2"] .battle-opponent-art img{filter:brightness(1.13) saturate(1.1)}
 @media(max-width:620px){.battle-opponent-art{right:1%;width:44%}#combat-panel[data-phase="2"] .battle-opponent-art{right:14%;width:40%}}
+
+/* Retours d'impact : animation par tour et dégâts textuels accessibles */
+.battle-action-flash{position:absolute;z-index:1;inset:0;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 50% 50%,#ffbb8770,transparent 58%)}
+.battle-feedback{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 13px;background:#17141f;border:1px solid #ffffff26;margin-bottom:10px}
+.battle-feedback>*{font-size:11px;letter-spacing:.04em}
+#battle-move-name{font-weight:900;color:#ffe5c8}
+#battle-damage-value{color:#ffb18c;padding:5px 9px;border:1px solid #f2a27b5c}
+#battle-player-impact{color:#c4c2d7}
+#combat-panel[data-phase="2"] .battle-feedback{border-color:#c48a6f66}
+#battle-stage[data-enemy="shade"],#battle-stage[data-enemy="ancien"]{background:radial-gradient(ellipse at 65% 25%,#7453b45c,transparent 58%),linear-gradient(125deg,#090b1c,#181127)}
+#battle-stage[data-enemy="beasts"]{background:radial-gradient(ellipse at 65% 25%,#6e9e5670,transparent 58%),linear-gradient(125deg,#091711,#171d17)}
+#battle-stage[data-enemy="cursed"]{background:radial-gradient(ellipse at 65% 25%,#66c1ca70,transparent 58%),linear-gradient(125deg,#09191e,#19232a)}
+#battle-stage[data-enemy="captain"],#battle-stage[data-enemy="legion"]{background:radial-gradient(ellipse at 65% 25%,#c96b4770,transparent 58%),linear-gradient(125deg,#1e1012,#27202a)}
+@media(max-width:620px){.battle-feedback{gap:5px}.battle-feedback>*{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.battle-fighter,.battle-opponent-art{animation:none!important;transition:none!important}}
