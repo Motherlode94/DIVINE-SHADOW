@@ -426,3 +426,44 @@ body{overflow-x:clip}
  .info-drawer-head h3{font-size:22px}
  #info-drawer .info-tabs button{font-size:8px}
 }
+
+/* Correctif de lecture : cadre indépendant, le récit entier reste atteignable sans faire défiler la page */
+.scene-reading-body{min-width:0;padding:clamp(15px,2vw,27px);background:#100f18;overflow-wrap:break-word;scrollbar-width:thin;scrollbar-color:#b46588 #201823}
+.scene-reading-body>.eyebrow{display:block;color:#df829f;font-size:10px;letter-spacing:.14em}
+.scene-reading-body>h3{font-size:clamp(31px,3.8vw,51px);line-height:1.05;margin:10px 0 16px;overflow-wrap:anywhere}
+.scene-reading-body>#place-desc{font-size:clamp(14px,1.1vw,17px);line-height:1.75;color:#f1e5ec;margin:0;max-width:80ch;white-space:pre-line}
+.scene-reading-body>#story-event{white-space:pre-line;margin:18px 0 0;font-size:12px;line-height:1.7}
+@media(min-width:1050px){
+ .adventure-main .scene-view{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(145px,30dvh) minmax(220px,1fr);
+  height:calc(100dvh - 284px);
+  min-height:440px!important;
+  max-height:760px;
+  overflow:hidden!important;
+  align-self:start;
+  padding:0!important
+ }
+ .adventure-main .scene-illustration{height:100%!important;min-height:0;max-height:none}
+ .adventure-main .scene-reading-body{min-height:0;overflow-y:auto;overscroll-behavior:contain}
+ .adventure-main .adventure-panels{top:172px}
+ .adventure-main #exploration-panel{max-height:calc(100dvh - 190px)}
+ .adventure-main #world-actions .adventure-action{min-height:62px}
+}
+@media(min-width:1050px) and (max-height:750px){
+ .adventure-main .scene-view{height:calc(100dvh - 238px);min-height:335px;grid-template-rows:minmax(110px,24dvh) minmax(160px,1fr)}
+ .adventure-main .scene-reading-body{padding:14px 19px}
+ .adventure-main .adventure-panels{top:145px}
+ .adventure-main #exploration-panel{max-height:calc(100dvh - 165px)}
+}
+@media(max-width:1049px){
+ .scene-view{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important}
+ .scene-reading-body{overflow:visible;padding:18px}
+ .scene-illustration{height:clamp(195px,45vw,315px)}
+}
+@media(max-width:700px){
+ .scene-reading-body{padding:15px}
+ .scene-reading-body>h3{font-size:clamp(28px,8.5vw,43px)}
+ .scene-reading-body>#place-desc{font-size:14px;line-height:1.7}
+}
