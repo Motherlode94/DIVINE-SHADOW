@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 460" role="img" aria-label="Illustration originale de l'adversaire ancien">
+<defs><radialGradient id="back"><stop stop-color="#f4bc86" stop-opacity=".35"/><stop offset="1" stop-color="#090b16"/></radialGradient><linearGradient id="armor" x2=".9" y2="1"><stop stop-color="#f4bc86"/><stop offset=".36" stop-color="#242036"/><stop offset="1" stop-color="#080914"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="8"/></filter></defs>
+<rect width="360" height="460" fill="#0d101b"/><rect width="360" height="460" fill="url(#back)"/>
+<g opacity=".22" fill="none" stroke="#f4bc86" stroke-width="2"><circle cx="180" cy="175" r="155"/><circle cx="180" cy="175" r="131"/><path d="M0 125H360M0 340H360M180 0V460"/></g>
+<path d="M0 460 L69 261 L104 161 L92 85 L147 105 L184 35 L229 105 L275 83 L261 167 L307 277 L360 460 Z" fill="url(#armor)" stroke="#f4bc86" stroke-width="3" stroke-linejoin="round"/>
+<path d="M110 138 L145 94 L184 22 L225 94 L254 138 L232 195 L134 195 Z" fill="url(#armor)" stroke="#f4bc86" stroke-width="4" stroke-linejoin="round"/>
+<path d="M130 147 L165 130 L182 154 L206 130 L239 147 L217 188 L150 188 Z" fill="#10101b" stroke="#f4bc86" stroke-width="3"/>
+<path d="M147 145 L169 146 M194 146 L219 144" stroke="#f4bc86" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/>
+<path d="M147 145 L169 146 M194 146 L219 144" stroke="#fbede2" stroke-width="3" stroke-linecap="round"/>
+<path d="M55 460 L125 285 L149 330 L123 460 M305 460 L237 285 L213 330 L242 460" fill="#242036" opacity=".8" stroke="#f4bc86" stroke-width="2"/>
+<path d="M130 270 L177 294 L224 270 M146 325H211M153 357H206" fill="none" stroke="#f4bc86" stroke-width="2" opacity=".7"/>
+<path d="M10 449H350" stroke="#f4bc86" stroke-width="3" opacity=".6"/>
+</svg>
