@@ -185,3 +185,18 @@
 .isekai-status-header span{font:800 11px/1.4 monospace;color:#d7b3ef;background:#30203e;padding:7px 9px;border:1px solid #8a659d55}
 .isekai-status p{font-size:12px;line-height:1.75;color:#e0d0e7;margin:0}
 .isekai-status .isekai-attributes{font-family:monospace;line-height:2;color:#bdacde;word-spacing:3px}
+
+/* Scènes illustrées : images existantes du casting, sans portraits interchangeables */
+.scene-view{min-height:0!important;padding:0!important;background:#100f18!important;display:block!important;overflow:hidden}
+.scene-illustration{height:clamp(230px,35vw,420px);position:relative;background-color:#181320;background-position:center 32%;background-size:cover;background-repeat:no-repeat;border-bottom:1px solid #ffffff35;isolation:isolate}
+.scene-illustration::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#100f18c9 0%,transparent 60%);z-index:0}
+.scene-character-portrait{position:absolute;inset:auto auto 0 2%;height:min(92%,390px);width:min(34%,260px);object-fit:contain;object-position:bottom center;filter:drop-shadow(0 8px 28px #000b);z-index:1}
+.scene-illustration-caption{position:absolute;right:18px;bottom:16px;display:grid;gap:4px;max-width:58%;text-align:right;z-index:2;text-shadow:0 2px 8px #000}
+.scene-illustration-caption span{font-size:10px;letter-spacing:.15em;color:#f3c4ce}
+.scene-illustration-caption strong{font-size:clamp(13px,2vw,22px);color:white}
+.scene-view>.eyebrow,.scene-view>h3,.scene-view>#place-desc,.scene-view>#story-event{margin-left:clamp(17px,3vw,32px);margin-right:clamp(17px,3vw,32px)}
+.scene-view>.eyebrow{display:block;margin-top:22px}
+.scene-view>h3{font-size:clamp(32px,5vw,64px);margin-top:12px;margin-bottom:10px}
+.scene-view>#place-desc{max-width:900px}
+.scene-view>#story-event{margin-bottom:24px}
+@media(max-width:600px){.scene-illustration{height:225px}.scene-character-portrait{width:43%;max-height:215px}.scene-illustration-caption{max-width:53%;right:11px;bottom:10px}.scene-view>h3{font-size:36px}}
