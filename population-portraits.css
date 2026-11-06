@@ -22,3 +22,9 @@
 .population-portrait{width:62px!important;height:77px!important;background-size:620px 308px!important;background-repeat:no-repeat!important;flex:none;align-self:flex-start;filter:none!important;image-rendering:auto!important;transform:none!important;box-shadow:0 2px 8px #05040892}
 .population-portrait::before{height:10px!important}
 @media(max-width:390px){.population-portrait{width:58px!important;height:72.16px!important;background-size:580px 288.64px!important}}
+
+/* One indexed image per resident, 280x392 reconstructed source, never atlas scaled in normal view */
+.population-art:has(.population-photo){align-items:flex-start!important;padding:10px 8px!important}
+.population-portrait.population-photo{display:block!important;position:relative!important;width:98px!important;height:138px!important;max-width:100%!important;background-image:none!important;object-fit:cover;object-position:50% 12%;image-rendering:auto!important;filter:none!important;transform:none!important;border:1px solid #cbb59e7d;box-shadow:0 3px 15px #09070bba}
+.population-portrait.population-photo::before{display:none!important}
+@media(max-width:390px){.population-portrait.population-photo{width:91px!important;height:129px!important}}
