@@ -15,6 +15,115 @@ const fresh=mode=>({version:8,mode,introDone:false,introFrame:0,index:0,tick:0,h
 let S;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch{S=null}
 if(!S||S.version!==8||!C.scenes[S.index]||!S.npc||!S.resources)S=fresh(null);
 const has=f=>S.flags.includes(f),flag=f=>{if(!has(f))S.flags.push(f)};
+
+/* RPG — données additives à la sauvegarde v8, jamais de réécriture du canon. */
+function ensureRPG(){
+ if(!S.rpg||typeof S.rpg!=="object")S.rpg={reputation:{},tracked:"evacuer",inspected:null,visits:{},version:1};
+ if(!S.rpg.reputation||typeof S.rpg.reputation!=="object")S.rpg.reputation={};
+ if(!S.rpg.visits||typeof S.rpg.visits!=="object")S.rpg.visits={};
+ if(typeof S.rpg.tracked!=="string")S.rpg.tracked="evacuer";
+ return S.rpg;
+}
+function rpgItems(){
+ const visits=ensureWorldState().events||{};
+ return (C.rpg?.items||[]).filter(item=>
+  (item.source&&has(item.source))||(item.visit&&visits[item.visit])
+ );
+}
+function rpgQuestProgress(quest){
+ const ep=C.scenes[S.index]?.episode||1,world=ensureWorldState();
+ let current=0,total=quest.total||1,failed=false;
+ if(quest.flag){current=has(quest.flag)?1:0;failed=!current&&ep>quest.start&&ep>10&&["evacuer","conseil"].includes(quest.id);}
+ else if(quest.target==="aidDecisions")current=Object.keys(S.aidDecisions||{}).length;
+ else if(quest.target==="cities")current=1+(C.world?.cities||[]).filter(c=>c.id!=="valedor"&&(world.visits?.["region:"+c.id]||0)>0).length;
+ else if(quest.target==="sites")current=Object.values(world.events||{}).filter(Boolean).length;
+ current=Math.min(current,total);
+ const unlocked=ep>=quest.start||current>0;
+ return {current,total,unlocked,done:current>=total,failed:failed&&current<total};
+}
+function updateRPGQuests(){
+ const rpg=ensureRPG(), quests=C.rpg?.quests||[];
+ if(!quests.some(q=>q.id===rpg.tracked))rpg.tracked=quests[0]?.id||"";
+ const current=quests.find(q=>q.id===rpg.tracked);
+ const s=current?rpgQuestProgress(current):null;
+ const tracker=$("quest-tracker");
+ if(tracker)tracker.hidden=!current||!s||!s.unlocked;
+ if(tracker&&!tracker.hidden){
+  $("quest-tracker-name").textContent=current.title;
+  $("quest-tracker-progress").textContent=s.done?"ACCOMPLIE":s.failed?"MANQUÉE":s.current+" / "+s.total+" · "+current.objective;
+ }
+ const list=$("rpg-quests");if(!list)return;
+ list.replaceChildren();
+ for(const q of quests){
+  const progress=rpgQuestProgress(q),wrap=document.createElement("article");wrap.className="rpg-card";
+  if(q.id===rpg.tracked)wrap.classList.add("rpg-card-selected");
+  const header=document.createElement("div");header.className="rpg-card-head";
+  const title=document.createElement("strong");title.textContent=q.title;
+  const status=document.createElement("small");status.textContent=!progress.unlocked?"À DÉCOUVRIR":progress.done?"ACCOMPLIE":progress.failed?"MANQUÉE":"EN COURS";
+  header.append(title,status);
+  const desc=document.createElement("p");desc.textContent=q.objective;
+  const meter=document.createElement("div");meter.className="rpg-meter";
+  const filled=document.createElement("i");filled.style.width=(100*progress.current/progress.total)+"%";meter.append(filled);
+  const footer=document.createElement("div");footer.className="rpg-card-footer";
+  const count=document.createElement("span");count.textContent=q.kind+" · "+progress.current+" / "+progress.total;
+  const track=document.createElement("button");track.type="button";track.textContent=q.id===rpg.tracked?"SUIVIE":"ÉPINGLER";track.disabled=q.id===rpg.tracked||!progress.unlocked;
+  track.addEventListener("click",()=>{ensureRPG().tracked=q.id;render();switchInfo("quests")});
+  footer.append(count,track);wrap.append(header,desc,meter,footer);list.append(wrap);
+ }
+}
+function renderRPG(){
+ const rpg=ensureRPG(),items=rpgItems(),inventory=$("rpg-inventory");
+ if(inventory){
+  inventory.replaceChildren();
+  if(!items.length){const p=document.createElement("p");p.textContent="Aucun document acquis. Les preuves et notes apparaîtront après les actions correspondantes.";inventory.append(p)}
+  for(const item of items){
+   const b=document.createElement("button");b.type="button";b.className="rpg-item";
+   b.innerHTML="";
+   const title=document.createElement("strong");title.textContent=item.name;
+   const type=document.createElement("small");type.textContent=item.type+" · EXAMINER";
+   b.append(title,type);b.addEventListener("click",()=>{rpg.inspected=item.id;$("rpg-item-detail").textContent=item.name+" — "+item.description;save()});
+   inventory.append(b);
+  }
+  const selected=items.find(x=>x.id===rpg.inspected);
+  $("rpg-item-detail").textContent=selected?selected.name+" — "+selected.description:"Sélectionne un document pour l'examiner.";
+ }
+ const reput=$("rpg-reputation");if(reput){
+  reput.replaceChildren();
+  for(const city of C.world?.cities||[]){
+   const diplomatic=S.cityStates?.[city.id]?.trust??0,local=rpg.reputation[city.id]||0;
+   const value=clamp(diplomatic+local,-10,10);
+   const level=value>=6?"RESPECTÉ":value>=2?"ESTIMÉ":value<=-5?"HOSTILE":value<=-2?"MÉFIANT":"RÉSERVÉ";
+   const wrap=document.createElement("article");wrap.className="rpg-card";
+   const header=document.createElement("div");header.className="rpg-card-head";
+   const name=document.createElement("strong");name.textContent=city.name;
+   const rank=document.createElement("small");rank.textContent=level+" · "+(value>0?"+":"")+value+" / 10";
+   header.append(name,rank);
+   const desc=document.createElement("p");desc.textContent="Confiance diplomatique : "+diplomatic+" · Reconnaissance des habitants : "+local+".";
+   const track=document.createElement("div");track.className="rpg-meter";
+   const fill=document.createElement("i");fill.style.width=((value+10)/20*100)+"%";track.append(fill);
+   wrap.append(header,desc,track);reput.append(wrap);
+  }
+ }
+ updateRPGQuests();
+ renderRPGJournal();
+}
+let journalFilter="all";
+function renderRPGJournal(){
+ const list=$("adventure-journal");if(!list)return;
+ const entries=Array.isArray(S.log)?S.log:[];
+ const filtered=entries.filter(entry=>{
+  const line=String(entry);
+  if(journalFilter==="choice")return /CHAYAH :|CHAYAH agit|CHOIX|DÉSOBÉISSANCE/.test(line);
+  if(journalFilter==="travel")return /VOYAGE|EXCURSION|REVISITE/.test(line);
+  if(journalFilter==="combat")return /COMBAT|PHASE 2|BLESSURE|L'ennemi|FORMATION|RETRAITE|RAGE/.test(line);
+  return true;
+ });
+ list.replaceChildren();
+ const rows=filtered.slice(0,35);
+ if(!rows.length){const li=document.createElement("li");li.textContent="Aucune entrée dans cette catégorie pour le moment.";list.append(li)}
+ for(const line of rows){const li=document.createElement("li");li.textContent=line;list.append(li)}
+ document.querySelectorAll("[data-journal-filter]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.journalFilter===journalFilter)));
+}
 function log(text){S.log.unshift("T+"+S.tick+" • "+text);S.log=S.log.slice(0,70)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
 const button=(title,subtitle,onClick,disabled=false)=>{
@@ -575,6 +684,9 @@ function worldEvent(city,site){
  const first=!w.events[key];
  if(first){
   w.events[key]=true;
+  const rpg=ensureRPG();
+  rpg.reputation[city.id]=clamp((rpg.reputation[city.id]||0)+1,0,4);
+
   for(const [resource,delta]of Object.entries(site.effect||{})){
    if(typeof S[resource]==="number")S[resource]=clamp(S[resource]+delta,resource==="trust"||resource==="council"?-10:0,resource==="intel"?30:100);
   }
@@ -653,6 +765,7 @@ function render(){
  $("mode-setup").hidden=true;$("game-root").hidden=false;
  applyReaderSettings();
  renderDecisionMemory();
+ renderRPG();
  const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
  renderWorld();
  const episode=C.season?.episodes[n.episode-1];
@@ -899,8 +1012,7 @@ function render(){
   }
  }
  const npcList=$("npc-status-list");if(npcList){npcList.replaceChildren();Object.entries(S.npc).forEach(([name,activity])=>{const li=document.createElement("li");li.textContent=name.toUpperCase()+" : "+activity;npcList.append(li)})}
- const journal=$("adventure-journal");journal.replaceChildren();
- [ ...S.log.slice(0,12), ...Object.entries(S.npc).map(([k,v])=>k.toUpperCase()+" : "+v)].forEach(line=>{const li=document.createElement("li");li.textContent=line;journal.append(li)});
+ renderRPGJournal();
  const ending=$("adventure-ending");ending.hidden=!S.finished;
  if(S.finished){$("ending-title").textContent=S.ending==="defeat"?"LA VILLE SANS SON PROTECTEUR":S.ending.title;$("ending-text").textContent=S.ending==="defeat"?"CHAYAH a été neutralisé. Dans cette continuité impitoyable, les survivants poursuivent sans lui.":S.ending.text;}
  save();
@@ -934,6 +1046,8 @@ document.addEventListener("keydown",e=>{
 $("reader-smaller").addEventListener("click",()=>changeReaderSetting("smaller"));
 $("reader-larger").addEventListener("click",()=>changeReaderSetting("larger"));
 $("reader-image").addEventListener("click",()=>changeReaderSetting("image"));
+$("quest-tracker-open").addEventListener("click",()=>{openInfo(true);switchInfo("quests")});
+document.querySelectorAll("[data-journal-filter]").forEach(b=>b.addEventListener("click",()=>{journalFilter=b.dataset.journalFilter;renderRPGJournal()}));
 $("dialogue-next").addEventListener("click",()=>advanceDialogue(false));
 $("dialogue-skip").addEventListener("click",()=>advanceDialogue(true));
 switchInfo("city");
