@@ -306,7 +306,7 @@ function battleTurn(action){
  S.energy=clamp(S.energy-cost,0,100);
  damage=Math.max(0,damage);
  b.hp=clamp(b.hp-Math.max(0,Math.floor(damage)-e.armor),0,b.max);
- if(b.phase===1&&b.hp>0&&b.hp<=b.max*.5){b.phase=2;b.combo=0;b.stagger=0;log("PHASE 2 — CORPS À CORPS : l’adversaire rompt la distance. Enchaînements, balayage et saisies deviennent disponibles.");}
+ if((b.phase||1)===1&&b.hp>0&&b.hp<=b.max*.5){b.phase=2;b.combo=0;b.stagger=0;b.last="PHASE 2 — CORPS À CORPS : l’adversaire franchit la distance. Les attaques rapprochées deviennent disponibles.";log(b.last);}
  let blow=0;
  if(b.hp>0){
   if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
@@ -324,7 +324,7 @@ function battleTurn(action){
   S.injuryNotes=S.injuryNotes.slice(0,8);
   log("BLESSURE : le corps immortel de CHAYAH conserve ses lésions.");
  }
- b.last=(narrative[action]||"Les deux camps hésitent.")+" "+(physical>0?"La riposte frappe son corps. Immortel, il saigne et vacille sans mourir.":"L'adversaire manque sa cible.")+" "+(S.injuryLevel>=3?"Ses anciennes blessures limitent désormais sa vitesse.":"");
+ b.last=((b.phase||1)===2?"[CORPS À CORPS] ":"")+ (narrative[action]||"Les deux camps hésitent.")+" "+(physical>0?"La riposte frappe son corps. Immortel, il saigne et vacille sans mourir.":"L'adversaire manque sa cible.")+" "+(S.injuryLevel>=3?"Ses anciennes blessures limitent désormais sa vitesse.":"");
  S.beat=b.last;S.battleTone=action==="ward"?"defense":action==="fury"?"fury":action==="void"?"speed":physical>=15?"impact":"attack";
  S.spent++;advanceClock(1);
  if(b.hp<=0){outcome("win");return}
@@ -509,6 +509,12 @@ function render(){
   $("enemy-force-panel").hidden=e.resource!=="force";
   if(e.resource==="force"){$("enemy-force").textContent=b.force??100;$("enemy-force-fill").style.width=(b.force??100)+"%"}
   $("combat-turn").textContent="PHASE "+(b.phase||1)+" · TOUR "+b.turn+" / "+b.limit;
+  combat.dataset.phase=String(b.phase||1);
+  const phaseBanner=$("combat-phase-banner"),comboStatus=$("melee-combo-status");
+  phaseBanner.textContent=(b.phase||1)===2?"PHASE 2 — CORPS À CORPS":"PHASE 1 — POUVOIRS ET DISTANCE";
+  comboStatus.hidden=(b.phase||1)!==2;
+  comboStatus.textContent="COMBO : "+(b.combo||0)+" · GARDE ADVERSE : "+(b.stagger>0?"DÉSÉQUILIBRÉE":"STABLE");
+
   $("combat-log").textContent=b.last;
   $("combat-panel").dataset.impact=S.battleTone||"idle";
   const wounds=$("combat-wounds");if(wounds)wounds.textContent="LÉSIONS : "+S.injuryLevel+"/8 — "+(S.injuryNotes[0]||"Aucune blessure durable");
