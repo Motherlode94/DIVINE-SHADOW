@@ -263,9 +263,9 @@ function battleTurn(action){
  pyroGenesis:"MAILEIZ avance et fait jaillir des flammes de ses paumes. La chaleur repousse la première ligne. Elle halète : sa puissance ne lui accorde aucune immortalité.",
   parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
  };
- if(action==="jab"){damage=12-fatigue/2;b.combo=(b.combo||0)+1;S.energy=clamp(S.energy+3,0,100)}
- if(action==="sweep"){damage=9-fatigue/2;b.stagger=1;b.combo=(b.combo||0)+1}
- if(action==="grapple"){damage=8-fatigue/2;guard=true;b.stagger=2;b.combo=(b.combo||0)+1;recoil=3}
+ if(action==="jab"){damage=12-fatigue/2;b.combo=clamp((b.combo||0)+1,0,4);S.energy=clamp(S.energy+3,0,100)}
+ if(action==="sweep"){damage=9-fatigue/2;b.stagger=2;b.combo=clamp((b.combo||0)+1,0,4)}
+ if(action==="grapple"){damage=8-fatigue/2;guard=true;b.stagger=2;b.combo=clamp((b.combo||0)+1,0,4);recoil=3}
  if(action==="breakGuard"){cost=11;if(S.energy<cost)return;damage=19+Math.min(12,(b.combo||0)*3)+((b.stagger||0)>0?8:0)-fatigue;recoil=4;b.combo=0;b.stagger=0}
  if(action==="strike"){damage=22-fatigue;S.energy=clamp(S.energy+4,0,100)}
  if(action==="void"){cost=19;if(S.energy<cost)return;damage=27-fatigue;dodge=true;recoil=3}
@@ -306,7 +306,8 @@ function battleTurn(action){
  S.energy=clamp(S.energy-cost,0,100);
  damage=Math.max(0,damage);
  b.hp=clamp(b.hp-Math.max(0,Math.floor(damage)-e.armor),0,b.max);
- if((b.phase||1)===1&&b.hp>0&&b.hp<=b.max*.5){b.phase=2;b.combo=0;b.stagger=0;b.last="PHASE 2 — CORPS À CORPS : l’adversaire franchit la distance. Les attaques rapprochées deviennent disponibles.";log(b.last);}
+ const phaseShift=(b.phase||1)===1&&b.hp>0&&b.hp<=b.max*.5;
+ if(phaseShift){b.phase=2;b.combo=0;b.stagger=0;log("PHASE 2 — CORPS À CORPS : l’adversaire franchit la distance.");}
  let blow=0;
  if(b.hp>0){
   if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
@@ -324,7 +325,7 @@ function battleTurn(action){
   S.injuryNotes=S.injuryNotes.slice(0,8);
   log("BLESSURE : le corps immortel de CHAYAH conserve ses lésions.");
  }
- b.last=((b.phase||1)===2?"[CORPS À CORPS] ":"")+ (narrative[action]||"Les deux camps hésitent.")+" "+(physical>0?"La riposte frappe son corps. Immortel, il saigne et vacille sans mourir.":"L'adversaire manque sa cible.")+" "+(S.injuryLevel>=3?"Ses anciennes blessures limitent désormais sa vitesse.":"");
+ b.last=(phaseShift?"⚔ PHASE 2 DÉCLENCHÉE — L’adversaire rompt la distance. ":"")+((b.phase||1)===2?"[CORPS À CORPS] ":"")+ (narrative[action]||"Les deux camps hésitent.")+" "+(physical>0?"La riposte frappe son corps. Immortel, il saigne et vacille sans mourir.":"L'adversaire manque sa cible.")+" "+(S.injuryLevel>=3?"Ses anciennes blessures limitent désormais sa vitesse.":"");
  S.beat=b.last;S.battleTone=action==="ward"?"defense":action==="fury"?"fury":action==="void"?"speed":physical>=15?"impact":"attack";
  S.spent++;advanceClock(1);
  if(b.hp<=0){outcome("win");return}
@@ -513,7 +514,9 @@ function render(){
   const phaseBanner=$("combat-phase-banner"),comboStatus=$("melee-combo-status");
   phaseBanner.textContent=(b.phase||1)===2?"PHASE 2 — CORPS À CORPS":"PHASE 1 — POUVOIRS ET DISTANCE";
   comboStatus.hidden=(b.phase||1)!==2;
-  comboStatus.textContent="COMBO : "+(b.combo||0)+" · GARDE ADVERSE : "+(b.stagger>0?"DÉSÉQUILIBRÉE":"STABLE");
+  comboStatus.textContent="COMBO : "+(b.combo||0)+"/4 · GARDE ADVERSE : "+(b.stagger>0?"DÉSÉQUILIBRÉE":"STABLE");
+  $("combat-phase-help").textContent=(b.phase||1)===2?"Corps à corps : prépare un combo puis utilise Brise-garde. Actions rapides : touches 1 à 4.":"Phase 2 au-dessous de 50 % de PV, si l’adversaire survit. Garde et pouvoirs restent disponibles.";
+  $("enemy-halfway").style.left="50%";
 
   $("combat-log").textContent=b.last;
   $("combat-panel").dataset.impact=S.battleTone||"idle";
@@ -542,6 +545,14 @@ function render(){
    button("REPLI TACTIQUE","Met les civils et les soldats en danger, puis poursuit la continuité.",()=>battleTurn("retreat")),
    ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
   );
+  // Les quatre premières commandes du corps à corps sont utilisables au clavier.
+  const quickKeys=(b.phase||1)===2?["1","2","3","4"]:[];
+  [...skills.children].forEach((actionButton,i)=>{
+    if(i<quickKeys.length){
+      actionButton.dataset.hotkey=quickKeys[i];
+      actionButton.setAttribute("aria-keyshortcuts",quickKeys[i]);
+    }
+  });
  }
  const objectives=$("chapter-objectives");objectives.replaceChildren();
  const objectivesText=[
@@ -660,6 +671,14 @@ function switchInfo(id){
 }
 tabs.forEach(t=>t.addEventListener("click",()=>switchInfo(t.dataset.infoTab)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!drawer.hidden)openInfo(false)});
+document.addEventListener("keydown",e=>{
+ if(!S?.battle||S.finished||S.mode===null||!S.introDone||!["1","2","3","4"].includes(e.key))return;
+ if(e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;
+ if(e.target?.closest?.("input, textarea, select, [contenteditable=true], [role=dialog]"))return;
+ const btn=$("combat-actions")?.querySelector('[data-hotkey="'+e.key+'"]');
+ if(btn&&!btn.disabled){e.preventDefault();btn.click();}
+});
+
 switchInfo("city");
 $("menu").addEventListener("click",()=>{const links=$("links");const open=links.classList.toggle("open");$("menu").setAttribute("aria-expanded",String(open))});
 render();
