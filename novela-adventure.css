@@ -595,3 +595,24 @@ body{overflow-x:clip}
 #adventure-journal{padding-left:23px}
 #adventure-journal li{font-size:12px;line-height:1.65;overflow-wrap:anywhere;padding:7px 0;border-bottom:1px solid #ffffff16}
 @media(max-width:700px){#info-drawer .info-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}#info-drawer .info-tabs button{font-size:9px;min-height:44px}.rpg-item{flex-direction:column;align-items:flex-start}}
+
+/* Monde vivant : cycle de 4 phases, incidents territoriaux et initiative des PNJ */
+.living-neighborhood{padding:17px;margin-top:18px;border:1px solid #b5a2af66;background:linear-gradient(130deg,#162029,#1a1521);border-radius:8px;min-width:0}
+.living-head{display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.living-head h4{font-size:clamp(20px,2vw,28px);margin:0;line-height:1.15}
+.living-head span{font-size:11px;color:#e4b8c3;line-height:1.6}
+.living-overview{display:grid;gap:11px}
+.living-npc-card{min-width:0;padding:13px;border:1px solid #ffffff2c;border-radius:6px;background:#201b2a}
+.living-npc-card>strong{font-size:15px;color:#f5e0e8}
+.living-npc-card>p{font-size:12px;line-height:1.6;margin:7px 0;color:#d9ccd6;overflow-wrap:anywhere}
+.living-npc-card .living-person{padding:6px 0;border-bottom:1px solid #ffffff17}
+.living-npc-card .living-news{font-weight:700;color:#ffc49f}
+.living-event{margin-top:12px;padding:14px;background:#35243377;border-left:3px solid #efaa92}
+.living-event h5{margin:0;font-size:18px}
+.living-event p{line-height:1.7;font-size:13px;color:#ead9e2}
+.living-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.living-actions .adventure-action{min-width:0;padding:12px;min-height:70px}
+.living-actions .adventure-action strong{font-size:12px}
+.living-history{padding-left:22px}
+.living-history li{padding:8px 0;border-bottom:1px solid #ffffff1b;line-height:1.65;font-size:12px;overflow-wrap:anywhere}
+@media(max-width:700px){.living-actions{grid-template-columns:1fr}.living-neighborhood{padding:12px}.living-npc-card>strong{font-size:14px}#info-drawer .info-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}#info-drawer .info-tabs button{font-size:10px}}
