@@ -540,3 +540,27 @@ body{overflow-x:clip}
  .scene-reading-body{max-height:none!important;overflow:visible!important}
  .cinematic-dialogue:not([hidden]){max-height:none!important;overflow:visible!important}
 }
+
+/* Confort de lecture : réglages réels et mémoire des décisions */
+.novela-reading-nav{justify-content:space-between}
+.reader-links,.reader-settings{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.reader-settings{margin-left:auto;gap:7px}
+.reader-settings>span{font-weight:900;font-size:10px;letter-spacing:.07em;color:#e9b3c4}
+.reader-settings button{min-height:35px;min-width:37px;border:1px solid #b07c97;background:#251927;border-radius:4px;color:#fff;font-weight:900;padding:6px 9px;font-size:11px;cursor:pointer}
+.reader-settings button:hover:not(:disabled),.reader-settings button:focus-visible{background:#63314f;outline:2px solid #ffccd8}
+.reader-settings button:disabled{opacity:.35;cursor:not-allowed}
+#reader-image{min-width:94px}
+#game-root .scene-reading-body>#place-desc{font-size:var(--reader-font-size,16px)!important;line-height:1.75}
+#game-root .scene-reading-body>#story-event{font-size:calc(var(--reader-font-size,16px) * .86)!important;line-height:1.6}
+#game-root .cinematic-dialogue #dialogue-text{font-size:var(--reader-font-size,16px)!important;line-height:1.65}
+#game-root.reader-image-off .scene-illustration{display:none!important}
+@media(min-width:1050px){
+ #game-root.reader-image-off .adventure-main .scene-view{grid-template-rows:minmax(0,1fr)!important}
+ #game-root.reader-image-off .adventure-main .scene-view[data-has-dialogue="true"]{grid-template-rows:minmax(108px,max-content) minmax(0,1fr)!important}
+ #game-root.reader-image-off .adventure-main .cinematic-dialogue{grid-row:1}
+ #game-root.reader-image-off .adventure-main .scene-reading-body{grid-row:auto}
+}
+.decision-memory{margin-top:15px;padding:12px;border-left:3px solid #e5ae86;background:#43302755;color:#f5dfd4;line-height:1.55}
+.decision-memory strong{font-size:10px;letter-spacing:.07em}
+.decision-memory p{font-size:12px;margin:7px 0 0;overflow-wrap:anywhere}
+@media(max-width:700px){.novela-reading-nav{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}.reader-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.reader-settings{width:100%;justify-content:flex-end}.reader-settings button{min-height:40px}}
