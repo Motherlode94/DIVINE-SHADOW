@@ -14,8 +14,18 @@
   portrait.decoding="async";
   const index=Number(person.portraitIndex);
   if(!Number.isInteger(index)||index<0||index>39)return wrap;
-  portrait.src="./assets/population/hd/portrait-"+String(index).padStart(2,"0")+".webp";
+  // Portraits nouvellement illustrés pour les 12 premiers habitants : fichier individuel
+  // et identité strictement liée à portraitIndex; les autres gardent leur source existante.
+  const hasFreshPhoto=index<12;
+  const file=String(index).padStart(2,"0")+".webp";
+  portrait.src="./assets/population/"+(hasFreshPhoto?"new/":"hd/")+"portrait-"+file;
+  portrait.dataset.fresh=String(hasFreshPhoto);
   portrait.onerror=()=>{
+    if(portrait.dataset.fresh==="true"&&!portrait.dataset.oldSourceTried){
+      portrait.dataset.oldSourceTried="true";
+      portrait.src="./assets/population/hd/portrait-"+String(index).padStart(2,"0")+".webp";
+      return;
+    }
     portrait.remove();
     const fallback=document.createElement("div");
     fallback.className="population-portrait population-atlas-fallback";
@@ -30,7 +40,7 @@
  };
  const build=(person)=>{
   const el=document.createElement("article");
-  el.className="population-card"+(person.featured?" population-featured":"");
+  el.className="population-card"+(person.featured?" population-featured":"")+(person.portraitIndex<12?" population-new-photo":"");
   const art=picture(person);
   const body=document.createElement("div");body.className="population-copy";
   const origin=document.createElement("span");origin.className="population-origin";origin.textContent=person.origin+" · "+person.species;
@@ -50,7 +60,7 @@
   const fragment=document.createDocumentFragment();
   visible.forEach(x=>fragment.append(build(x)));
   grid.append(fragment);
-  counter.textContent=visible.length+" habitants présentés"+(current==="Tous"?" · population d'origine":" · "+current);
+  counter.textContent=visible.length+" habitants présentés"+(current==="Tous"?" · 12 nouveaux portraits photo / 40 habitants":" · "+current);
   for(const button of filter.querySelectorAll("button")){
    const active=button.dataset.peopleGroup===current;button.setAttribute("aria-pressed",String(active));button.classList.toggle("selected",active);
   }
