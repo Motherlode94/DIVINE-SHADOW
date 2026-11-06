@@ -645,3 +645,7 @@ body{overflow-x:clip}
 .scene-concept-art[hidden]{display:none!important}
 .scene-concept-art .cast-pose-svg{height:100%;max-height:100%;width:100%;display:block;object-fit:contain}
 @media(max-width:700px){.scene-concept-art{width:min(46%,180px);height:96%;left:1%}}
+
+/* Cinematic dialogue photos, no SVG portraits when a verified asset exists */
+.cinematic-dialogue-portrait img{object-fit:cover;object-position:center 25%;filter:none}
+.scene-character-portrait{object-fit:contain;object-position:center bottom}
