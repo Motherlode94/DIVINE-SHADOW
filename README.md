@@ -4,6 +4,14 @@
 
 [**Site en ligne**](https://divine-shadow.pages.dev/) · [**Jouer à la Novela**](https://divine-shadow.pages.dev/novela.html) · [**Relations**](https://divine-shadow.pages.dev/relations.html)
 
+## Révision éditoriale — personnages et rythme (première passe)
+
+Une première réécriture a été intégrée dans `novela-literary-revision.js` **après** le chargement des épisodes 1–225 : **27 scènes des épisodes 1–11** reçoivent des passages narratifs et dialogues plus développés. Les introductions et motifs des personnages sont conservés et approfondis : MARIN (père adoptif), CHAYAH, MAILEIZ, AETHER, SERAPHYRA, MIREN, SELMA, TOMAS, ÉLÉAONOR et NADIR. Les indices concernant les routes et sceaux sont préparés avant les attaques ; aucun antagoniste n'est déclaré coupable sans enquête.
+
+Onze parcours de personnages disposent désormais d'une grille **désir / contradiction / étapes / évolution**, visible progressivement dans **Informations → Arcs personnages**. Certaines conséquences de choix initiaux réapparaissent dans des scènes ultérieures (réserves médicales, documents d'archives, organisation des secours), sans effacer les branches déjà jouées.
+
+**Limite éditoriale :** ce n'est pas encore une réécriture des 225 épisodes. Les scènes 12–225 et notamment les épisodes 28–40 demeurent en grande partie succincts. La guerre commence toujours vers l'épisode 12 : une restructuration intégrale de la chronologie est un chantier séparé, qui devra préserver les identifiants de sauvegarde et les conditions de mortalité. Les nouveaux passages appartiennent à cette version exploratoire, et ne ratifient pas de nouveaux pouvoirs ou destins canoniques.
+
 ## État du projet — novembre 2026
 
 | Système | Contenu |
