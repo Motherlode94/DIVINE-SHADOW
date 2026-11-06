@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=20"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=21"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -37,6 +37,10 @@
 <div class="adventure-layout">
 <section class="adventure-main">
 <div class="scene-view"><div class="scene-illustration" id="scene-illustration" role="img" aria-label="Illustration d’ambiance de la scène"><img id="scene-portrait" class="scene-character-portrait" alt="" loading="lazy" hidden><div class="scene-illustration-caption"><span id="scene-visual-type">ILLUSTRATION D’AMBIANCE</span><strong id="scene-visual-speaker"></strong></div></div><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div>
+<section id="continent-explorer" class="continent-explorer" aria-labelledby="continent-heading">
+<div class="continent-top"><div><span class="eyebrow">EXPLORATION HORS ÉPISODE</span><h3 id="continent-heading">CARTE DU CONTINENT</h3><p>Voyage entre les cités sans sauter l'histoire. Les rencontres locales et les visites restent dans la sauvegarde.</p></div><button id="continent-toggle" type="button" aria-expanded="false" aria-controls="continent-content">OUVRIR LA CARTE</button></div>
+<div id="continent-content" hidden><div class="continent-layout"><div class="continent-map" id="continent-map" aria-label="Choisir une région à explorer"></div><div class="continent-details"><p id="continent-status" aria-live="polite"></p><div id="continent-regions" class="continent-regions"></div></div></div><div class="continent-local"><div><h4 id="continent-local-title">CHOISIS UNE CITÉ</h4><p id="continent-local-text">Les endroits visitables apparaissent ici.</p></div><div id="continent-sites" class="continent-sites"></div><div class="continent-encounter" id="continent-encounter" aria-live="polite"></div></div></div>
+</section>
 <div class="episode-progress"><span id="episode-label">ÉPISODE 01 / 25</span><strong id="episode-name">AVANT LES SIRÈNES</strong><span id="episode-arc">LES VISAGES DE LA CITÉ</span></div>
 <div class="adventure-panels">
 <div class="adventure-panel" id="exploration-panel"><h3>QUE DÉCIDE CHAYAH ?</h3><div id="world-actions" class="adventure-actions"></div></div>
@@ -98,6 +102,7 @@
 <script src="./novela-season-175.js?v=3" defer></script>
 <script src="./novela-season-200.js?v=1" defer></script>
 <script src="./novela-season-225.js?v=1" defer></script>
+<script src="./novela-world-data.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=22" defer></script>
+<script src="./novela-campaign.js?v=23" defer></script>
 </body></html>
