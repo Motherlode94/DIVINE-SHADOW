@@ -225,7 +225,7 @@ function startBattle(config){
  const enemy=C.enemies[config.enemy];
  S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),force:enemy.resource==="force"?enemy.force:null,turn:1,weak:0,guard:false,dodge:false,
  objective:C.war?.armies?.[config.enemy]?"AFFRONTER "+C.war.armies[config.enemy].groups+" GROUPES SOUS LES ORDRES DE "+C.war.armies[config.enemy].general:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
- last:"Le combat commence. Pendant chaque tour, l'adversaire agit et la ville subit la pression de l'affrontement."};
+ phase:1,stagger:0,combo:0,last:"PHASE 1 — Combat à distance et pouvoirs. La phase 2 rapprochée commence quand l’ennemi perd la moitié de sa vitalité."};
 }
 function outcome(kind){
  const battle=S.battle;if(!battle)return;
@@ -244,7 +244,13 @@ function battleTurn(action){
  const b=S.battle;if(!b||S.finished)return;
  const e=C.enemies[b.enemy];let damage=0,guard=false,dodge=false,recoil=0,cost=0;
  const fatigue=Math.min(12,S.injuryLevel*2);
+ const melee=b.phase===2;
+ if(["jab","sweep","grapple","breakGuard"].includes(action)&&!melee)return;
  const narrative={
+ jab:"CHAYAH entre à portée, enchaîne deux coups courts et teste la garde ennemie.",
+ sweep:"CHAYAH pivote, balaie les appuis ennemis et crée une ouverture sans employer de magie.",
+ grapple:"CHAYAH contrôle le bras adverse et tente de le déséquilibrer, au risque de s’exposer.",
+ breakGuard:"CHAYAH engage son épaule puis frappe la garde fragilisée. L’impact secoue ses anciennes blessures.",
  strike:"CHAYAH glisse au ras des pavés. Ses talons arrachent des étincelles et sa frappe percute la ligne des boucliers. Le choc traverse la place comme un coup de tonnerre.",
  void:"Le monde semble perdre une image. CHAYAH réapparaît derrière les lances, mais le déplacement laisse un goût de sang au fond de sa gorge.",
  guard:"Il se campe devant ses alliés. Des impacts font trembler ses épaules ; protéger n'a jamais voulu dire ne rien ressentir.",
@@ -257,6 +263,10 @@ function battleTurn(action){
  pyroGenesis:"MAILEIZ avance et fait jaillir des flammes de ses paumes. La chaleur repousse la première ligne. Elle halète : sa puissance ne lui accorde aucune immortalité.",
   parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
  };
+ if(action==="jab"){damage=12-fatigue/2;b.combo=(b.combo||0)+1;S.energy=clamp(S.energy+3,0,100)}
+ if(action==="sweep"){damage=9-fatigue/2;b.stagger=1;b.combo=(b.combo||0)+1}
+ if(action==="grapple"){damage=8-fatigue/2;guard=true;b.stagger=2;b.combo=(b.combo||0)+1;recoil=3}
+ if(action==="breakGuard"){cost=11;if(S.energy<cost)return;damage=19+Math.min(12,(b.combo||0)*3)+((b.stagger||0)>0?8:0)-fatigue;recoil=4;b.combo=0;b.stagger=0}
  if(action==="strike"){damage=22-fatigue;S.energy=clamp(S.energy+4,0,100)}
  if(action==="void"){cost=19;if(S.energy<cost)return;damage=27-fatigue;dodge=true;recoil=3}
  if(action==="seal"){cost=26;if(S.energy<cost)return;damage=17-fatigue;b.weak=2;recoil=5}
@@ -295,13 +305,15 @@ function battleTurn(action){
  if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
  S.energy=clamp(S.energy-cost,0,100);
  damage=Math.max(0,damage);
- b.hp=clamp(b.hp-Math.max(0,damage-e.armor),0,b.max);
+ b.hp=clamp(b.hp-Math.max(0,Math.floor(damage)-e.armor),0,b.max);
+ if(b.phase===1&&b.hp>0&&b.hp<=b.max*.5){b.phase=2;b.combo=0;b.stagger=0;log("PHASE 2 — CORPS À CORPS : l’adversaire rompt la distance. Enchaînements, balayage et saisies deviennent disponibles.");}
  let blow=0;
  if(b.hp>0){
   if(e.resource==="force")b.force=clamp((b.force??100)-12,0,100);
   blow=e.damage+(b.turn%2?2:0);
   if(e.resource==="force"&&b.force<30)blow=Math.max(3,blow-5);
   if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
+  if(b.stagger>0){blow=Math.max(2,blow-5);b.stagger--}
   if(dodge)blow=0;
   if(guard)blow=Math.ceil(blow*(action==="ward"?.18:action==="counter"?.45:.27));
  }
@@ -496,11 +508,17 @@ function render(){
   $("enemy-hp-fill").style.width=100*b.hp/b.max+"%";
   $("enemy-force-panel").hidden=e.resource!=="force";
   if(e.resource==="force"){$("enemy-force").textContent=b.force??100;$("enemy-force-fill").style.width=(b.force??100)+"%"}
-  $("combat-turn").textContent="TOUR "+b.turn+" / "+b.limit;
+  $("combat-turn").textContent="PHASE "+(b.phase||1)+" · TOUR "+b.turn+" / "+b.limit;
   $("combat-log").textContent=b.last;
   $("combat-panel").dataset.impact=S.battleTone||"idle";
   const wounds=$("combat-wounds");if(wounds)wounds.textContent="LÉSIONS : "+S.injuryLevel+"/8 — "+(S.injuryNotes[0]||"Aucune blessure durable");
   const skills=$("combat-actions");skills.replaceChildren(
+   ...((b.phase||1)===2?[
+    button("JAB — COMBO","Coups rapides : accumule des ouvertures, récupère 3 énergie.",()=>battleTurn("jab")),
+    button("BALAYAGE","Déséquilibre et ralentit la riposte adverse.",()=>battleTurn("sweep")),
+    button("SAISIE","Contrôle au contact, réduit la riposte mais provoque un contrecoup.",()=>battleTurn("grapple")),
+    button("BRISE-GARDE","Consomme 11 énergie; dégâts renforcés par les combos et le déséquilibre.",()=>battleTurn("breakGuard"),S.energy<11)
+   ]:[]),
    button("FRAPPE CIBLÉE","Dégâts stables ; récupère un peu d'énergie.",()=>battleTurn("strike")),
    button("VOID STEP","Esquive et contre, 19 énergie, 3 vitalité de contrecoup.",()=>battleTurn("void"),S.energy<19),
    button("GARDE","Réduit la prochaine attaque ; récupère de l'énergie.",()=>battleTurn("guard")),
