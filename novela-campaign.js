@@ -161,6 +161,7 @@ function advanceClock(n=1){
    }
    if(S.tick%5===0){S.npc.eleaonor="organise la réparation du marché";S.city=clamp(S.city+1,0,100);log("ÉLÉAONOR réunit des artisans pour réparer les rues sinistrées.")}
   }
+  stepLivingWorld();
  }
 }
 function spendForce(id,amount){
@@ -677,6 +678,172 @@ function ensureWorldState(){
  if(typeof S.world.notice!=="string")S.world.notice="";
  return S.world;
 }
+
+/* Monde vivant — simulation par phase, sans temps réel et sans réécriture du canon. */
+const LIVING_PHASES=["AUBE","JOUR","CRÉPUSCULE","NUIT"];
+function ensureLiving(){
+ if(!S.living||typeof S.living!=="object")S.living={version:1,lastTick:S.tick,regions:{},history:[]};
+ if(!S.living.regions||typeof S.living.regions!=="object")S.living.regions={};
+ if(!Array.isArray(S.living.history))S.living.history=[];
+ if(!Number.isFinite(S.living.lastTick))S.living.lastTick=S.tick;
+ for(const city of C.world?.cities||[]){
+  if(!S.living.regions[city.id]||typeof S.living.regions[city.id]!=="object"){
+   S.living.regions[city.id]={morale:50,pressure:city.id==="karthos"||city.id==="neralis"?55:25,lastCycle:-1,pending:null,outcome:"",actions:0};
+  }
+  const reg=S.living.regions[city.id];
+  reg.morale=clamp(Number(reg.morale)||0,0,100);
+  reg.pressure=clamp(Number(reg.pressure)||0,0,100);
+  if(!Number.isFinite(reg.lastCycle))reg.lastCycle=-1;
+ }
+ return S.living;
+}
+function livingResidents(city,tick=S.tick){
+ const shift=(tick%4+4)%4;
+ return (city?.sites||[]).map((site,i)=>{
+  const npc=site.npc;
+  // Un emploi du temps de quartier, non un déplacement canonique du protagoniste.
+  const activities=[
+   ["ouvre son activité","travaille avec les habitants","prend des nouvelles du quartier","termine ses obligations"],
+   ["prépare les lieux","reçoit les visiteurs","échange avec ses voisins","ferme les installations"],
+   ["surveille le passage","organise les approvisionnements","vérifie les nouvelles","se repose ou maintient une veille"]
+  ];
+  const siteActivity=activities[i%activities.length][shift];
+  return {name:npc,place:site.name,activity:siteActivity};
+ });
+}
+function livingRecord(cityId,title,result){
+ const living=ensureLiving();
+ living.history.unshift({city:cityId,tick:S.tick,title,result});
+ living.history=living.history.slice(0,36);
+ const reg=living.regions[cityId];if(reg)reg.outcome=result;
+ log("MONDE VIVANT — "+title+" : "+result);
+}
+function stepLivingWorld(){
+ const living=ensureLiving();
+ if(living.lastTick>=S.tick)return;
+ const ep=C.scenes[S.index]?.episode||1;
+ for(let t=living.lastTick+1;t<=S.tick;t++){
+  for(const city of C.world?.cities||[]){
+   if(ep<city.unlock)continue;
+   const reg=living.regions[city.id];
+   if(t%4===0){
+    const cityPressure=S.cityStates?.[city.id]?.threat??0;
+    const trend=cityPressure>60?2:cityPressure<25?-1:0;
+    reg.pressure=clamp(reg.pressure+trend,0,100);
+   }
+   if(reg.pending&&t>=reg.pending.expires){
+    const def=(C.livingWorld?.[city.id]?.events||[]).find(e=>e.id===reg.pending.eventId);
+    reg.pending=null;
+    reg.morale=clamp(reg.morale+1,0,100);
+    // L'initiative des habitants demeure possible sans intervention de CHAYAH.
+    livingRecord(city.id,def?.title||"Incident régional","Les habitants ont organisé une réponse locale sans intervention du joueur.");
+   }
+   // Un incident par cycle : événements déterministes, pas de tirage aléatoire au chargement.
+   if(t>0&&t%8===0&&!reg.pending){
+    const cycle=Math.floor(t/8),options=C.livingWorld?.[city.id]?.events||[];
+    if(options.length&&reg.lastCycle<cycle){
+     const incident=options[(cycle+city.name.length)%options.length];
+     reg.pending={eventId:incident.id,started:t,expires:t+8};
+     reg.lastCycle=cycle;
+     if(ensureWorldState().city===city.id)log("ALERTE LOCALE — "+city.name+" : "+incident.title);
+    }
+   }
+  }
+ }
+ living.lastTick=S.tick;
+}
+function resolveLivingEvent(cityId,action){
+ const world=ensureWorldState(),living=ensureLiving(),city=C.world?.cities.find(c=>c.id===cityId);
+ const reg=living.regions[cityId],pending=reg?.pending;
+ const event=C.livingWorld?.[cityId]?.events.find(e=>e.id===pending?.eventId);
+ if(!city||!event||world.city!==cityId||S.battle||S.finished)return;
+ if(action==="help"&&S.energy<5){world.notice="Il faut au moins 5 points d'énergie pour cette intervention.";render();return}
+ // Fermer avant l'avancée du temps : interdit une deuxième récompense.
+ reg.pending=null;reg.actions++;
+ let result;
+ if(action==="help"){
+  S.energy=clamp(S.energy-5,0,100);
+  reg.morale=clamp(reg.morale+3,0,100);
+  reg.pressure=clamp(reg.pressure-2,0,100);
+  const rpg=ensureRPG();
+  rpg.reputation[cityId]=clamp((rpg.reputation[cityId]||0)+1,0,4);
+  result=event.helpResult+" Énergie -5.";
+ }else{
+  S.intel=clamp(S.intel+1,0,30);
+  reg.morale=clamp(reg.morale+1,0,100);
+  result=event.observeResult+" Renseignement +1.";
+ }
+ livingRecord(cityId,event.title,result);
+ advanceClock(1);
+ world.notice=result;
+ S.beat="Événement local : "+result;
+ render();
+}
+function makeLivingCard(city){
+ const living=ensureLiving(),reg=living.regions[city.id];
+ const wrap=document.createElement("article");wrap.className="living-npc-card";
+ const heading=document.createElement("strong");heading.textContent=city.name+" · "+LIVING_PHASES[S.tick%4];
+ const summary=document.createElement("p");summary.textContent="Entraide : "+reg.morale+"/100 · Tension : "+reg.pressure+"/100";
+ wrap.append(heading,summary);
+ const people=livingResidents(city);
+ for(const npc of people){
+  const p=document.createElement("p");p.className="living-person";
+  const bold=document.createElement("b");bold.textContent=npc.name+" · ";
+  p.append(bold,document.createTextNode(npc.place+" — "+npc.activity));wrap.append(p);
+ }
+ const incident=reg.pending;
+ const def=(C.livingWorld?.[city.id]?.events||[]).find(e=>e.id===incident?.eventId);
+ const note=document.createElement("p");note.className="living-news";
+ note.textContent=def?"ÉVÉNEMENT : "+def.title+" · encore "+Math.max(0,incident.expires-S.tick)+" phase(s)":"Aucun événement urgent. "+(reg.outcome||"Les habitants poursuivent leurs activités.");
+ wrap.append(note);
+ return wrap;
+}
+function renderLiving(){
+ const world=ensureWorldState(),living=ensureLiving();
+ const city=C.world?.cities.find(c=>c.id===world.city);
+ const list=$("living-residents"),eventPanel=$("living-event"),overview=$("living-overview");
+ if(list){
+  list.replaceChildren();
+  if(city)list.append(makeLivingCard(city));
+ }
+ if(eventPanel){
+  eventPanel.replaceChildren();
+  const reg=city&&living.regions[city.id],pending=reg?.pending;
+  const event=(C.livingWorld?.[city?.id]?.events||[]).find(e=>e.id===pending?.eventId);
+  if(event){
+   const title=document.createElement("h5");title.textContent=event.title;
+   const text=document.createElement("p");text.textContent=event.text;
+   const actions=document.createElement("div");actions.className="living-actions";
+   actions.append(button(event.help,"Coût : 5 énergie · entraide et reconnaissance locale",()=>resolveLivingEvent(city.id,"help"),S.energy<5||S.battle||S.finished));
+   actions.append(button(event.observe,"Consigner les faits · renseignement +1",()=>resolveLivingEvent(city.id,"observe"),Boolean(S.battle||S.finished)));
+   eventPanel.append(title,text,actions);
+  }else{
+   const note=document.createElement("p");
+   note.textContent=reg?.outcome||"Les prochains événements surviennent avec l'avancée du temps dans la campagne.";
+   eventPanel.append(note);
+  }
+ }
+ if(overview){
+  overview.replaceChildren();
+  for(const zone of C.world?.cities||[]){
+   const ep=C.scenes[S.index]?.episode||1;
+   if(ep<zone.unlock)continue;
+   overview.append(makeLivingCard(zone));
+  }
+ }
+ const history=$("living-history");
+ if(history){
+  history.replaceChildren();
+  if(!living.history.length){const li=document.createElement("li");li.textContent="Pas encore de résolution d'événement régional.";history.append(li)}
+  for(const item of living.history.slice(0,12)){
+   const li=document.createElement("li");
+   const place=C.world.cities.find(c=>c.id===item.city)?.name||item.city;
+   li.textContent="T+"+item.tick+" · "+place+" · "+item.title+" : "+item.result;history.append(li);
+  }
+ }
+ const status=$("living-cycle");if(status)status.textContent="PHASE "+S.tick+" · "+LIVING_PHASES[S.tick%4]+" · changement d'activité à chaque phase";
+}
+
 function worldEvent(city,site){
  const w=ensureWorldState(),key=city.id+"-"+site.id;
  if(S.battle||S.finished)return;
@@ -753,6 +920,7 @@ function renderWorld(){
   entry.append(head,npc,description,action);sites.append(entry);
  }
  $("continent-encounter").textContent=w.notice||"Choisis un lieu pour découvrir un événement local.";
+ renderLiving();
 }
 
 function render(){
