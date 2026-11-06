@@ -200,3 +200,21 @@
 .scene-view>#place-desc{max-width:900px}
 .scene-view>#story-event{margin-bottom:24px}
 @media(max-width:600px){.scene-illustration{height:225px}.scene-character-portrait{width:43%;max-height:215px}.scene-illustration-caption{max-width:53%;right:11px;bottom:10px}.scene-view>h3{font-size:36px}}
+
+/* Combat, deuxième phase — contrôle rapproché et indication du combo */
+.combat-phase-banner{padding:12px 16px;margin:15px 0 9px;border:1px solid #b6a2bf;background:#211b2a;color:#f5dae7;font-weight:900;letter-spacing:.12em;font-size:12px}
+#combat-panel[data-phase="2"]{border-color:#ffa367;box-shadow:0 0 0 1px #ffb27622}
+#combat-panel[data-phase="2"] .combat-phase-banner{background:#502318;border-color:#f7a268;color:#ffe7ca;animation:phase-entrance .45s ease-out}
+#combat-panel[data-phase="2"] .cinematic-battle-visual{background:linear-gradient(115deg,#291411,#160e17 68%,#301517);border-color:#9e593c;min-height:220px}
+#combat-panel .cinematic-battle-visual{min-height:210px}
+.battle-fighter{position:absolute;left:4%;bottom:0;width:35%;height:100%;overflow:hidden;z-index:2;filter:drop-shadow(0 8px 18px #000a)}
+.battle-fighter img{width:100%;height:100%;object-fit:cover;object-position:center 26%;mask-image:linear-gradient(to bottom,#000 75%,transparent)}
+.battle-opponent{position:absolute;right:11%;bottom:0;width:23%;height:78%;background:linear-gradient(135deg,#7f6472,#291d2c 45%,#080a11);clip-path:polygon(40% 0,62% 1%,78% 17%,76% 32%,99% 39%,94% 72%,78% 71%,80% 100%,20% 100%,21% 73%,0 67%,4% 37%,26% 29%,24% 14%);opacity:.65;filter:drop-shadow(0 0 22px #ffae6d33)}
+#combat-panel[data-phase="2"] .battle-fighter{left:23%;width:31%;animation:enter-melee .4s ease-out both}
+#combat-panel[data-phase="2"] .battle-opponent{right:25%;opacity:.88}
+#combat-panel[data-phase="2"] .battle-ring{top:95px;width:160px;height:45px;left:calc(50% - 80px);border-color:#ffa766}
+.melee-combo-status{padding:11px 15px;border-left:3px solid #f0a16b;background:#55301c66;color:#ffddc1;font-size:12px;font-weight:800;letter-spacing:.06em}
+@keyframes enter-melee{from{transform:translateX(-30px)}to{transform:translateX(0)}}
+@keyframes phase-entrance{from{transform:scale(.97);opacity:.5}to{transform:scale(1);opacity:1}}
+@media(max-width:620px){#combat-panel .cinematic-battle-visual{min-height:150px}#combat-panel[data-phase="2"] .cinematic-battle-visual{min-height:170px}.battle-fighter{width:43%}.battle-opponent{width:28%}.combat-phase-banner{font-size:10px}}
+@media(prefers-reduced-motion:reduce){#combat-panel[data-phase="2"] .battle-fighter,#combat-panel[data-phase="2"] .combat-phase-banner{animation:none}}
