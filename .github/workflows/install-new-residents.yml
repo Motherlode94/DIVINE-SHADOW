@@ -1,0 +1,60 @@
+name: Install new cinematic residents
+on:
+  push:
+    paths:
+      - '.github/workflows/install-new-residents.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow==11.3.0
+      - name: Import newly generated portraits
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image,ImageEnhance
+          import time
+          urls={"portrait-00":"https://media.canva.com/v2/image-resize/format:JPG/height:199/quality:75/uri:ifs%3A%2F%2FM%2F25981a01-bb12-4392-b2ec-2a44b53ffc19/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAOGUOg45exnslGxJlg6zHnJo57sHV7uf7iz4w24nqtbS&exp=1793992490&osig=AAAAAAAAAAAAAAAAAAAAAM4nml8uT6eU-BUMkXSfbqGAEOFFyQQOKxkqfAsfpwUa&signer=media-rpc&token=AAIAAU0AJDI1OTgxYTAxLWJiMTItNDM5Mi1iMmVjLTJhNDRiNTNmZmMxOQAAAAABobJI_BDB1V3fR41v3V_nU1K-u839cfoNj6ZI0PUuvAh6Be2aWg&x-canva-quality=thumbnail","portrait-01":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F0c85d213-5923-4177-a3f3-170a7a682c6a/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAANcPUIpCWzHfOesXEk1-6LOIuNPtfgYQDaoNRkyj8IJC&exp=1793990972&osig=AAAAAAAAAAAAAAAAAAAAAD9KYt9tu7tGlfN2mrHqwoG2t9SJYkydIVEf8DWvUbSA&signer=media-rpc&token=AAIAAU0AJDBjODVkMjEzLTU5MjMtNDE3Ny1hM2YzLTE3MGE3YTY4MmM2YQAAAAABobIx0mApkRF0EWh1qhnGxUy-tKrE6sUB-wvrxXJE3TpOH31ybg&x-canva-quality=thumbnail","portrait-02":"https://media.canva.com/v2/image-resize/format:JPG/height:199/quality:75/uri:ifs%3A%2F%2FM%2Fa89d9e54-912e-4c77-9264-845b6bfb58c6/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAMxHhfds7rIdvELb4P-tqLgy9HhquljxMGJZw7xqsOX8&exp=1793994111&osig=AAAAAAAAAAAAAAAAAAAAAAwWlnpLGkSALBPxKRMtvR0MqanFDJqzgyTboDypW4Jd&signer=media-rpc&token=AAIAAU0AJGE4OWQ5ZTU0LTkxMmUtNGM3Ny05MjY0LTg0NWI2YmZiNThjNgAAAAABobJhuBhGPGMpnWP08yUVBdU49Lr-TxnxTV-rrm6QEBzGIi21vA&x-canva-quality=thumbnail","portrait-03":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F60fe5c57-968c-44aa-9608-d82b19dbce12/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAHYluFqWXtco-La0UFe2GhIRH9WYkDeWo4NTdZCveswA&exp=1793994133&osig=AAAAAAAAAAAAAAAAAAAAAKKzIg-5FymFjNw-0kwv9qxYXqkdSpRCXipwa2_9GZIA&signer=media-rpc&token=AAIAAU0AJDYwZmU1YzU3LTk2OGMtNDRhYS05NjA4LWQ4MmIxOWRiY2UxMgAAAAABobJiDgjfHwr84r5o5SMHTOdPSMyhY9m-pL4Qx1QcCE8jctoOvw&x-canva-quality=thumbnail","portrait-04":"https://media.canva.com/v2/image-resize/format:JPG/height:199/quality:75/uri:ifs%3A%2F%2FM%2F71960c39-aa20-4aa2-8036-1fded0710747/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAOG4_9seze3r-hYqBBir7Mg3O7KQOVJ42ou3S3Pv2Kd0&exp=1793994154&osig=AAAAAAAAAAAAAAAAAAAAAAJU3prWncsVn8Zg5eQnQQNUx8Nk75G3LjCMt_X3jAmD&signer=media-rpc&token=AAIAAU0AJDcxOTYwYzM5LWFhMjAtNGFhMi04MDM2LTFmZGVkMDcxMDc0NwAAAAABobJiYBDcIA9dFqRh787bS-IfdFO9ZDEYF03dkc5Bkpz3eazE1A&x-canva-quality=thumbnail","portrait-05":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2Fb1084ac7-6094-4957-ae0b-f70a8a3bf56f/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAABCOhJTWx6SLz4ceDV3ihqlesIGQCzjSemBTlM0zv_Mw&exp=1793991631&osig=AAAAAAAAAAAAAAAAAAAAANgsRfnswJS7gTyMhOmM2Jfr2a8yf6RFHjiAo9kTaMYs&signer=media-rpc&token=AAIAAU0AJGIxMDg0YWM3LTYwOTQtNDk1Ny1hZTBiLWY3MGE4YTNiZjU2ZgAAAAABobI74JifG9-9WKtT3QPyovbHfOIw1ySCwD-9dKZLCvA70IhapQ&x-canva-quality=thumbnail","portrait-06":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F6cfdd6ac-a512-41a0-ae4d-16eb8a567185/watermark:F/width:199?csig=AAAAAAAAAAAAAAAAAAAAAK1f-piXxNXyVjk_00nnWWfasEIlpONgSM3AwsV-ywPs&exp=1793992960&osig=AAAAAAAAAAAAAAAAAAAAANEamoIYX4YJjCVPINHZevIMzriiC0idy1Ly7DcBuPgS&signer=media-rpc&token=AAIAAU0AJDZjZmRkNmFjLWE1MTItNDFhMC1hZTRkLTE2ZWI4YTU2NzE4NQAAAAABobJQKAAenhOnEKs-yTJ8h7KsHUQPMyMsQjsIJvOAySm4va4skQ&x-canva-quality=thumbnail","portrait-07":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F8bd6f2e4-c113-4e8d-9b9e-8bcfea5b75d6/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAMW94--ivLfwPkHP2Aw9tKiCpbsIoqu3qcrhxI9vrwOP&exp=1793991596&osig=AAAAAAAAAAAAAAAAAAAAALzyxd2l-v9PNnFa6_ksUQLpbwvnpqywOvEzhCOCIrEN&signer=media-rpc&token=AAIAAU0AJDhiZDZmMmU0LWMxMTMtNGU4ZC05YjllLThiY2ZlYTViNzVkNgAAAAABobI7V-DN6-wF3SjoNo3xg2DVZFCgDD-frkOPl2Ay8qGk2MfOfg&x-canva-quality=thumbnail","portrait-08":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F09129dff-69d0-4ab1-be5a-70581bf439f3/watermark:F/width:199?csig=AAAAAAAAAAAAAAAAAAAAAOijqdJXrGOIGZ8A7afOMD4pmXB9H3OUYDmcbJYfylUd&exp=1793991653&osig=AAAAAAAAAAAAAAAAAAAAAGt_6vx0XCLDwHzxJVaXglrxeegvQXCjZwA-rmNcbH-d&signer=media-rpc&token=AAIAAU0AJDA5MTI5ZGZmLTY5ZDAtNGFiMS1iZTVhLTcwNTgxYmY0MzlmMwAAAAABobI8NohiEZ-bLsrXwVlC7ta6sOfJM7qkg5bfY4ZmRcTJX40qcw&x-canva-quality=thumbnail","portrait-09":"https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F159b7ba4-8e80-4b46-bea7-41db9a043fdf/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAGF9bNfCBDehwcH_S3q8Hali6SPJGt9OUjxDAjfovCHU&exp=1793991515&osig=AAAAAAAAAAAAAAAAAAAAACQhFvgxy1Oraso0bDnBExFht-GpM6Jx-SIxxh9tPoBm&signer=media-rpc&token=AAIAAU0AJDE1OWI3YmE0LThlODAtNGI0Ni1iZWE3LTQxZGI5YTA0M2ZkZgAAAAABobI6G3gXsjYV6SVW45jlz41yghumttAyYyeEKg0cVsNCuwR40Q&x-canva-quality=thumbnail","portrait-10":"https://media.canva.com/v2/image-resize/format:JPG/height:178/quality:75/uri:ifs%3A%2F%2FM%2Fd80ea6cf-0924-4d27-9b83-3328417584cc/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAKdA2UbD5PwqpsH8vBTO4sLXmuDXkhebjgVgEYe96cUe&exp=1793991452&osig=AAAAAAAAAAAAAAAAAAAAAJvEH8Fzl-irYYECOZUIAnQt_mX6xrELowqs5AVXa_Ax&signer=media-rpc&token=AAIAAU0AJGQ4MGVhNmNmLTA5MjQtNGQyNy05YjgzLTMzMjg0MTc1ODRjYwAAAAABobI5JWCUoegXHDrdXGAyde2F1BWkxfgA-2lk39uyNA9Tg8X0Ig&x-canva-quality=thumbnail","portrait-11":"https://media.canva.com/v2/image-resize/format:JPG/height:180/quality:75/uri:ifs%3A%2F%2FM%2Fd00180bc-ba66-46b8-ae72-7b5404f2c516/watermark:F/width:189?csig=AAAAAAAAAAAAAAAAAAAAAOJxQ6i_eOVHbXC-YVn4daFQWy6T2CapEOGIbH3Mp0l_&exp=1793992618&osig=AAAAAAAAAAAAAAAAAAAAAFRy6-PI6EbBiAoYqDMDxJ30dfpZgT0H60UFkKLoEKAh&signer=media-rpc&token=AAIAAU0AJGQwMDE4MGJjLWJhNjYtNDZiOC1hZTcyLTdiNTQwNGYyYzUxNgAAAAABobJK8BAfWznPK8pNe2ryOMZtdByR_caaKI8sTXbFv2q0pHUZwg&x-canva-quality=thumbnail"}
+          folder=Path("assets/population/new")
+          folder.mkdir(parents=True,exist_ok=True)
+          for slug,url in urls.items():
+              req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
+              body=None
+              for attempt in range(4):
+                  try:
+                      with urllib.request.urlopen(req,timeout=45) as response:
+                          body=response.read()
+                          break
+                  except Exception as e:
+                      if attempt==3:raise
+                      time.sleep(2)
+              image=Image.open(BytesIO(body)).convert("RGB")
+              assert image.width>=145 and image.height>=130,(slug,image.size)
+              output=folder/(slug+".webp")
+              image.save(output,"WEBP",quality=93,method=6)
+              print(slug,image.size,output.stat().st_size)
+          assert len(list(folder.glob("portrait-*.webp")))==12
+          
+          PY
+      - name: Publish new resident portraits
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/population/new/portrait-*.webp
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets(population): replace first 12 blurry faces with new portrait photography'
+            git push
+          fi
