@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=27"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=28"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -51,7 +51,7 @@
 
 
 <div class="adventure-panels">
-<div class="adventure-panel" id="exploration-panel"><span class="eyebrow decision-eyebrow">ACTIONS DISPONIBLES · EN DIRECT</span><h3>QUE DÉCIDE CHAYAH ?</h3><p class="decision-help">Lis le récit à gauche en faisant défiler son panneau, puis choisis une action ici.</p><div id="world-actions" class="adventure-actions"></div><div class="decision-memory" id="decision-memory" aria-live="polite" hidden><strong>DERNIER CHOIX MÉMORISÉ</strong><p id="decision-memory-text"></p></div></div>
+<div class="adventure-panel" id="exploration-panel"><span class="eyebrow decision-eyebrow">ACTIONS DISPONIBLES · EN DIRECT</span><h3>QUE DÉCIDE CHAYAH ?</h3><p class="decision-help">Lis le récit à gauche en faisant défiler son panneau, puis choisis une action ici.</p><div class="quest-tracker" id="quest-tracker" hidden><span>QUÊTE SUIVIE</span><strong id="quest-tracker-name"></strong><small id="quest-tracker-progress"></small><button id="quest-tracker-open" type="button">VOIR LES QUÊTES</button></div><div id="world-actions" class="adventure-actions"></div><div class="decision-memory" id="decision-memory" aria-live="polite" hidden><strong>DERNIER CHOIX MÉMORISÉ</strong><p id="decision-memory-text"></p></div></div>
 </div>
 <section id="continent-explorer" class="continent-explorer" aria-labelledby="continent-heading">
 <div class="continent-top"><div><span class="eyebrow">EXPLORATION HORS ÉPISODE</span><h3 id="continent-heading">CARTE DU CONTINENT</h3><p>Carte schématique · Six cités, dix-huit lieux à visiter. Voyage entre les cités sans sauter l'histoire. Les rencontres locales et les visites restent dans la sauvegarde.</p></div><button id="continent-toggle" type="button" aria-expanded="false" aria-controls="continent-content">OUVRIR LA CARTE</button></div>
@@ -71,6 +71,9 @@
 <button type="button" role="tab" id="info-tab-characters" aria-selected="false" aria-controls="info-characters" data-info-tab="characters">PERSONNAGES</button>
 <button type="button" role="tab" id="info-tab-relations" aria-selected="false" aria-controls="info-relations" data-info-tab="relations">RELATIONS</button>
 <button type="button" role="tab" id="info-tab-episodes" aria-selected="false" aria-controls="info-episodes" data-info-tab="episodes">ÉPISODES</button>
+<button type="button" role="tab" id="info-tab-inventory" aria-selected="false" aria-controls="info-inventory" data-info-tab="inventory">INVENTAIRE</button>
+<button type="button" role="tab" id="info-tab-quests" aria-selected="false" aria-controls="info-quests" data-info-tab="quests">QUÊTES</button>
+<button type="button" role="tab" id="info-tab-reputation" aria-selected="false" aria-controls="info-reputation" data-info-tab="reputation">RÉPUTATION</button>
 <button type="button" role="tab" id="info-tab-journal" aria-selected="false" aria-controls="info-journal" data-info-tab="journal">JOURNAL</button>
 </div>
 <section id="info-city" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-city">
@@ -88,7 +91,14 @@
 <section id="info-relations" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-relations" hidden><div class="adventure-panel"><h3>RELATIONS ET DÉFENSE</h3><ul id="relation-list"></ul></div></section>
 <section id="info-episodes" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-episodes" hidden>
 <div class="adventure-panel"><h3>SAISON 1 — 225 ÉPISODES</h3><p class="simulation-note">La progression suit l'histoire. Les épisodes suivants ne peuvent pas être sautés.</p><div id="world-locations" class="adventure-actions episode-index"></div></div></section>
-<section id="info-journal" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-journal" hidden><div class="adventure-panel"><h3>JOURNAL DES ÉVÉNEMENTS</h3><ol id="adventure-journal"></ol></div></section>
+<section id="info-inventory" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-inventory" hidden>
+<div class="adventure-panel"><h3>INVENTAIRE — DOCUMENTS ET PREUVES</h3><p class="simulation-note">Seuls les documents réellement acquis par tes décisions et excursions apparaissent ici. Aucun équipement ou pouvoir inventé.</p><div id="rpg-inventory" class="rpg-list"></div><p id="rpg-item-detail" class="rpg-detail" aria-live="polite">Sélectionne un document pour l'examiner.</p></div></section>
+<section id="info-quests" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-quests" hidden>
+<div class="adventure-panel"><h3>JOURNAL DES QUÊTES</h3><p class="simulation-note">Objectifs de l'histoire et des régions. Épingler une quête n'impose aucune action à CHAYAH.</p><div id="rpg-quests" class="rpg-list"></div></div></section>
+<section id="info-reputation" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-reputation" hidden>
+<div class="adventure-panel"><h3>RÉPUTATION PAR CITÉ</h3><p class="simulation-note">Confiance diplomatique et reconnaissance locale : les cités gardent leur propre autonomie, indépendamment de la puissance de CHAYAH.</p><div id="rpg-reputation" class="rpg-list"></div></div></section>
+<section id="info-journal" class="info-tab-panel" role="tabpanel" aria-labelledby="info-tab-journal" hidden>
+<div class="adventure-panel"><h3>CHRONIQUE DES ÉVÉNEMENTS</h3><div class="journal-filters" role="group" aria-label="Filtrer le journal"><button type="button" data-journal-filter="all" aria-pressed="true">TOUT</button><button type="button" data-journal-filter="choice" aria-pressed="false">CHOIX</button><button type="button" data-journal-filter="travel" aria-pressed="false">VOYAGES</button><button type="button" data-journal-filter="combat" aria-pressed="false">COMBATS</button></div><ol id="adventure-journal"></ol></div></section>
 </aside>
 </div>
 <section id="adventure-ending" class="adventure-ending" hidden aria-live="polite"><span class="eyebrow">FIN DE SAISON — ÉPISODE 225</span><h2 id="ending-title"></h2><p id="ending-text"></p><p>Les personnages gardent leurs choix et leurs propres objectifs. Cette continuité n'est pas automatiquement intégrée à l'histoire officielle.</p></section>
@@ -116,6 +126,7 @@
 <script src="./novela-season-225.js?v=1" defer></script>
 <script src="./novela-world-data.js?v=1" defer></script>
 <script src="./novela-dialogue-data.js?v=1" defer></script>
+<script src="./novela-rpg-data.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=28" defer></script>
+<script src="./novela-campaign.js?v=29" defer></script>
 </body></html>
