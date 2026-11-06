@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=24"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=25"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -38,7 +38,13 @@
 <section class="adventure-main">
 <div class="novela-reading-nav" aria-label="Navigation rapide"><a href="#novela-reading">LIRE LA SCÈNE</a><a href="#exploration-panel">DÉCISIONS</a><a href="#continent-explorer">CARTE DU MONDE</a></div>
 <div class="episode-progress" id="novela-reading"><div class="episode-heading"><span id="episode-label">ÉPISODE 01 / 225</span><strong id="episode-name">AVANT LES SIRÈNES</strong><span id="episode-arc">LES VISAGES DE LA CITÉ</span></div><div class="episode-trajectory" role="progressbar" id="episode-trajectory" aria-label="Progression de la saison" aria-valuemin="0" aria-valuemax="225" aria-valuenow="1"><i id="episode-trajectory-fill"></i></div></div>
-<div class="scene-view"><div class="scene-illustration" id="scene-illustration" role="img" aria-label="Illustration d’ambiance de la scène"><img id="scene-portrait" class="scene-character-portrait" alt="" loading="lazy" hidden><div class="scene-illustration-caption"><span id="scene-visual-type">ILLUSTRATION D’AMBIANCE</span><strong id="scene-visual-speaker"></strong></div></div><div class="scene-reading-body" id="scene-reading-body" tabindex="0" role="region" aria-label="Récit de la scène, zone défilable"><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div></div>
+<div class="scene-view"><div class="scene-illustration" id="scene-illustration" role="img" aria-label="Illustration d’ambiance de la scène"><img id="scene-portrait" class="scene-character-portrait" alt="" loading="lazy" hidden><div class="scene-illustration-caption"><span id="scene-visual-type">ILLUSTRATION D’AMBIANCE</span><strong id="scene-visual-speaker"></strong></div></div><section id="cinematic-dialogue" class="cinematic-dialogue" aria-label="Dialogue cinématique de la scène" aria-live="off" hidden>
+  <div class="cinematic-dialogue-portrait" id="dialogue-portrait-wrap"><img id="dialogue-portrait" alt="" hidden><span id="dialogue-placeholder" class="dialogue-placeholder" aria-hidden="true">✦</span></div>
+  <div class="cinematic-dialogue-content"><div class="dialogue-topline"><span class="eyebrow">DIALOGUE / SCÈNE</span><span id="dialogue-counter">1 / 1</span></div>
+    <div class="dialogue-identity"><strong id="dialogue-speaker">NARRATION</strong><span id="dialogue-expression">ATMOSPHÈRE</span></div>
+    <p id="dialogue-text"></p><div class="dialogue-actions"><button type="button" id="dialogue-next">CONTINUER →</button><button type="button" id="dialogue-skip">PASSER AU RÉCIT</button></div>
+  </div></section>
+<div class="scene-reading-body" id="scene-reading-body" tabindex="0" role="region" aria-label="Récit de la scène, zone défilable"><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div></div>
 
 
 <div class="adventure-panels">
@@ -106,6 +112,7 @@
 <script src="./novela-season-200.js?v=1" defer></script>
 <script src="./novela-season-225.js?v=1" defer></script>
 <script src="./novela-world-data.js?v=1" defer></script>
+<script src="./novela-dialogue-data.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=25" defer></script>
+<script src="./novela-campaign.js?v=26" defer></script>
 </body></html>
