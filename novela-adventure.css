@@ -564,3 +564,34 @@ body{overflow-x:clip}
 .decision-memory strong{font-size:10px;letter-spacing:.07em}
 .decision-memory p{font-size:12px;margin:7px 0 0;overflow-wrap:anywhere}
 @media(max-width:700px){.novela-reading-nav{display:grid;grid-template-columns:minmax(0,1fr);gap:7px}.reader-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.reader-settings{width:100%;justify-content:flex-end}.reader-settings button{min-height:40px}}
+
+/* RPG — registre documentaire, quêtes, réputation, journal filtrable */
+#info-drawer .info-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+#info-drawer .info-tabs button{min-height:42px;overflow-wrap:anywhere}
+.rpg-list{display:grid;gap:10px;min-width:0}
+.rpg-card,.rpg-item{border:1px solid #ffffff2b;background:#211925;padding:12px 13px;color:#f5e9f1;min-width:0}
+.rpg-card-selected{border-color:#e5a9c2;background:#392037}
+.rpg-card-head,.rpg-card-footer{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.rpg-card strong,.rpg-item strong{font-size:14px;line-height:1.4}
+.rpg-card small,.rpg-item small{font-size:10px;color:#efb4c8;letter-spacing:.04em}
+.rpg-card p{font-size:12px;color:#d9c5d3;line-height:1.6;margin:9px 0}
+.rpg-card-footer{margin-top:9px;color:#dbc5d4;font-size:10px}
+.rpg-card-footer button{padding:8px 10px;border:1px solid #bd809b;background:#4e283d;color:#fff;font-size:10px;font-weight:900}
+.rpg-card-footer button:disabled{opacity:.5;cursor:default}
+.rpg-meter{height:6px;background:#ffffff24;border-radius:4px;overflow:hidden}
+.rpg-meter i{display:block;height:100%;background:linear-gradient(90deg,#a84b76,#f1b4a8)}
+.rpg-item{display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;cursor:pointer}
+.rpg-item:hover,.rpg-item:focus-visible{border-color:#efb2d0;outline:2px solid #f8c3d6}
+.rpg-detail{padding:13px;border-left:3px solid #ecb9a0;background:#4631285b;color:#f7e8dd;font-size:12px!important;line-height:1.6}
+.quest-tracker{padding:12px 14px;margin-bottom:12px;border-left:3px solid #d9a081;background:#4d2f3155;display:grid;gap:6px}
+.quest-tracker[hidden]{display:none!important}
+.quest-tracker>span{color:#e2a9c3;font-size:10px;letter-spacing:.1em;font-weight:900}
+.quest-tracker strong{font-size:13px}
+.quest-tracker small{color:#dfc8d2;line-height:1.55}
+.quest-tracker button{justify-self:start;background:transparent;border:1px solid #ba809e;padding:7px 11px;color:#fff;font-size:10px;font-weight:900}
+.journal-filters{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 14px}
+.journal-filters button{padding:8px 9px;font-size:10px;background:#231c28;color:#dec6d5;border:1px solid #ffffff34}
+.journal-filters button[aria-pressed="true"]{background:#7a3955;color:#fff;border-color:#dca0bd}
+#adventure-journal{padding-left:23px}
+#adventure-journal li{font-size:12px;line-height:1.65;overflow-wrap:anywhere;padding:7px 0;border-bottom:1px solid #ffffff16}
+@media(max-width:700px){#info-drawer .info-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}#info-drawer .info-tabs button{font-size:9px;min-height:44px}.rpg-item{flex-direction:column;align-items:flex-start}}
