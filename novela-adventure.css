@@ -218,3 +218,13 @@
 @keyframes phase-entrance{from{transform:scale(.97);opacity:.5}to{transform:scale(1);opacity:1}}
 @media(max-width:620px){#combat-panel .cinematic-battle-visual{min-height:150px}#combat-panel[data-phase="2"] .cinematic-battle-visual{min-height:170px}.battle-fighter{width:43%}.battle-opponent{width:28%}.combat-phase-banner{font-size:10px}}
 @media(prefers-reduced-motion:reduce){#combat-panel[data-phase="2"] .battle-fighter,#combat-panel[data-phase="2"] .combat-phase-banner{animation:none}}
+
+/* Combat lisible : seuil de phase, aide contextualisée et raccourcis */
+.combat-health-track{position:relative;overflow:visible}
+.enemy-halfway{position:absolute;top:-3px;bottom:-3px;left:50%;width:2px;background:#ffe2c3;box-shadow:0 0 0 2px #201018,0 0 8px #ffa865;pointer-events:none;z-index:3}
+.combat-phase-help{margin:3px 0 12px;color:#e9d0d9;font-size:12px;line-height:1.6}
+#combat-panel[data-phase="2"] .combat-phase-help{color:#ffd8ac}
+#combat-actions button[data-hotkey]{position:relative;padding-right:42px}
+#combat-actions button[data-hotkey]::after{content:attr(data-hotkey);position:absolute;top:10px;right:12px;width:21px;height:24px;display:grid;place-items:center;border-radius:4px;border:1px solid #ffb88f8c;color:#ffdfca;background:#25141a;font-weight:900;font-size:12px}
+#combat-actions button:focus-visible{outline:3px solid #ffc7a5;outline-offset:3px}
+@media(max-width:600px){.combat-phase-help{font-size:11px}.combat-phase-banner{letter-spacing:.04em}}
