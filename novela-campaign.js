@@ -412,6 +412,79 @@ const SCENE_BACKDROPS={
  combat:"Guerrière de feu dans les ruines en flammes.png",
  village:"population/population-atlas.webp"
 };
+
+/* Sous-système cinématique. Répliques validées ou résumé narratif, jamais de portrait attribué au hasard. */
+function validDialogueLines(scene,sceneText){
+ const lines=(C.cinematicDialogue?.[scene.id]||[]).filter(line=>
+   line&&typeof line.text==="string"&&line.text.trim()&&
+   !(line.requireAlive==="MAILEIZ"&&S.maileizStatus==="morte")
+ );
+ if(lines.length)return lines;
+ // Pour les autres épisodes, reproduire un extrait existant sans l'attribuer comme discours direct.
+ const extracted=(sceneText||scene.text||"").replace(/\\s+/g," ").trim();
+ const first=extracted.slice(0,300);
+ const segment=first.length<extracted.length?first.slice(0,Math.max(100,first.lastIndexOf(" "))).trim()+"…":first;
+ return [{speaker:"NARRATION",kind:"narration",text:segment||"Le monde attend une décision.",mood:"atmosphere"}];
+}
+function ensureDialogue(scene,sceneText){
+ if(!S.dialogue||S.dialogue.sceneId!==scene.id){
+   S.dialogue={sceneId:scene.id,index:0,finished:false};
+ }
+ const lines=validDialogueLines(scene,sceneText);
+ if(S.dialogue.index>lines.length)S.dialogue.index=lines.length;
+ return lines;
+}
+function renderDialogue(scene,sceneText){
+ const shell=$("cinematic-dialogue");if(!shell)return;
+ const enabled=!S.battle&&!S.finished;
+ shell.hidden=!enabled;if(!enabled)return;
+ const lines=ensureDialogue(scene,sceneText);
+ const state=S.dialogue;
+ shell.dataset.finished=state.finished?"true":"false";
+ const line=lines[Math.min(state.index,lines.length-1)];
+ const speaker=(line.speaker||"NARRATION").toUpperCase();
+ const portraitKey=SCENE_CAST_IMAGES[speaker]||({
+  "MAILEIZ":"Guerrière de feu dans les ruines en flammes.png",
+  "SERAPHYRA":"Image ChatGPT 5 nov. 2026, 17_14_06.png"
+ })[speaker];
+ const img=$("dialogue-portrait"),placeholder=$("dialogue-placeholder");
+ const verified=Boolean(portraitKey&&speaker!=="NARRATION"&&speaker!=="LE GÉNÉRAL");
+ img.hidden=!verified;placeholder.hidden=verified;
+ if(verified){
+  const path="./assets/"+portraitKey.split("/").map(encodeURIComponent).join("/");
+  if(img.getAttribute("src")!==path)img.src=path;
+  img.alt="Portrait de "+speaker;placeholder.textContent="";
+ }else{
+  img.removeAttribute("src");img.alt="";
+  placeholder.textContent=speaker==="NARRATION"?"✦":speaker.split(" ").map(t=>t.charAt(0)).join("").slice(0,3);
+ }
+ const mood=String(line.mood||"atmosphere");
+ shell.dataset.mood=mood;
+ $("dialogue-speaker").textContent=speaker==="NARRATION"?"NARRATEUR":speaker;
+ const moods={tension:"TENSION",determination:"DÉTERMINATION",urgence:"URGENCE",gravite:"GRAVITÉ",reflexion:"RÉFLEXION",atmosphere:"ATMOSPHÈRE"};
+ $("dialogue-expression").textContent=moods[mood]||"ATMOSPHÈRE";
+ $("dialogue-text").textContent=(line.kind==="speech"?"« ":"")+line.text+(line.kind==="speech"?" »":"");
+ $("dialogue-counter").textContent=(state.index+1)+" / "+lines.length;
+ $("dialogue-next").textContent=state.index>=lines.length-1?"AFFICHER LES CHOIX ↗":"RÉPLIQUE SUIVANTE →";
+ $("dialogue-next").hidden=state.finished;
+ $("dialogue-skip").textContent=state.finished?"REVOIR LE DIALOGUE":"LIRE LE TEXTE COMPLET";
+}
+function advanceDialogue(skip=false){
+ const scene=C.scenes[S.index];if(!scene||S.battle)return;
+ const lines=validDialogueLines(scene,scene.text);
+ ensureDialogue(scene,scene.text);
+ const state=S.dialogue;
+ if(state.finished){
+   state.index=0;state.finished=false;
+ }else if(skip||state.index>=lines.length-1){
+   state.finished=true;
+   $("scene-reading-body")?.focus({preventScroll:true});
+ }else{
+   state.index++;
+ }
+ renderDialogue(scene,scene.text);
+ save();
+}
 function renderSceneArt(scene){
  const key=String(scene.who||"").trim().toUpperCase();
  const portrait=SCENE_CAST_IMAGES[key];
@@ -565,6 +638,7 @@ function render(){
  if(n.id==="s18"&&S.maileizStatus==="morte")sceneText="La ville enterre ses morts, dont MAILEIZ, tombée en sauvant une enfant. CHAYAH ne peut pas effacer les décisions de cette route. AETHER l'accompagne sans le décharger de sa responsabilité. Les quartiers cherchent comment vivre après la bataille.";
  else if(n.id==="s18"&&S.maileizStatus==="blessee")sceneText+=" MAILEIZ est vivante mais blessée. Sa convalescence et ses choix futurs lui appartiennent.";
  $("place-desc").textContent=sceneText+reaction();
+ renderDialogue(n,sceneText);
  // La nouvelle scène s'ouvre toujours au début de son propre panneau de lecture.
  const reading=$("scene-reading-body");
  if(reading&&reading.dataset.sceneId!==n.id){
@@ -805,6 +879,8 @@ document.addEventListener("keydown",e=>{
  if(btn&&!btn.disabled){e.preventDefault();btn.click();}
 });
 
+$("dialogue-next").addEventListener("click",()=>advanceDialogue(false));
+$("dialogue-skip").addEventListener("click",()=>advanceDialogue(true));
 switchInfo("city");
 $("continent-toggle").addEventListener("click",()=>{
  const panel=$("continent-content"),toggle=$("continent-toggle");panel.hidden=!panel.hidden;
