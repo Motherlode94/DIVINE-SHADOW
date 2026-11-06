@@ -16,3 +16,9 @@
 
 /* Sur certaines images de la planche, la légende est incrustée aux pixels du bord supérieur. */
 .population-portrait[data-atlas-row="2"]::before,.population-portrait[data-atlas-row="3"]::before{display:block;content:"";position:absolute;left:0;right:0;top:0;height:15px;background:linear-gradient(#211920 0%,#211920 60%,transparent 100%);pointer-events:none}
+
+/* Atlas source très compressé (40 vignettes, 9 Ko) : pas d'agrandissement excessif */
+.population-art{align-items:flex-start!important;justify-content:center!important;padding:11px 8px!important}
+.population-portrait{width:62px!important;height:77px!important;background-size:620px 308px!important;background-repeat:no-repeat!important;flex:none;align-self:flex-start;filter:none!important;image-rendering:auto!important;transform:none!important;box-shadow:0 2px 8px #05040892}
+.population-portrait::before{height:10px!important}
+@media(max-width:390px){.population-portrait{width:58px!important;height:72.16px!important;background-size:580px 288.64px!important}}
