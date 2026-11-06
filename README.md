@@ -1,6 +1,16 @@
 # DIVINE SHADOW
 
-## Extension interactive — 175 épisodes (saison I)
+## Version actuelle — Saison 1 : 225 épisodes
+
+La campagne interactive de `novela.html` contient **225 épisodes**. Les épisodes 176–200 constituent l'arc *Les Héritiers du Silence* ; les épisodes 201–225 poursuivent avec *Les Neuf Serments*. Les sauvegardes utilisent toujours la clé `divine-shadow-campaign-v8`.
+
+**Combats :** après une première phase mêlant attaques et pouvoirs, une deuxième phase au corps à corps se déclenche si l'adversaire survit avec au plus 50 % de ses PV. Quatre nouvelles actions deviennent disponibles : Jab, Balayage, Saisie et Brise-garde. Le panneau affiche la phase, le combo et le déséquilibre de l'ennemi. Les illustrations utilisent les images existantes du dépôt ; certains personnages et lieux n'ont pas encore de visuels originaux.
+
+**Site de production :** https://divine-shadow.pages.dev — Cloudflare Pages connecté à la branche `main` du dépôt. Les modifications poussées sur `main` déclenchent un déploiement automatique ; vérifier son statut avant de considérer la version comme publiée.
+
+---
+
+## Historique — extension 41 à 175 (saison I)
 
 La campagne interactive de `novela.html` possède désormais **175 épisodes reliés et 528 scènes**, dont **25 rencontres de combat**. Les 40 premiers épisodes restent jouables ; le dernier cesse d'être une fin de campagne pour ouvrir l'arc de la reconstruction.
 
