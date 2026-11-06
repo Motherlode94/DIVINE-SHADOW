@@ -225,7 +225,7 @@ function startBattle(config){
  const enemy=C.enemies[config.enemy];
  S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),force:enemy.resource==="force"?enemy.force:null,turn:1,weak:0,guard:false,dodge:false,
  objective:C.war?.armies?.[config.enemy]?"AFFRONTER "+C.war.armies[config.enemy].groups+" GROUPES SOUS LES ORDRES DE "+C.war.armies[config.enemy].general:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
- phase:1,stagger:0,combo:0,last:"PHASE 1 — Combat à distance et pouvoirs. La phase 2 rapprochée commence quand l’ennemi perd la moitié de sa vitalité."};
+ phase:1,stagger:0,combo:0,lastAction:"",lastDamage:0,lastImpact:0,actionSerial:0,last:"PHASE 1 — Combat à distance et pouvoirs. La phase 2 rapprochée commence quand l’ennemi perd la moitié de sa vitalité."};
 }
 function outcome(kind){
  const battle=S.battle;if(!battle)return;
@@ -305,6 +305,7 @@ function battleTurn(action){
  if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
  S.energy=clamp(S.energy-cost,0,100);
  damage=Math.max(0,damage);
+ const hpBefore=b.hp;
  b.hp=clamp(b.hp-Math.max(0,Math.floor(damage)-e.armor),0,b.max);
  const phaseShift=(b.phase||1)===1&&b.hp>0&&b.hp<=b.max*.5;
  if(phaseShift){b.phase=2;b.combo=0;b.stagger=0;log("PHASE 2 — CORPS À CORPS : l’adversaire franchit la distance.");}
@@ -319,6 +320,8 @@ function battleTurn(action){
   if(guard)blow=Math.ceil(blow*(action==="ward"?.18:action==="counter"?.45:.27));
  }
  const physical=blow+recoil;S.health=clamp(S.health-physical,0,100);
+ b.lastAction=action;b.lastDamage=hpBefore-b.hp;b.lastImpact=physical;b.actionSerial=(b.actionSerial||0)+1;
+
  if(physical>=11){
   S.injuryLevel=clamp(S.injuryLevel+(physical>=25?2:1),0,8);
   S.injuryNotes.unshift((physical>=25?"Fracture et tissu déchiré":"Contusion profonde")+" — "+(action==="ward"?"contrecoup du rempart":action==="seal"?"sceau divin":"attaque ennemie"));
@@ -510,6 +513,24 @@ function render(){
   const portraitUrl="./assets/enemies/"+portraitKey+".svg";
   if(portrait.getAttribute("src")!==portraitUrl)portrait.setAttribute("src",portraitUrl);
   portrait.alt="Illustration stylisée : "+e.name;
+  const battleStage=$("battle-stage");
+  battleStage.dataset.enemy=portraitKey;
+  const labels={jab:"JAB — COUPS RAPIDES",sweep:"BALAYAGE",grapple:"SAISIE",breakGuard:"BRISE-GARDE",strike:"FRAPPE CIBLÉE",void:"VOID STEP",guard:"GARDE",counter:"CONTRE D'APPUI",ward:"REMPART DIVIN",seal:"SCEAU DU RÉEL",fury:"RAGE CONTENUE",energyConstruct:"CONSTRUCTION D'ÉNERGIE",lawAnalysis:"ANALYSE DES LOIS",pyroGenesis:"PYRO-GENESIS",parley:"SOMMATION"};
+  $("battle-move-name").textContent=labels[b.lastAction]||"POSITION DE COMBAT";
+  $("battle-damage-value").textContent="DÉGÂTS : "+(b.lastAction?b.lastDamage||0:"—");
+  $("battle-player-impact").textContent="IMPACT SUBI : "+(b.lastAction?b.lastImpact||0:"—");
+  // Web Animations API redémarre à chaque tour, même si la même technique est répétée.
+  if(b.actionSerial && battleStage.dataset.actionSerial!==String(b.actionSerial)){
+    battleStage.dataset.actionSerial=String(b.actionSerial);
+    const fighter=battleStage.querySelector(".battle-fighter");
+    const opponent=battleStage.querySelector(".battle-opponent-art");
+    const meleeMove=["jab","sweep","grapple","breakGuard","strike","counter"].includes(b.lastAction);
+    const amplitude=meleeMove?26:12;
+    if(fighter?.animate)fighter.animate([{transform:"translateX(0)"},{transform:"translateX("+amplitude+"px) rotate(-2deg)",offset:.42},{transform:"translateX(0)"}],{duration:meleeMove?430:560,easing:"ease-out"});
+    if(opponent?.animate&&b.lastDamage>0)opponent.animate([{transform:"translateX(0)",filter:"brightness(1)"},{transform:"translateX(13px)",filter:"brightness(2.1)",offset:.48},{transform:"translateX(0)",filter:"brightness(1)"}],{duration:480,easing:"ease-out"});
+    battleStage.dataset.move=b.lastAction||"idle";
+  }
+
 
   $("enemy-desc").textContent=b.objective+" · Les ennemis conservent leur initiative.";
   $("enemy-hp").textContent=b.hp+" / "+b.max;
