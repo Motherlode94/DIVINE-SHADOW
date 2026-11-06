@@ -19,10 +19,18 @@ function itemCard(item,category,index){
   img.onerror=()=>{img.remove();art.classList.add("cast-awaiting-portrait");const msg=document.createElement("span");msg.className="cast-missing-image";msg.textContent="Portrait créé · fichier à intégrer";art.append(msg)};
   art.append(img);
  }else{
-  art.classList.add("cast-awaiting-portrait");
-  const msg=document.createElement("span");msg.className="cast-missing-image";msg.textContent="Portrait à créer";art.append(msg);
+  art.classList.add("cast-concept-art");
+  // Illustration vectorielle originale, liée au rôle. Pas un portrait canonique.
+  if(typeof window.DS_renderPose==="function"){
+   const visual=document.createElement("div");visual.className="cast-vector-illustration";
+   visual.innerHTML=window.DS_renderPose(item,category);
+   art.append(visual);
+  }else{
+   const mark=document.createElement("span");mark.className="cast-illustration-mark";
+   mark.textContent=item.name.split(" ").map(w=>w[0]||"").join("").slice(0,3);art.append(mark);
+  }
  }
- const artLabel=document.createElement("small");artLabel.className="cast-art-note";artLabel.textContent="PORTRAIT CINÉMATOGRAPHIQUE — CONCEPT";art.append(artLabel);
+ const artLabel=document.createElement("small");artLabel.className="cast-art-note";artLabel.textContent=portrait?"PORTRAIT CINÉMATOGRAPHIQUE — CONCEPT":"ILLUSTRATION 2D — POSTURE / MÉTIER";art.append(artLabel);
  const body=document.createElement("div");body.className="cast-item-body";
  const label=document.createElement("span");label.className="cast-item-meta";label.textContent=category==="enemy"?"COMMANDANT / CONSPIRATEUR":category==="civic"?"VIE DE LA CITÉ":"ALLIÉ / "+(item.entry?"ENTRÉE ÉP. "+String(item.entry).padStart(2,"0"):"NOVELA");
  const heading=document.createElement("h3");heading.textContent=item.name;
