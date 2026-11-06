@@ -192,3 +192,14 @@
  background:linear-gradient(180deg,#241b21 0%,#241b21 65%,#241b2100 100%);
  pointer-events:none
 }
+
+/* Accueil : accès visible à la campagne publiée */
+.season-update{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.3fr);gap:clamp(20px,4vw,62px);align-items:center;background:linear-gradient(115deg,#100f1b,#24151d);border-top:1px solid #ffffff23;border-bottom:1px solid #ffffff23;padding:clamp(24px,5vw,75px) clamp(20px,7vw,110px)}
+.season-update-art{height:clamp(260px,35vw,450px);overflow:hidden;border:1px solid #ffffff35;background:#14111a}
+.season-update-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 26%}
+.season-update-copy h2{font-size:clamp(36px,5vw,76px);line-height:1.02;margin:12px 0 22px}
+.season-update-copy h2 em{color:#ec9caa}
+.season-update-copy>p:not(.eyebrow){line-height:1.75;color:#d8cbd5;max-width:700px}
+.season-update-features{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 27px}
+.season-update-features span{border:1px solid #dca1b455;background:#ffffff0c;padding:9px 12px;font-size:11px;color:#f0dce5}
+@media(max-width:750px){.season-update{grid-template-columns:1fr}.season-update-art{height:245px}.season-update-copy h2{font-size:clamp(36px,10vw,55px)}}
