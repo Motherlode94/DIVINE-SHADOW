@@ -11,6 +11,7 @@
  {id:"frontiere",name:"Mouvements de Karthos",type:"RENSEIGNEMENT",visit:"karthos-plaine",description:"Synthèse des mouvements militaires documentés sur la plaine."}
  ],
  quests:[
+ {id:"tactique",title:"Maîtriser les postures au combat",kind:"COMBAT",start:1,objective:"Remporter trois affrontements.",target:"combatHistory",total:3},
  {id:"evacuer",title:"Sauver les habitants du marché",kind:"PRINCIPALE",start:2,objective:"Organiser une évacuation et protéger les civils.",flag:"evacuation"},
  {id:"preuves",title:"Reconstituer le dossier du convoi",kind:"ENQUÊTE",start:8,objective:"Recouper les témoignages et conserver les preuves.",flag:"dossier"},
  {id:"conseil",title:"Décider avec le Conseil",kind:"POLITIQUE",start:9,objective:"Établir un mandat pour la suite de l'enquête.",flag:"mandat"},
