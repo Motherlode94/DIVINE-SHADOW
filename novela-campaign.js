@@ -420,11 +420,9 @@ function validDialogueLines(scene,sceneText){
    !(line.requireAlive==="MAILEIZ"&&S.maileizStatus==="morte")
  );
  if(lines.length)return lines;
- // Pour les autres épisodes, reproduire un extrait existant sans l'attribuer comme discours direct.
- const extracted=(sceneText||scene.text||"").replace(/\\s+/g," ").trim();
- const first=extracted.slice(0,300);
- const segment=first.length<extracted.length?first.slice(0,Math.max(100,first.lastIndexOf(" "))).trim()+"…":first;
- return [{speaker:"NARRATION",kind:"narration",text:segment||"Le monde attend une décision.",mood:"atmosphere"}];
+ // Aucune réplique attribuée : la narration complète est déjà dans le panneau de lecture.
+ // Ne jamais dupliquer ni couper le récit pour créer un faux dialogue.
+ return [];
 }
 function ensureDialogue(scene,sceneText){
  if(!S.dialogue||S.dialogue.sceneId!==scene.id){
@@ -436,9 +434,13 @@ function ensureDialogue(scene,sceneText){
 }
 function renderDialogue(scene,sceneText){
  const shell=$("cinematic-dialogue");if(!shell)return;
- const enabled=!S.battle&&!S.finished;
- shell.hidden=!enabled;if(!enabled)return;
- const lines=ensureDialogue(scene,sceneText);
+ const lines=validDialogueLines(scene,sceneText);
+ const enabled=!S.battle&&!S.finished&&lines.length>0;
+ shell.hidden=!enabled;
+ const sceneView=shell.closest(".scene-view");
+ if(sceneView)sceneView.dataset.hasDialogue=enabled?"true":"false";
+ if(!enabled)return;
+ ensureDialogue(scene,sceneText);
  const state=S.dialogue;
  shell.dataset.finished=state.finished?"true":"false";
  const line=lines[Math.min(state.index,lines.length-1)];
@@ -472,6 +474,7 @@ function renderDialogue(scene,sceneText){
 function advanceDialogue(skip=false){
  const scene=C.scenes[S.index];if(!scene||S.battle)return;
  const lines=validDialogueLines(scene,scene.text);
+ if(!lines.length)return;
  ensureDialogue(scene,scene.text);
  const state=S.dialogue;
  if(state.finished){
