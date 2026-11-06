@@ -34,6 +34,7 @@ function rpgQuestProgress(quest){
  const ep=C.scenes[S.index]?.episode||1,world=ensureWorldState();
  let current=0,total=quest.total||1,failed=false;
  if(quest.flag){current=has(quest.flag)?1:0;failed=!current&&ep>quest.start&&ep>10&&["evacuer","conseil"].includes(quest.id);}
+ else if(quest.target==="combatHistory")current=(S.combatHistory||[]).filter(x=>["win","parley"].includes(x.result)).length;
  else if(quest.target==="aidDecisions")current=Object.keys(S.aidDecisions||{}).length;
  else if(quest.target==="cities")current=1+(C.world?.cities||[]).filter(c=>c.id!=="valedor"&&(world.visits?.["region:"+c.id]||0)>0).length;
  else if(quest.target==="sites")current=Object.values(world.events||{}).filter(Boolean).length;
@@ -378,14 +379,42 @@ function go(id){
  // Conserver le HUD visible et recentrer sur la nouvelle scène après un choix.
  if(fromDecision)focusCurrentScene();
 }
+
+const COMBAT_STANCES={
+ balanced:{name:"ÉQUILIBRÉE",desc:"Sans modificateur."},
+ offensive:{name:"OFFENSIVE",desc:"+20 % dégâts physiques ; +25 % riposte."},
+ defensive:{name:"DÉFENSIVE",desc:"−20 % dégâts physiques ; −30 % riposte."},
+ mobile:{name:"MOBILE",desc:"−3 dégâts de riposte ; entrée : 3 énergie."}
+};
+function setCombatStance(next){
+ const b=S.battle;if(!b||S.finished||!COMBAT_STANCES[next]||b.stance===next||b.stanceChangedTurn===b.turn)return;
+ if(next==="mobile"&&S.energy<3)return;
+ if(next==="mobile")S.energy=clamp(S.energy-3,0,100);
+ b.stance=next;b.stanceChangedTurn=b.turn;
+ log("POSTURE — "+COMBAT_STANCES[next].name);
+ render();
+}
+function registerBattleResult(b,kind){
+ if(!Array.isArray(S.combatHistory))S.combatHistory=[];
+ S.combatHistory.unshift({enemy:b.enemy,result:kind,episode:C.scenes[S.index]?.episode||1,turns:b.turn,stance:b.stance||"balanced"});
+ S.combatHistory=S.combatHistory.slice(0,30);
+ log("BILAN TACTIQUE — "+kind+" contre "+b.enemy+" · "+b.turn+" tours.");
+ const region=S.living?.regions?.[S.world?.city];
+ if(region){
+  region.pressure=clamp(region.pressure+(kind==="retreat"?3:-1),0,100);
+  region.morale=clamp(region.morale+(kind==="win"?1:kind==="retreat"?-2:0),0,100);
+ }
+}
+
 function startBattle(config){
  const enemy=C.enemies[config.enemy];
  S.battle={enemy:config.enemy,hp:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),max:enemy.hp+(config.enemy==="captain"&&!has("sabotage")?12:0),force:enemy.resource==="force"?enemy.force:null,turn:1,weak:0,guard:false,dodge:false,
  objective:C.war?.armies?.[config.enemy]?"AFFRONTER "+C.war.armies[config.enemy].groups+" GROUPES SOUS LES ORDRES DE "+C.war.armies[config.enemy].general:config.enemy==="raider"?"DÉFENDRE LA PORTE ET COUVRIR L'ÉVACUATION":config.enemy==="captain"?"EMPÊCHER UNE DEUXIÈME OFFENSIVE":"CONFINER LA BRÈCHE",limit:config.turnLimit,
- phase:1,stagger:0,combo:0,lastAction:"",lastDamage:0,lastImpact:0,actionSerial:0,last:"PHASE 1 — Combat à distance et pouvoirs. La phase 2 rapprochée commence quand l’ennemi perd la moitié de sa vitalité."};
+ phase:1,stagger:0,combo:0,stance:"balanced",stanceChangedTurn:-1,lastAction:"",lastDamage:0,lastImpact:0,actionSerial:0,last:"PHASE 1 — Combat à distance et pouvoirs. La phase 2 rapprochée commence quand l’ennemi perd la moitié de sa vitalité."};
 }
 function outcome(kind){
  const battle=S.battle;if(!battle)return;
+ registerBattleResult(battle,kind);
  S.battle=null;S.beat=kind==="win"?"La victoire ne met pas fin aux secours. Les gardes cherchent les personnes isolées.":kind==="parley"?"L’adversaire se retire mais ne devient pas un allié.":"Le repli laisse des blessés et un passage vulnérable.";
  if(kind==="win"){S.city=clamp(S.city+3,0,100);log("L'ennemi recule après avoir été vaincu.")}
  if(kind==="parley"){S.trust=clamp(S.trust+1,-10,10);log("L'adversaire accepte de se retirer, sans devenir l'allié de CHAYAH.")}
@@ -400,10 +429,13 @@ function outcome(kind){
 function battleTurn(action){
  const b=S.battle;if(!b||S.finished)return;
  const e=C.enemies[b.enemy];let damage=0,guard=false,dodge=false,recoil=0,cost=0;
+ const stance=COMBAT_STANCES[b.stance]?b.stance:"balanced";
  const fatigue=Math.min(12,S.injuryLevel*2);
  const melee=b.phase===2;
- if(["jab","sweep","grapple","breakGuard"].includes(action)&&!melee)return;
+ if(["jab","sweep","grapple","breakGuard","feint","riposte"].includes(action)&&!melee)return;
  const narrative={
+ feint:"CHAYAH trompe la garde par un faux départ et se dérobe à la riposte.",
+ riposte:"CHAYAH dévie le bras adverse et contre sur une ouverture, sans recourir à un pouvoir.",
  jab:"CHAYAH entre à portée, enchaîne deux coups courts et teste la garde ennemie.",
  sweep:"CHAYAH pivote, balaie les appuis ennemis et crée une ouverture sans employer de magie.",
  grapple:"CHAYAH contrôle le bras adverse et tente de le déséquilibrer, au risque de s’exposer.",
@@ -420,6 +452,8 @@ function battleTurn(action){
  pyroGenesis:"MAILEIZ avance et fait jaillir des flammes de ses paumes. La chaleur repousse la première ligne. Elle halète : sa puissance ne lui accorde aucune immortalité.",
   parley:"Sa sommation domine un instant le tumulte. Les adversaires hésitent, puis certains resserrent leurs rangs."
  };
+ if(action==="feint"){damage=4-fatigue/2;b.stagger=2;b.combo=clamp((b.combo||0)+1,0,4);dodge=true}
+ if(action==="riposte"){cost=8;if(S.energy<cost)return;damage=13+(b.stagger>0?8:0)-fatigue;guard=true;recoil=2;b.combo=clamp((b.combo||0)+1,0,4)}
  if(action==="jab"){damage=12-fatigue/2;b.combo=clamp((b.combo||0)+1,0,4);S.energy=clamp(S.energy+3,0,100)}
  if(action==="sweep"){damage=9-fatigue/2;b.stagger=2;b.combo=clamp((b.combo||0)+1,0,4)}
  if(action==="grapple"){damage=8-fatigue/2;guard=true;b.stagger=2;b.combo=clamp((b.combo||0)+1,0,4);recoil=3}
@@ -461,6 +495,7 @@ function battleTurn(action){
  if(action==="retreat"){outcome("retreat");return}
  if(action==="parley"&&b.enemy!=="shade"&&(b.hp<b.max*.53||has("barricades")&&b.enemy==="raider")){outcome("parley");return}
  S.energy=clamp(S.energy-cost,0,100);
+ if(["jab","sweep","grapple","breakGuard","feint","riposte","strike","counter"].includes(action))damage*=stance==="offensive"?1.2:stance==="defensive"?.8:1;
  damage=Math.max(0,damage);
  const hpBefore=b.hp;
  b.hp=clamp(b.hp-Math.max(0,Math.floor(damage)-e.armor),0,b.max);
@@ -473,11 +508,14 @@ function battleTurn(action){
   if(e.resource==="force"&&b.force<30)blow=Math.max(3,blow-5);
   if(b.weak>0){blow=Math.max(3,blow-6);b.weak--}
   if(b.stagger>0){blow=Math.max(2,blow-5);b.stagger--}
+  if(stance==="offensive")blow=Math.ceil(blow*1.25);
+  if(stance==="defensive")blow=Math.ceil(blow*.7);
+  if(stance==="mobile")blow=Math.max(0,blow-3);
   if(dodge)blow=0;
   if(guard)blow=Math.ceil(blow*(action==="ward"?.18:action==="counter"?.45:.27));
  }
  const physical=blow+recoil;S.health=clamp(S.health-physical,0,100);
- b.lastAction=action;b.lastDamage=hpBefore-b.hp;b.lastImpact=physical;b.actionSerial=(b.actionSerial||0)+1;
+ b.lastAction=action;b.lastStance=stance;b.lastDamage=hpBefore-b.hp;b.lastImpact=physical;b.actionSerial=(b.actionSerial||0)+1;
 
  if(physical>=11){
   S.injuryLevel=clamp(S.injuryLevel+(physical>=25?2:1),0,8);
@@ -1029,14 +1067,19 @@ function render(){
     battleStage.dataset.actionSerial=String(b.actionSerial);
     const fighter=battleStage.querySelector(".battle-fighter");
     const opponent=battleStage.querySelector(".battle-opponent-art");
-    const meleeMove=["jab","sweep","grapple","breakGuard","strike","counter"].includes(b.lastAction);
+    const meleeMove=["jab","sweep","grapple","breakGuard","feint","riposte","strike","counter"].includes(b.lastAction);
     const amplitude=meleeMove?26:12;
-    if(fighter?.animate)fighter.animate([{transform:"translateX(0)"},{transform:"translateX("+amplitude+"px) rotate(-2deg)",offset:.42},{transform:"translateX(0)"}],{duration:meleeMove?430:560,easing:"ease-out"});
-    if(opponent?.animate&&b.lastDamage>0)opponent.animate([{transform:"translateX(0)",filter:"brightness(1)"},{transform:"translateX(13px)",filter:"brightness(2.1)",offset:.48},{transform:"translateX(0)",filter:"brightness(1)"}],{duration:480,easing:"ease-out"});
+    const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if(!reduceMotion&&fighter?.animate)fighter.animate([{transform:"translateX(0)"},{transform:"translateX("+amplitude+"px) rotate(-2deg)",offset:.42},{transform:"translateX(0)"}],{duration:meleeMove?430:560,easing:"ease-out"});
+    if(!reduceMotion&&opponent?.animate&&b.lastDamage>0)opponent.animate([{transform:"translateX(0)",filter:"brightness(1)"},{transform:"translateX(13px)",filter:"brightness(2.1)",offset:.48},{transform:"translateX(0)",filter:"brightness(1)"}],{duration:480,easing:"ease-out"});
     battleStage.dataset.move=b.lastAction||"idle";
+    battleStage.dataset.stance=b.lastStance||"balanced";
   }
 
 
+  const activeStance=COMBAT_STANCES[b.stance]?b.stance:"balanced";
+  $("combat-stance-description").textContent=COMBAT_STANCES[activeStance].desc;
+  document.querySelectorAll("[data-stance]").forEach(ctl=>{const current=ctl.dataset.stance===activeStance;ctl.setAttribute("aria-pressed",String(current));ctl.disabled=current||b.stanceChangedTurn===b.turn||(ctl.dataset.stance==="mobile"&&S.energy<3)});
   $("enemy-desc").textContent=b.objective+" · Les ennemis conservent leur initiative.";
   $("enemy-hp").textContent=b.hp+" / "+b.max;
   $("enemy-hp-fill").style.width=100*b.hp/b.max+"%";
@@ -1056,6 +1099,8 @@ function render(){
   const wounds=$("combat-wounds");if(wounds)wounds.textContent="LÉSIONS : "+S.injuryLevel+"/8 — "+(S.injuryNotes[0]||"Aucune blessure durable");
   const skills=$("combat-actions");skills.replaceChildren(
    ...((b.phase||1)===2?[
+    button("FEINTE — OUVERTURE","Esquive et prépare une ouverture.",()=>battleTurn("feint")),
+    button("RIPOSTE","8 énergie : contre renforcé sur adversaire déséquilibré.",()=>battleTurn("riposte"),S.energy<8),
     button("JAB — COMBO","Coups rapides : accumule des ouvertures, récupère 3 énergie.",()=>battleTurn("jab")),
     button("BALAYAGE","Déséquilibre et ralentit la riposte adverse.",()=>battleTurn("sweep")),
     button("SAISIE","Contrôle au contact, réduit la riposte mais provoque un contrecoup.",()=>battleTurn("grapple")),
@@ -1079,7 +1124,7 @@ function render(){
    ...(S.grief>=3?[button("RAGE CONTENUE","Frappe violente mais limitée ; blessures et énergie consommée.",()=>battleTurn("fury"),S.fury<32||S.energy<29)]:[])
   );
   // Les quatre premières commandes du corps à corps sont utilisables au clavier.
-  const quickKeys=(b.phase||1)===2?["1","2","3","4"]:[];
+  const quickKeys=(b.phase||1)===2?["1","2","3","4","5","6"]:[];
   [...skills.children].forEach((actionButton,i)=>{
     if(i<quickKeys.length){
       actionButton.dataset.hotkey=quickKeys[i];
@@ -1204,7 +1249,7 @@ function switchInfo(id){
 tabs.forEach(t=>t.addEventListener("click",()=>switchInfo(t.dataset.infoTab)));
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!drawer.hidden)openInfo(false)});
 document.addEventListener("keydown",e=>{
- if(!S?.battle||S.finished||S.mode===null||!S.introDone||!["1","2","3","4"].includes(e.key))return;
+ if(!S?.battle||S.finished||S.mode===null||!S.introDone||!["1","2","3","4","5","6"].includes(e.key))return;
  if(e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;
  if(e.target?.closest?.("input, textarea, select, [contenteditable=true], [role=dialog]"))return;
  const btn=$("combat-actions")?.querySelector('[data-hotkey="'+e.key+'"]');
@@ -1216,6 +1261,7 @@ $("reader-larger").addEventListener("click",()=>changeReaderSetting("larger"));
 $("reader-image").addEventListener("click",()=>changeReaderSetting("image"));
 $("quest-tracker-open").addEventListener("click",()=>{openInfo(true);switchInfo("quests")});
 document.querySelectorAll("[data-journal-filter]").forEach(b=>b.addEventListener("click",()=>{journalFilter=b.dataset.journalFilter;renderRPGJournal()}));
+document.querySelectorAll("[data-stance]").forEach(control=>control.addEventListener("click",()=>setCombatStance(control.dataset.stance)));
 $("dialogue-next").addEventListener("click",()=>advanceDialogue(false));
 $("dialogue-skip").addEventListener("click",()=>advanceDialogue(true));
 switchInfo("city");
