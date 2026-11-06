@@ -78,6 +78,12 @@ Le dossier **Informations** propose désormais trois onglets supplémentaires : 
 
 Les nouveaux champs sont initialisés à la demande dans la **sauvegarde v8** : les parties existantes ne sont pas remises à zéro. Les documents acquis antérieurement sont déduits des drapeaux et des visites présents.
 
+## Combat avancé et interconnexion RPG
+
+Quatre postures physiques : **équilibrée**, **offensive** (+20 % de dégâts physiques, +25 % de riposte), **défensive** (−20 % de dégâts physiques, −30 % de riposte) et **mobile** (riposte réduite, entrée à 3 énergie). Un changement de posture est autorisé par tour. Au corps à corps : **Feinte** (esquive, ouverture) et **Riposte** (contre, 8 énergie). Ce ne sont pas de nouveaux pouvoirs divins.
+
+Les combats conservent un historique des 30 derniers résultats, une quête tactique suit trois victoires ou retraits négociés, et les résultats modifient légèrement la tension et le moral de la région courante. Les changements sont consignés au journal. Les dialogues et décès restent inchangés. Animations via l'interface, pas encore de rigging corporel.
+
 ## Modes et combat
 
 **Mode Histoire :** la défaite peut permettre une continuation avec blessures et conséquences. **Mode Impitoyable :** la neutralisation peut clore la route ; les victimes et décisions restent importantes.
