@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 460" role="img" aria-label="Illustration originale de l'adversaire legion">
+<defs><radialGradient id="back"><stop stop-color="#c64e50" stop-opacity=".35"/><stop offset="1" stop-color="#090b16"/></radialGradient><linearGradient id="armor" x2=".9" y2="1"><stop stop-color="#c64e50"/><stop offset=".36" stop-color="#2d1720"/><stop offset="1" stop-color="#080914"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="8"/></filter></defs>
+<rect width="360" height="460" fill="#0d101b"/><rect width="360" height="460" fill="url(#back)"/>
+<g opacity=".22" fill="none" stroke="#c64e50" stroke-width="2"><circle cx="180" cy="175" r="155"/><circle cx="180" cy="175" r="131"/><path d="M0 125H360M0 340H360M180 0V460"/></g>
+<path d="M0 460 L47 271 L115 220 L136 124 L218 122 L251 225 L319 264 L360 460 Z" fill="url(#armor)" stroke="#c64e50" stroke-width="3" stroke-linejoin="round"/>
+<path d="M120 138 L144 67 L184 37 L223 66 L251 138 L227 169 L142 169 Z" fill="url(#armor)" stroke="#c64e50" stroke-width="4" stroke-linejoin="round"/>
+<path d="M131 135 L153 120 L218 120 L238 137 L224 166 L144 166 Z" fill="#10101b" stroke="#c64e50" stroke-width="3"/>
+<path d="M147 145 L169 146 M194 146 L219 144" stroke="#c64e50" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/>
+<path d="M147 145 L169 146 M194 146 L219 144" stroke="#fbede2" stroke-width="3" stroke-linecap="round"/>
+<path d="M55 460 L125 285 L149 330 L123 460 M305 460 L237 285 L213 330 L242 460" fill="#2d1720" opacity=".8" stroke="#c64e50" stroke-width="2"/>
+<path d="M130 270 L177 294 L224 270 M146 325H211M153 357H206" fill="none" stroke="#c64e50" stroke-width="2" opacity=".7"/>
+<path d="M10 449H350" stroke="#c64e50" stroke-width="3" opacity=".6"/>
+</svg>
