@@ -499,6 +499,7 @@ function renderWorld(){
   pin.setAttribute("aria-label",city.name+(here?", position actuelle":unlocked?", voyager":" — verrouillée"));
   pin.setAttribute("aria-current",here?"location":"false");
   pin.textContent=city.name;pin.title=unlocked?city.description:"Débloquée à l'épisode "+city.unlock;
+  pin.classList.toggle("continent-current",here);
   pin.disabled=!unlocked||blocked;pin.addEventListener("click",()=>worldTravel(city.id));map.append(pin);
   const item=button((here?"● ":unlocked?"↗ ":"🔒 ")+city.name,unlocked?city.description:"Accès à l'épisode "+city.unlock,()=>worldTravel(city.id),!unlocked||blocked);
   if(here)item.classList.add("continent-selected");
@@ -533,6 +534,12 @@ function render(){
  $("episode-label").textContent="ÉPISODE "+String(n.episode).padStart(2,"0")+" / "+(C.season?.totalEpisodes||25);
  $("episode-name").textContent=episode?.title||"LA NUIT DES SERMENTS";
  $("episode-arc").textContent=episode?.arc||"SAISON I";
+ const totalEpisodes=C.season?.totalEpisodes||225;
+ const trajectory=$("episode-trajectory");
+ trajectory.setAttribute("aria-valuemax",String(totalEpisodes));
+ trajectory.setAttribute("aria-valuenow",String(n.episode));
+ $("episode-trajectory-fill").style.width=Math.min(100,100*n.episode/totalEpisodes)+"%";
+
  $("chapter-title").textContent="SAISON I — "+(C.season?.title||"LES SERMENTS");
  $("chapter-desc").textContent=n.episode<8?
   "Avant les batailles, découvre les habitants, leurs liens et les choix qui rendront chaque perte importante.":
