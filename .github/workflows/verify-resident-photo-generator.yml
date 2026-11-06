@@ -1,0 +1,40 @@
+name: Probe free image generation for residents
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-resident-photo-generator.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify optional public image generator
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,time,urllib.request,urllib.error
+          base="https://stablehorde.net/api"
+          headers={"apikey":"0000000000","Client-Agent":"DivineShadow:1.0:github","Content-Type":"application/json"}
+          payload={"prompt":"cinematic photorealistic portrait, friendly adult Hispanic medieval caravan driver, olive complexion, dark wavy hair, travel cloak, leather bag, warm natural lighting, sharp detailed eyes, medieval fantasy movie realism, solo chest-up face, no text, no lettering","params":{"width":512,"height":512,"steps":20,"n":1,"cfg_scale":6.5},"nsfw":False,"censor_nsfw":True}
+          try:
+           req=urllib.request.Request(base+"/v2/generate/async",data=json.dumps(payload).encode(),headers=headers,method="POST")
+           with urllib.request.urlopen(req,timeout=40) as response: result=json.load(response)
+           print("GENERATE",str(result)[:800],flush=True)
+           job=result.get("id")
+           if job:
+            for i in range(12):
+             time.sleep(10)
+             with urllib.request.urlopen(base+"/v2/generate/check/"+job,timeout=30) as response: p=json.load(response)
+             print("QUEUE",i,p.get("done"),p.get("wait_time"),p.get("queue_position"),p.get("faulted"),flush=True)
+             if p.get("done"):
+              with urllib.request.urlopen(base+"/v2/generate/status/"+job,timeout=40) as response: q=json.load(response)
+              print("RESULT",str(q)[:700],flush=True)
+              break
+          except Exception as e:
+           print("SERVICE_ERROR",str(e),flush=True)
+          
+          PY
