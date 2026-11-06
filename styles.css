@@ -210,3 +210,10 @@
 .cast-vector-illustration .cast-pose-svg{height:100%;width:100%;max-width:300px;display:block}
 .cast-concept-art .cast-art-note{position:absolute;z-index:2;bottom:4px;left:8px;right:8px;background:#13101cc9;padding:6px 3px;text-align:center;font-size:8px;color:#f4d2e0}
 .cast-illustration-mark{font:800 58px Georgia,serif;letter-spacing:.05em;color:#e3bfd2}
+
+/* Verified photographic faces for the 17 existing character cards */
+.cast-item-art:has(.cast-real-portrait){height:260px;background:#17131e}
+.cast-item-art .cast-real-portrait{width:100%;height:100%;display:block;object-fit:cover;object-position:center 24%;filter:none;image-rendering:auto}
+.cast-item-art:has(.cast-real-portrait) .cast-art-note{position:absolute;left:0;right:0;bottom:0;z-index:2;background:linear-gradient(0deg,#0c0a13f0,#0c0a1388);padding:8px 5px;text-align:center;font-size:9px;color:#f2d9df}
+.cast-item-art:has(.cast-real-portrait) .cast-vector-illustration{display:none!important}
+@media(max-width:720px){.cast-item-art:has(.cast-real-portrait){height:240px}}
