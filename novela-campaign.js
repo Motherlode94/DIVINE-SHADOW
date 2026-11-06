@@ -436,6 +436,89 @@ function renderSceneArt(scene){
  stage.setAttribute("aria-label",portrait?"Illustration du personnage "+key:"Illustration d’ambiance, non spécifique au lieu");
 }
 
+
+/* Exploration secondaire : aucun saut d'épisode, aucun changement de scène principale. */
+function ensureWorldState(){
+ if(!S.world||typeof S.world!=="object")S.world={city:"valedor",site:null,visits:{},events:{},npc:{},notice:""};
+ if(!C.world?.cities.some(c=>c.id===S.world.city))S.world.city="valedor";
+ for(const key of ["visits","events","npc"])if(!S.world[key]||typeof S.world[key]!=="object")S.world[key]={};
+ if(typeof S.world.notice!=="string")S.world.notice="";
+ return S.world;
+}
+function worldEvent(city,site){
+ const w=ensureWorldState(),key=city.id+"-"+site.id;
+ if(S.battle||S.finished)return;
+ if(w.city!==city.id){w.notice="Rends-toi d'abord dans cette cité.";render();return}
+ const first=!w.events[key];
+ if(first){
+  w.events[key]=true;
+  for(const [resource,delta]of Object.entries(site.effect||{})){
+   if(typeof S[resource]==="number")S[resource]=clamp(S[resource]+delta,resource==="trust"||resource==="council"?-10:0,resource==="intel"?30:100);
+  }
+  flag("monde:"+key);
+  w.npc[key]=site.npc+" — mission locale accomplie";
+  log("EXCURSION — "+site.name+" : "+site.result);
+ }else{
+  w.npc[key]=site.npc+" — déjà rencontré";
+  log("REVISITE — "+site.name+" : les habitants se souviennent de l'aide reçue.");
+ }
+ advanceClock(1);
+ w.visits[key]=(w.visits[key]||0)+1;
+ w.site=site.id;
+ w.notice=(first?site.result:"Ce lieu a déjà été visité; les conséquences sont conservées.")+" Temps +1.";
+ S.beat="Excursion à "+site.name+". "+w.notice;
+ render();
+}
+function worldTravel(id){
+ const w=ensureWorldState(),city=C.world?.cities.find(c=>c.id===id);
+ if(!city||S.battle||S.finished)return;
+ if((C.scenes[S.index]?.episode||1)<city.unlock){w.notice="Région accessible à partir de l'épisode "+city.unlock+".";render();return}
+ if(w.city===id){w.notice="Tu es déjà dans cette région.";render();return}
+ const before=w.city,from=C.world.cities.find(c=>c.id===before);
+ w.city=id;w.site=null;w.visits["region:"+id]=(w.visits["region:"+id]||0)+1;
+ const risky=S.cityStates[id]?.alignment==="enemy";
+ advanceClock(risky?2:1);
+ if(risky)S.energy=clamp(S.energy-5,0,100);
+ w.notice="Voyage "+(from?.name||"") +" → "+city.name+". "+(risky?"Frontière hostile : traversée discrète, -5 énergie et 2 phases.":"1 phase écoulée.");
+ log("VOYAGE CONTINENTAL — "+w.notice);
+ S.beat=w.notice;
+ render();
+}
+function renderWorld(){
+ const root=$("continent-explorer");if(!root||!C.world)return;
+ const w=ensureWorldState(),ep=C.scenes[S.index]?.episode||1;
+ const current=C.world.cities.find(c=>c.id===w.city)||C.world.cities[0];
+ const blocked=Boolean(S.battle||S.finished),all=C.world.cities;
+ const map=$("continent-map"),regions=$("continent-regions"),sites=$("continent-sites");
+ map.replaceChildren();regions.replaceChildren();sites.replaceChildren();
+ for(const city of all){
+  const unlocked=ep>=city.unlock,here=city.id===w.city,enemy=S.cityStates[city.id]?.alignment==="enemy";
+  const pin=document.createElement("button");pin.type="button";pin.className="continent-pin";
+  pin.style.left=city.x+"%";pin.style.top=city.y+"%";
+  pin.dataset.alignment=enemy?"enemy":S.cityStates[city.id]?.alignment||"neutral";
+  pin.setAttribute("aria-label",city.name+(here?", position actuelle":unlocked?", voyager":" — verrouillée"));
+  pin.setAttribute("aria-current",here?"location":"false");
+  pin.textContent=city.name;pin.title=unlocked?city.description:"Débloquée à l'épisode "+city.unlock;
+  pin.disabled=!unlocked||blocked;pin.addEventListener("click",()=>worldTravel(city.id));map.append(pin);
+  const item=button((here?"● ":unlocked?"↗ ":"🔒 ")+city.name,unlocked?city.description:"Accès à l'épisode "+city.unlock,()=>worldTravel(city.id),!unlocked||blocked);
+  if(here)item.classList.add("continent-selected");
+  regions.append(item);
+ }
+ $("continent-status").textContent="POSITION : "+current.name+" · ÉPISODE "+ep+" · "+(blocked?"VOYAGE INDISPONIBLE":"Voyages accessibles selon l'avancement");
+ $("continent-local-title").textContent=current.name+" — LIEUX ET HABITANTS";
+ $("continent-local-text").textContent=current.description+" Les visites n'altèrent pas la progression narrative.";
+ for(const site of current.sites){
+  const key=current.id+"-"+site.id,completed=Boolean(w.events[key]),visits=w.visits[key]||0;
+  const entry=document.createElement("article");entry.className="continent-site";
+  const head=document.createElement("strong");head.textContent=site.name+" "+(completed?"✓":"");
+  const npc=document.createElement("small");npc.textContent=site.npc+" · "+(visits?visits+" visite(s)":"non visité");
+  const description=document.createElement("p");description.textContent=site.text;
+  const action=button(completed?"REVISITER":"INTERVENIR — "+site.action,completed?"Cette rencontre a déjà modifié le monde.":"Conséquences persistantes et temps +1",()=>worldEvent(current,site),blocked);
+  entry.append(head,npc,description,action);sites.append(entry);
+ }
+ $("continent-encounter").textContent=w.notice||"Choisis un lieu pour découvrir un événement local.";
+}
+
 function render(){
  if(S.mode&&!S.introDone){
   $("mode-setup").hidden=true;$("game-root").hidden=true;
@@ -445,6 +528,7 @@ function render(){
  if(!S.mode){$("mode-setup").hidden=false;$("game-root").hidden=true;save();return}
  $("mode-setup").hidden=true;$("game-root").hidden=false;
  const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
+ renderWorld();
  const episode=C.season?.episodes[n.episode-1];
  $("episode-label").textContent="ÉPISODE "+String(n.episode).padStart(2,"0")+" / "+(C.season?.totalEpisodes||25);
  $("episode-name").textContent=episode?.title||"LA NUIT DES SERMENTS";
@@ -708,6 +792,11 @@ document.addEventListener("keydown",e=>{
 });
 
 switchInfo("city");
+$("continent-toggle").addEventListener("click",()=>{
+ const panel=$("continent-content"),toggle=$("continent-toggle");panel.hidden=!panel.hidden;
+ toggle.setAttribute("aria-expanded",String(!panel.hidden));toggle.textContent=panel.hidden?"OUVRIR LA CARTE":"FERMER LA CARTE";
+ if(!panel.hidden)renderWorld();
+});
 $("menu").addEventListener("click",()=>{const links=$("links");const open=links.classList.toggle("open");$("menu").setAttribute("aria-expanded",String(open))});
 render();
 })();
