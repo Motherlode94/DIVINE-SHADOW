@@ -379,6 +379,47 @@ $("cinematic-next").addEventListener("click",()=>{
  S.introFrame++;showCinematic();
 });
 $("cinematic-skip").addEventListener("click",endCinematic);
+
+// Illustrations déjà présentes dans le dépôt : aucun personnage sans portrait validé
+// ne reçoit l'image d'un autre. La scène conserve une ambiance visuelle distincte.
+const SCENE_CAST_IMAGES={
+ "CHAYAH":"chayah_hd_candidate.jpg","CHAYAH VEHUHIA":"chayah_hd_candidate.jpg",
+ "AETHER":"aether_hd_candidate.jpg","AMARA":"cast/amara.webp",
+ "ARJUN":"cast/arjun.webp","ÉLIAS":"cast/elias.webp","ELIAS":"cast/elias.webp",
+ "FREYA":"cast/freya.webp","INÈS":"cast/ines.webp","INES":"cast/ines.webp",
+ "LIVIA":"cast/livia.webp","MEILIN":"cast/meilin.webp","NADIA":"cast/nadia.webp",
+ "SOLÈNE":"cast/solene.webp","SOLENE":"cast/solene.webp","SOREN":"cast/soren.webp",
+ "NYSSARA":"nyssara_clean.png","ORVANN":"orvann_clean.png","VAELKOR":"vaelkor_clean.png"
+};
+const SCENE_BACKDROPS={
+ divine:"chayah_hd_candidate.jpg",archives:"aether_hd_candidate.jpg",
+ combat:"Guerrière de feu dans les ruines en flammes.png",
+ village:"population/population-atlas.webp"
+};
+function renderSceneArt(scene){
+ const key=String(scene.who||"").trim().toUpperCase();
+ const portrait=SCENE_CAST_IMAGES[key];
+ const loc=(scene.place||"").toLowerCase();
+ const arc=(scene.arc||"").toLowerCase();
+ const combat=Boolean(scene.battle)||/combat|bataille|attaque|affrontement|ruines|guerre/.test(loc);
+ const archive=/archive|observatoire|biblioth|sanctuaire|sceau|recherche|académie|registre|étude/.test(loc);
+ const rural=/ferme|champ|village|marché|grenier|récolte|jardin|paysan/.test(loc);
+ const kind=combat?"combat":archive?"archives":rural?"village":"divine";
+ const art=portrait||SCENE_BACKDROPS[kind];
+ const imageUrl="./assets/"+art.split("/").map(encodeURIComponent).join("/");
+ const stage=$("scene-illustration"),img=$("scene-portrait");
+ // La grande image suit l'acteur lorsqu'il possède une illustration,
+ // sinon montre explicitement un visuel d'ambiance non attribué.
+ stage.style.backgroundImage="linear-gradient(90deg,rgba(6,7,13,.12),rgba(6,7,13,.7)),url('"+imageUrl+"')";
+ stage.dataset.kind=kind;
+ img.hidden=!portrait;
+ if(portrait){img.src="./assets/"+portrait.split("/").map(encodeURIComponent).join("/");img.alt="Portrait illustratif de "+key;}
+ else{img.removeAttribute("src");img.alt="";}
+ $("scene-visual-type").textContent=portrait?"PORTRAIT DU PERSONNAGE":"ILLUSTRATION D’AMBIANCE";
+ $("scene-visual-speaker").textContent=portrait?key:(scene.episodeTitle||scene.place||"DIVINE SHADOW");
+ stage.setAttribute("aria-label",portrait?"Illustration du personnage "+key:"Illustration d’ambiance, non spécifique au lieu");
+}
+
 function render(){
  if(S.mode&&!S.introDone){
   $("mode-setup").hidden=true;$("game-root").hidden=true;
@@ -405,6 +446,7 @@ function render(){
  n.episode<146?"Le continent se déchire tandis qu'AETHER analyse des phénomènes plus anciens que les lois connues.":
  n.episode<161?"Face à une présence antérieure à CHAYAH, sa puissance profonde ne peut se révéler sans blessures.":
  "Les survivants, les proches et les cités décident de ce qu'ils feront de la paix.";
+ renderSceneArt(n);
  $("current-place").textContent=n.place;
  let sceneText=n.text;
  if(n.textIfSamaAware&&has("samaConnaîtMaileiz"))sceneText=n.textIfSamaAware;
