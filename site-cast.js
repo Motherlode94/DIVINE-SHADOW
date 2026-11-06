@@ -12,11 +12,11 @@ let selected="allies";
 function itemCard(item,category,index){
  const article=document.createElement("article");article.className="cast-item";article.dataset.category=category;
  const art=document.createElement("div");art.className="cast-item-art "+(category==="enemy"?"cast-enemy":category==="civic"?"cast-civic":"cast-ally");
- const portraits={ines:"ines.webp",arjun:"arjun.webp",freya:"freya.webp",nadia:"nadia.webp",elias:"elias.webp",solene:"solene.webp",amara:"amara.webp",soren:"soren.webp",livia:"livia.webp",meilin:"meilin.webp"};
+ const portraits={"ines":"ines.webp","arjun":"arjun.webp","freya":"freya.webp","nadia":"nadia.webp","elias":"elias.webp","solene":"solene.webp","amara":"amara.webp","soren":"soren.webp","livia":"livia.webp","meilin":"meilin.webp","isha":"isha.webp","lucien":"lucien.webp","samira":"samira.webp","ren":"ren.webp","amaka":"amaka.webp","diego":"diego.webp","hana":"hana.webp","youssef":"youssef.webp","alina":"alina.webp","kwame":"kwame.webp","general":"general.webp","eleaonor":"eleaonor.webp","brother":"brother.webp","miren":"miren.webp","selma":"selma.webp","tomas":"tomas.webp","nadir":"nadir.webp"};
  const portrait=portraits[item.id];
  if(portrait){
   const img=document.createElement("img");img.className="cast-real-portrait";img.alt="Portrait conceptuel de "+item.name;img.loading="lazy";img.decoding="async";img.src="./assets/cast/"+portrait;
-  img.onerror=()=>{img.remove();art.classList.add("cast-awaiting-portrait");const msg=document.createElement("span");msg.className="cast-missing-image";msg.textContent="Portrait créé · fichier à intégrer";art.append(msg)};
+  img.onerror=()=>{img.remove();art.classList.add("cast-awaiting-portrait");const msg=document.createElement("span");msg.className="cast-missing-image";msg.textContent="Portrait temporairement indisponible";art.append(msg)};
   art.append(img);
  }else{
   art.classList.add("cast-concept-art");
