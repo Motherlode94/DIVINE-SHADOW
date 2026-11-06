@@ -17,31 +17,62 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install Pillow==11.3.0
-      - name: Download photographic assets
+      - name: Download and convert all character photo assets
         shell: bash
         run: |
           python - <<'PY'
           import urllib.request
-          from pathlib import Path
           from io import BytesIO
+          from pathlib import Path
           from PIL import Image
-          url="https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAIyglQTLf5rugATKnZ6zXPx96Xa2c7UEHbvRbgLhCKyt&exp=1793991564&osig=AAAAAAAAAAAAAAAAAAAAACOM-TRGQ99cwlNo62XeeMlg4dVCG72OLlEAPv8paBfE&signer=media-rpc&token=AAIAAU0AJGE0YTZiNDQxLWU5ODUtNDMyMS1iYmQ3LTY1Yjg3YzY4YWNhZAAAAAABobI62uDk7w69SCRTe8iinloAcNJQibTp-xcR4S5MQIX-tuDu5g&x-canva-quality=thumbnail"
-          r=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
-          with urllib.request.urlopen(r,timeout=50) as response: photo=response.read()
-          im=Image.open(BytesIO(photo)).convert("RGB")
-          assert im.width>=145, im.size
-          p=Path("assets/cast/isha.webp");p.parent.mkdir(parents=True,exist_ok=True)
-          im.save(p,format="WEBP",quality=94,method=6)
-          print("Saved",p,im.size)
+          import time
+          sources={
+            "isha": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAIyglQTLf5rugATKnZ6zXPx96Xa2c7UEHbvRbgLhCKyt&exp=1793991564&osig=AAAAAAAAAAAAAAAAAAAAACOM-TRGQ99cwlNo62XeeMlg4dVCG72OLlEAPv8paBfE&signer=media-rpc&token=AAIAAU0AJGE0YTZiNDQxLWU5ODUtNDMyMS1iYmQ3LTY1Yjg3YzY4YWNhZAAAAAABobI62uDk7w69SCRTe8iinloAcNJQibTp-xcR4S5MQIX-tuDu5g&x-canva-quality=thumbnail",
+            "lucien": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fc0ce2d21-6012-428b-bde7-4a736ba0051b/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAHTzRt3b2QPgV5FaOTIk6v_wqM6Cln04w-CdpsfM5NwL&exp=1793991270&osig=AAAAAAAAAAAAAAAAAAAAALOFj5RyQ0exbBnCBlJHAtD0KT19aoPpUjnLaWZpGWb0&signer=media-rpc&token=AAIAAU0AJGMwY2UyZDIxLTYwMTItNDI4Yi1iZGU3LTRhNzM2YmEwMDUxYgAAAAABobI2XnB2UTzfOcnrIst3Fxzf01UFHFu8NCxeFk1lwkcAT_lWOQ&x-canva-quality=thumbnail",
+            "samira": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F2a142bdb-d731-4d31-ae10-65fd3fa9c88a/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAPnW_osRiucHKhC-MhOz6uun8-a9cnPz4Cp41kfj8Ao4&exp=1793989297&osig=AAAAAAAAAAAAAAAAAAAAAMZyMMHA-xaJLyIVxUIVP4pXtHQj15gWkVAlP_4goVIY&signer=media-rpc&token=AAIAAU0AJDJhMTQyYmRiLWQ3MzEtNGQzMS1hZTEwLTY1ZmQzZmE5Yzg4YQAAAAABobIYQ2jabUtqwInKbA_KNU9xv3lNHzpe1WxsyglQ1CbixdoH5A&x-canva-quality=thumbnail",
+            "ren": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F3205861d-148f-49fe-87f0-3835bc3d7fc0/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAAHbrURcx0jTndFGMWe1MwK6IGuM2MBVTN08_Kvr_nXt&exp=1793990234&osig=AAAAAAAAAAAAAAAAAAAAABRLvTdwxwZfFTNokDCRKh3pC4xsmLdMC7p9xOxfviwl&signer=media-rpc&token=AAIAAU0AJDMyMDU4NjFkLTE0OGYtNDlmZS04N2YwLTM4MzViYzNkN2ZjMAAAAAABobImj5APp57FTHQ8Acpheha4aB8NhwJGDEEcrBd3vbMf1f87cQ&x-canva-quality=thumbnail",
+            "amaka": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fa0a82c5b-d7eb-4c55-9a4f-b770ca0f0118/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAJ8rxYa9MJdvxit_6BpZN3KyEUgarSNhYsHhNJIoKpga&exp=1793991361&osig=AAAAAAAAAAAAAAAAAAAAAL2PLYSIXF5_dmsrPxygT-tP-QkV4i9ashK08j8Itzc0&signer=media-rpc&token=AAIAAU0AJGEwYTgyYzViLWQ3ZWItNGM1NS05YTRmLWI3NzBjYTBmMDExOAAAAAABobI3weibEfcW6qI2EUYgZNLbfDHKsi6CJl_uXIKTh_c-zmBV8w&x-canva-quality=thumbnail",
+            "diego": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fdec3bdbc-d329-49df-a5d8-fbc0ae2502a2/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAJZFuVandxbN7k81aPxJcTynPc6OOnglBGeGLAPmk9bm&exp=1793990104&osig=AAAAAAAAAAAAAAAAAAAAADjzINOer4L_1v7TRGgV3tr7sIadVvuCTTh5PTb8lK02&signer=media-rpc&token=AAIAAU0AJGRlYzNiZGJjLWQzMjktNDlkZi1hNWQ4LWZiYzBhZTI1MDJhMgAAAAABobIkk8AEfNKeObBZKbk293EG8wDClnkzFtt1GHItnEnZSMjayA&x-canva-quality=thumbnail",
+            "hana": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F4780c56e-7ac9-4bc8-926f-cd6ab259a6b8/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAGmCUWs2CaB-jmfAjDhdIjruUiLf21nLll7RXIoVHvr0&exp=1793989769&osig=AAAAAAAAAAAAAAAAAAAAALfY1ECrsFWulGt-1SCTwW0vkjx2slDTS_3oHh7Fjx_A&signer=media-rpc&token=AAIAAU0AJDQ3ODBjNTZlLTdhYzktNGJjOC05MjZmLWNkNmFiMjU5YTZiOAAAAAABobIfdygGXmXkpGmuLF-RrULzWNAc84Q6bV-xBIsUyVkW_Y6PMA&x-canva-quality=thumbnail",
+            "youssef": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fd20ac4b9-64f7-4d91-91c5-4b723338161d/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAJIR4oewQwRvN318PhP9BkGQ99cNJqo6QqRHoaR8mjK4&exp=1793990099&osig=AAAAAAAAAAAAAAAAAAAAAB65EfKVzMYmQnjMQ892uzb4ZH_WICNjROKI_zBDp-Kd&signer=media-rpc&token=AAIAAU0AJGQyMGFjNGI5LTY0ZjctNGQ5MS05MWM1LTRiNzIzMzM4MTYxZAAAAAABobIkgDjKx7eYr7RCiRuCm_8qwQ1v3x4HqnpS-UOKUT1Gth1VWQ&x-canva-quality=thumbnail",
+            "alina": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F3f203b2e-26d7-4995-92cf-b18c28508430/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAPVK_4CILaEiVo-spGYUq4UFbBRH7Ppx4NK9tygG-Gti&exp=1793991813&osig=AAAAAAAAAAAAAAAAAAAAAAoqYVrr12S1fwDhHOcnk6p8GkvKbXVt23H2G7Lv8ReO&signer=media-rpc&token=AAIAAU0AJDNmMjAzYjJlLTI2ZDctNDk5NS05MmNmLWIxOGMyODUwODQzMAAAAAABobI-p4jRzhmBkfhs9fvKxOBUiZaPY1rTUUmZsH5kbBH3NM5nSA&x-canva-quality=thumbnail",
+            "kwame": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fb4144548-1043-469f-93b9-68f0d3e58d6f/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAACMmRNVVVKC1Ek-LqFGHowPI2qTcUqmoMhlNYL-u-nPk&exp=1793990875&osig=AAAAAAAAAAAAAAAAAAAAAFtzImTZPYlK6w30eqYiWw2BrURbkBzh8PHfIQ4GOWzU&signer=media-rpc&token=AAIAAU0AJGI0MTQ0NTQ4LTEwNDMtNDY5Zi05M2I5LTY4ZjBkM2U1OGQ2ZgAAAAABobIwV3iFqGkyZwvmCwEcZtnkAI-8jja5yplCZa46-wdbDjOtVQ&x-canva-quality=thumbnail",
+            "general": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fce46309a-6557-468a-9815-37c17433ce3b/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAIR6sbr3wJm_u99yNj6piDEZqLup7n2E7eTcGACwg0Y9&exp=1793991047&osig=AAAAAAAAAAAAAAAAAAAAAEHR10M9gMCPsPDDZqjvK7gyL3OiLuDNWGFrlvTvvsm8&signer=media-rpc&token=AAIAAU0AJGNlNDYzMDlhLTY1NTctNDY4YS05ODE1LTM3YzE3NDMzY2UzYgAAAAABobIy91ibNsdr5HBZpRvLvA2JH5rIUeJD58BPgN-enBQgvw2XVg&x-canva-quality=thumbnail",
+            "eleaonor": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F8e090300-8805-410f-bc8a-3030732981bc/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAK1oPed1sxWo_3XGXN1-b7PA4pADiwXHrvHM_z-qolki&exp=1793989979&osig=AAAAAAAAAAAAAAAAAAAAAI6Ua3zeffE5fs72pq0UBPR1nrwQMp5fyU3dKdAwseev&signer=media-rpc&token=AAIAAU0AJDhlMDkwMzAwLTg4MDUtNDEwZi1iYzhhLTMwMzA3MzI5ODFiYwAAAAABobIiq3gFMsdwzsf6t0vVwo_rnec96XdKRqPchfWbJE1V-Ua9HQ&x-canva-quality=thumbnail",
+            "brother": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F04655239-2704-4872-a324-88afae09694b/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAK8fcXiEkb2bMQt4H6USQntiPov_flrfilfGJ89CDCc1&exp=1793991103&osig=AAAAAAAAAAAAAAAAAAAAABrGdFDjaP_0aRaOZbCPpMai_e8_gYLjqOv_Eocq_0wn&signer=media-rpc&token=AAIAAU0AJDA0NjU1MjM5LTI3MDQtNDg3Mi1hMzI0LTg4YWZhZTA5Njk0YgAAAAABobIz0hhjhwXxZhXUsru-7gf4dmdvOpeUFzWHGdWFGv53n9-p9w&x-canva-quality=thumbnail",
+            "miren": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F60c1c5fd-02bd-40a4-bc7e-d43831a6a169/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAPlfO8POe3VVpTOZIy0u6FCKjX9vRJbHo01zEVruvq1w&exp=1793988534&osig=AAAAAAAAAAAAAAAAAAAAAG7dlPcc9MacRwkCXvFBTBbb8hjePNuVUi_T8WNE3OTq&signer=media-rpc&token=AAIAAU0AJDYwYzFjNWZkLTAyYmQtNDBhNC1iYzdlLWQ0MzgzMWE2YTE2OQAAAAABobIMnvCfLyOxAmauomH2gs2HjyOGjxEXezAVJHNsrHcR6gpegg&x-canva-quality=thumbnail",
+            "selma": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F8f754534-f1e1-40f3-90c1-4a382059736c/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAL_uNdxHtI50XMOUoPQNpWv5fC3Es104MQXm5YXxN90U&exp=1793990277&osig=AAAAAAAAAAAAAAAAAAAAAJHRHCi0KI-HtQbZL3mBkZf6Tb0_jrH8Czw3x3uBrPLt&signer=media-rpc&token=AAIAAU0AJDhmNzU0NTM0LWYxZTEtNDBmMy05MGMxLTRhMzgyMDU5NzM2YwAAAAABobInN4hJm7rII6PDThl752SUHGqcIB_LgkE5Cc74fnAKwEU3zg&x-canva-quality=thumbnail",
+            "tomas": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F3e0d4768-49c2-42c2-876a-b35fbb247511/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAADrZR3K9SG5VZawQbEf6acve21gpEpwRG5pUpQ53VDYa&exp=1793990205&osig=AAAAAAAAAAAAAAAAAAAAAGlvhL5FwC2bhH4Qe0yKRjkLqH0iC-qg5o3Etd5Cztf9&signer=media-rpc&token=AAIAAU0AJDNlMGQ0NzY4LTQ5YzItNDJjMi04NzZhLWIzNWZiYjI0NzUxMQAAAAABobImHkiVkCVTwWdHgUVsxXj_u_jmxIT145xAnmwdia8Y0LdH_A&x-canva-quality=thumbnail",
+            "nadir": "https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F77bb4cdc-a210-411e-bea5-e69ebb2d513b/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAACUCWxSWgrY06zBlgg8fA87TjPouBTqZpw1YfmfO3fJr&exp=1793991463&osig=AAAAAAAAAAAAAAAAAAAAANU0vrwcOSUkAXB1xl2FVC6ov8u4wyA4R-6HNmYvego8&signer=media-rpc&token=AAIAAU0AJDc3YmI0Y2RjLWEyMTAtNDExZS1iZWE1LWU2OWViYjJkNTEzYgAAAAABobI5UFjttPU20iuUFoTIXpUwMR8-KqPhiS-2OC4wrg-XZJbZsA&x-canva-quality=thumbnail"
+          }
+          folder=Path("assets/cast");folder.mkdir(parents=True,exist_ok=True)
+          for identity,url in sources.items():
+            destination=folder/(identity+".webp")
+            try:
+              request=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
+              for attempt in range(3):
+                try:
+                  with urllib.request.urlopen(request,timeout=45) as response: body=response.read()
+                  break
+                except Exception:
+                  if attempt==2: raise
+                  time.sleep(3)
+              im=Image.open(BytesIO(body)).convert("RGB")
+              assert im.width>=145 and im.height>=190,(identity,im.size)
+              im.save(destination,format="WEBP",quality=94,method=6)
+              print(identity,im.size,destination.stat().st_size)
+            except Exception as e:
+              print("FAILED",identity,str(e),flush=True)
+              raise
           
           PY
-      - name: Commit portrait assets
+      - name: Commit imported photos
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add assets/cast/*.webp
           if ! git diff --cached --quiet; then
-            git commit -m 'assets(cast): import cinematic face portraits'
+            git commit -m 'assets(cast): integrate 17 cinematic portrait photographs'
             git push
           fi
