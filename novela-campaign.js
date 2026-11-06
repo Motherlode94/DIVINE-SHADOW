@@ -565,6 +565,13 @@ function render(){
  if(n.id==="s18"&&S.maileizStatus==="morte")sceneText="La ville enterre ses morts, dont MAILEIZ, tombée en sauvant une enfant. CHAYAH ne peut pas effacer les décisions de cette route. AETHER l'accompagne sans le décharger de sa responsabilité. Les quartiers cherchent comment vivre après la bataille.";
  else if(n.id==="s18"&&S.maileizStatus==="blessee")sceneText+=" MAILEIZ est vivante mais blessée. Sa convalescence et ses choix futurs lui appartiennent.";
  $("place-desc").textContent=sceneText+reaction();
+ // La nouvelle scène s'ouvre toujours au début de son propre panneau de lecture.
+ const reading=$("scene-reading-body");
+ if(reading&&reading.dataset.sceneId!==n.id){
+  reading.dataset.sceneId=n.id;
+  reading.scrollTop=0;
+ }
+
  $("story-event").textContent=(S.beat||"")+"\n\nSITUATION • "+n.who+" • "+S.tick+" phases écoulées.";
  $("mode-name").textContent=S.mode==="ruthless"?"IMPITOYABLE":"HISTOIRE";
  $("hp").textContent=S.health;$("energy").textContent=S.energy;$("hp-fill").style.width=S.health+"%";$("energy-fill").style.width=S.energy+"%";
