@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=19"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=20"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -45,7 +45,7 @@
 <span class="eyebrow">ALERTE / COMBAT TACTIQUE AU TOUR PAR TOUR</span>
 <div class="combat-heading"><div><h3 id="enemy-name"></h3><p id="enemy-desc"></p></div><strong id="combat-turn"></strong></div>
 <div class="enemy-health"><span>ENNEMI : <strong id="enemy-hp"></strong></span><div class="progress-track enemy combat-health-track"><i id="enemy-hp-fill"></i><span id="enemy-halfway" class="enemy-halfway" title="Seuil de la phase 2 : 50 %" aria-hidden="true"></span></div></div><div id="enemy-force-panel" class="enemy-force" hidden><span>FORCE DE L’ENNEMI : <strong id="enemy-force">100</strong> / 100</span><div class="progress-track force"><i id="enemy-force-fill"></i></div></div>
-<div id="combat-phase-banner" class="combat-phase-banner" role="status" aria-live="polite">PHASE 1 — POUVOIRS ET DISTANCE</div><p id="combat-phase-help" class="combat-phase-help">Phase 2 après 50 % de PV.</p><div class="cinematic-battle-visual" aria-hidden="true"><div class="battle-fighter"><img src="./assets/chayah_hd_candidate.jpg" alt=""></div><span class="battle-flare"></span><span class="battle-ring"></span><span class="battle-spark"></span><div class="battle-opponent-art"><img id="battle-opponent-image" src="./assets/enemies/raider.svg" alt="Illustration de l’adversaire" loading="eager" decoding="async"></div></div><p id="melee-combo-status" class="melee-combo-status" hidden>COMBO : 0 · GARDE ADVERSE : STABLE</p><p id="combat-log" class="event-message battle-narration"></p><p id="combat-wounds" class="combat-wounds" aria-live="polite">LÉSIONS : 0/8</p><div id="combat-actions" class="combat-actions" aria-label="Capacités de combat"></div>
+<div id="combat-phase-banner" class="combat-phase-banner" role="status" aria-live="polite">PHASE 1 — POUVOIRS ET DISTANCE</div><p id="combat-phase-help" class="combat-phase-help">Phase 2 après 50 % de PV.</p><div id="battle-stage" class="cinematic-battle-visual" aria-hidden="true"><div class="battle-action-flash" id="battle-action-flash"></div><div class="battle-fighter"><img src="./assets/chayah_hd_candidate.jpg" alt=""></div><span class="battle-flare"></span><span class="battle-ring"></span><span class="battle-spark"></span><div class="battle-opponent-art"><img id="battle-opponent-image" src="./assets/enemies/raider.svg" alt="Illustration de l’adversaire" loading="eager" decoding="async"></div></div><div class="battle-feedback" id="battle-feedback" aria-live="polite"><span id="battle-move-name">DÉBUT DU COMBAT</span><strong id="battle-damage-value">DÉGÂTS : —</strong><span id="battle-player-impact">CONTRECOUP : —</span></div><p id="melee-combo-status" class="melee-combo-status" hidden>COMBO : 0 · GARDE ADVERSE : STABLE</p><p id="combat-log" class="event-message battle-narration"></p><p id="combat-wounds" class="combat-wounds" aria-live="polite">LÉSIONS : 0/8</p><div id="combat-actions" class="combat-actions" aria-label="Capacités de combat"></div>
 </section>
 </section>
 <aside id="info-drawer" class="adventure-sidebar info-drawer" hidden aria-label="Informations de la campagne">
@@ -99,5 +99,5 @@
 <script src="./novela-season-200.js?v=1" defer></script>
 <script src="./novela-season-225.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=21" defer></script>
+<script src="./novela-campaign.js?v=22" defer></script>
 </body></html>
