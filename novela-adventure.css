@@ -649,3 +649,6 @@ body{overflow-x:clip}
 /* Cinematic dialogue photos, no SVG portraits when a verified asset exists */
 .cinematic-dialogue-portrait img{object-fit:cover;object-position:center 25%;filter:none}
 .scene-character-portrait{object-fit:contain;object-position:center bottom}
+
+/* Render only the corresponding restored face in cinematic novel scenes */
+#scene-portrait,.cinematic-dialogue-portrait img{image-rendering:auto;filter:none}
