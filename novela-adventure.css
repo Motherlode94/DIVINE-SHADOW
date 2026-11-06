@@ -251,3 +251,37 @@
 #battle-stage[data-enemy="captain"],#battle-stage[data-enemy="legion"]{background:radial-gradient(ellipse at 65% 25%,#c96b4770,transparent 58%),linear-gradient(125deg,#1e1012,#27202a)}
 @media(max-width:620px){.battle-feedback{gap:5px}.battle-feedback>*{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.battle-fighter,.battle-opponent-art{animation:none!important;transition:none!important}}
+
+/* Exploration continentale facultative, compatible avec les sauvegardes v8 */
+.continent-explorer{margin:22px 0;border:1px solid #ae779457;background:linear-gradient(135deg,#17131f,#0e1420);color:#f8edf3}
+.continent-top{padding:20px clamp(16px,3vw,26px);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+.continent-top h3{font-size:clamp(29px,4vw,46px);margin:7px 0}
+.continent-top p{font-size:12px;max-width:700px;line-height:1.7;color:#cdbdc9}
+#continent-toggle{border:1px solid #d9a0ba;background:#3a2033;color:white;padding:13px 17px;font-weight:900;font-size:12px;cursor:pointer}
+#continent-content{padding:0 clamp(12px,2.5vw,24px) 24px}
+.continent-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(240px,1fr);gap:16px}
+.continent-map{position:relative;min-height:310px;border:1px solid #a2a0a450;border-radius:8px;overflow:hidden;background:radial-gradient(ellipse at 35% 54%,#4c5e61 0 15%,transparent 42%),radial-gradient(ellipse at 75% 50%,#62523c 0 14%,transparent 39%),linear-gradient(140deg,#102334,#1e2b35 45%,#17211f);isolation:isolate}
+.continent-map:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 43px,#ffffff0c 44px 45px),repeating-linear-gradient(0deg,transparent 0 43px,#ffffff0a 44px 45px)}
+.continent-pin{position:absolute;transform:translate(-50%,-50%);padding:8px 9px;border:1px solid #90c9ae;background:#142a28;color:#f5f5f4;border-radius:6px;font-size:clamp(9px,1.1vw,12px);font-weight:900;cursor:pointer;z-index:1}
+.continent-pin[data-alignment="enemy"]{border-color:#ec9282;background:#4e1d28}
+.continent-pin[data-alignment="neutral"]{border-color:#e5be90;background:#44352b}
+.continent-pin[aria-current="location"]{outline:3px solid #fce2b4;outline-offset:3px}
+.continent-pin:disabled{opacity:.42;cursor:not-allowed}
+.continent-regions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:340px;overflow:auto}
+.continent-regions .adventure-action{padding:11px;min-height:0}
+.continent-regions .adventure-action strong{font-size:12px}
+.continent-regions .adventure-action small{font-size:10px}
+.continent-selected{border-color:#f7d2ae!important;background:#3c2838!important}
+.continent-details>p{font-size:11px;color:#e3d4e6;line-height:1.6}
+.continent-local{margin-top:20px;padding-top:15px;border-top:1px solid #ffffff22}
+.continent-local h4{font-size:clamp(23px,3vw,31px);margin:4px 0}
+.continent-local>div>p{font-size:12px;color:#d2c5d0;line-height:1.6}
+.continent-sites{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.continent-site{border:1px solid #ffffff2e;background:#201923;padding:14px;display:flex;flex-direction:column;gap:10px}
+.continent-site strong{font-size:17px}
+.continent-site small{font-size:11px;color:#f1bea1}
+.continent-site p{font-size:12px;line-height:1.6;flex:1}
+.continent-site button{min-height:63px}
+.continent-encounter{font-size:12px;line-height:1.7;color:#f2d9c5;border-left:3px solid #e9b17e;padding:12px 15px;background:#5b413455}
+@media(max-width:900px){.continent-layout{grid-template-columns:1fr}.continent-map{min-height:260px}.continent-sites{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.continent-regions,.continent-sites{grid-template-columns:1fr}.continent-pin{padding:5px;font-size:8px}.continent-map{min-height:240px}}
