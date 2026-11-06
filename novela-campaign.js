@@ -257,6 +257,7 @@ function choose(choice){
  go(choice.next);
 }
 function go(id){
+ const fromDecision=Boolean(document.activeElement?.closest?.("#world-actions"));
  const idx=C.scenes.findIndex(x=>x.id===id);if(idx<0)return;
  // Never make a deceased mortal speak in later scenes.
  if(id==="s07"&&S.maileizStatus==="morte"){go("s08");return}
@@ -265,7 +266,7 @@ function go(id){
  if(scene.battle)startBattle(scene.battle);
  render();
  // Conserver le HUD visible et recentrer sur la nouvelle scène après un choix.
- if(document.activeElement?.closest?.("#world-actions"))focusCurrentScene();
+ if(fromDecision)focusCurrentScene();
 }
 function startBattle(config){
  const enemy=C.enemies[config.enemy];
