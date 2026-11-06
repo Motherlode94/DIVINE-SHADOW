@@ -186,6 +186,49 @@ function respondToCity(reqId,accept){
  advanceClock(2);
  const current=C.scenes[S.index];go(current.choices?.[0]?.next);
 }
+// Confort de lecture stocké séparément de la sauvegarde narrative.
+const READER_KEY="divine-shadow-reader-v1";
+const readerDefault={font:16,image:true};
+let readerSettings={...readerDefault};
+try{
+ const stored=JSON.parse(localStorage.getItem(READER_KEY)||"null");
+ if(stored&&typeof stored==="object"){
+  readerSettings.font=clamp(Number(stored.font)||16,14,22);
+  readerSettings.image=stored.image!==false;
+ }
+}catch{}
+function applyReaderSettings(){
+ const root=$("game-root");if(!root)return;
+ root.style.setProperty("--reader-font-size",readerSettings.font+"px");
+ root.classList.toggle("reader-image-off",!readerSettings.image);
+ $("reader-image").textContent=readerSettings.image?"IMAGE : OUI":"IMAGE : NON";
+ $("reader-image").setAttribute("aria-pressed",String(!readerSettings.image));
+ $("reader-smaller").disabled=readerSettings.font<=14;
+ $("reader-larger").disabled=readerSettings.font>=22;
+}
+function changeReaderSetting(setting){
+ if(setting==="larger")readerSettings.font=clamp(readerSettings.font+1,14,22);
+ if(setting==="smaller")readerSettings.font=clamp(readerSettings.font-1,14,22);
+ if(setting==="image")readerSettings.image=!readerSettings.image;
+ applyReaderSettings();
+ try{localStorage.setItem(READER_KEY,JSON.stringify(readerSettings))}catch{}
+}
+function renderDecisionMemory(){
+ const last=Array.isArray(S.choiceHistory)?S.choiceHistory[0]:null;
+ $("decision-memory").hidden=!last;
+ $("decision-memory-text").textContent=last?("Épisode "+last.episode+" · "+last.label):"";
+}
+function recordChoice(label){
+ if(!Array.isArray(S.choiceHistory))S.choiceHistory=[];
+ const scene=C.scenes[S.index];
+ S.choiceHistory.unshift({episode:scene?.episode||1,sceneId:scene?.id||"",label:String(label).slice(0,240)});
+ S.choiceHistory=S.choiceHistory.slice(0,20);
+}
+function focusCurrentScene(){
+ const current=$("novela-reading");
+ if(!current||!S.introDone)return;
+ current.scrollIntoView({block:"start",behavior:window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches?"instant":"smooth"});
+}
 function choose(choice){
  if(S.battle||S.finished)return;
  if(choice.requires&&!has(choice.requires))return;
@@ -203,6 +246,7 @@ function choose(choice){
  if(current.id==="s07"&&S.maileizStatus!=="morte")restoreForce("maileiz",12);
  advanceClock(1);
  log(override?"CHAYAH agit selon sa propre volonté.":"CHAYAH : "+choice.label);
+ recordChoice(choice.label);
  if(has("evacuation")&&current.id==="s02")S.civiliansSaved+=20;
  if(has("couloir")&&current.id==="s03")S.civiliansSaved+=12;
  if(has("barricades")&&current.id==="s04")S.npc.general="défend la porte avec les gardes";
@@ -220,6 +264,8 @@ function go(id){
  log("Nouveau lieu : "+scene.place+".");
  if(scene.battle)startBattle(scene.battle);
  render();
+ // Conserver le HUD visible et recentrer sur la nouvelle scène après un choix.
+ if(document.activeElement?.closest?.("#world-actions"))focusCurrentScene();
 }
 function startBattle(config){
  const enemy=C.enemies[config.enemy];
@@ -604,6 +650,8 @@ function render(){
  $("opening-cinematic").hidden=true;
  if(!S.mode){$("mode-setup").hidden=false;$("game-root").hidden=true;save();return}
  $("mode-setup").hidden=true;$("game-root").hidden=false;
+ applyReaderSettings();
+ renderDecisionMemory();
  const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
  renderWorld();
  const episode=C.season?.episodes[n.episode-1];
@@ -882,6 +930,9 @@ document.addEventListener("keydown",e=>{
  if(btn&&!btn.disabled){e.preventDefault();btn.click();}
 });
 
+$("reader-smaller").addEventListener("click",()=>changeReaderSetting("smaller"));
+$("reader-larger").addEventListener("click",()=>changeReaderSetting("larger"));
+$("reader-image").addEventListener("click",()=>changeReaderSetting("image"));
 $("dialogue-next").addEventListener("click",()=>advanceDialogue(false));
 $("dialogue-skip").addEventListener("click",()=>advanceDialogue(true));
 switchInfo("city");
