@@ -616,3 +616,16 @@ body{overflow-x:clip}
 .living-history{padding-left:22px}
 .living-history li{padding:8px 0;border-bottom:1px solid #ffffff1b;line-height:1.65;font-size:12px;overflow-wrap:anywhere}
 @media(max-width:700px){.living-actions{grid-template-columns:1fr}.living-neighborhood{padding:12px}.living-npc-card>strong{font-size:14px}#info-drawer .info-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}#info-drawer .info-tabs button{font-size:10px}}
+
+/* Combat avancé : postures lisibles et commandes adaptables */
+.combat-stance-controls{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:12px 0 5px;padding:11px;background:#151422;border:1px solid #916a82}
+.combat-stance-controls>span{font-size:11px;font-weight:900;color:#edb6ce;margin-right:7px}
+.combat-stance-controls button{min-height:38px;border:1px solid #ffffff50;border-radius:4px;padding:8px 11px;background:#322337;color:#fff;font-size:11px;font-weight:800}
+.combat-stance-controls button[aria-pressed="true"]{background:#8e395e;border-color:#eeb9cb}
+.combat-stance-controls button:disabled{opacity:.55;cursor:default}
+.combat-stance-controls button[aria-pressed="true"]:disabled{opacity:1}
+.combat-stance-description{font-size:12px;color:#e4ccd7;margin:7px 0 13px;line-height:1.5}
+#battle-stage[data-stance="defensive"] .battle-ring{border-color:#7bb8df}
+#battle-stage[data-stance="offensive"] .battle-flare{filter:saturate(1.6)}
+#battle-stage[data-stance="mobile"] .battle-spark{filter:hue-rotate(140deg)}
+@media(max-width:700px){.combat-stance-controls button{flex:1 1 40%;min-width:0}.combat-stance-controls>span{width:100%}}
