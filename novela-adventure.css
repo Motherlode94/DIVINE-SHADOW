@@ -324,3 +324,105 @@
 @media(max-width:760px){.novela-reading-nav{top:62px}.episode-progress{padding:14px 16px}.episode-heading{display:grid;gap:8px}#episode-arc{margin-left:0}.scene-illustration{height:275px}.scene-view>#place-desc{font-size:15px}}
 @media(max-width:520px){.novela-reading-nav{gap:2px;justify-content:space-around}.novela-reading-nav a{padding:9px 6px;font-size:9px}.continent-map{min-height:260px}.continent-pin{font-size:9px;min-height:29px}#world-actions .adventure-action{min-height:70px}}
 @media(prefers-reduced-motion:reduce){.episode-trajectory i,.novela-reading-nav a,.continent-site{transition:none}}
+
+/* NOVELA ergonomie v23 — écran PC : lecture et réponses simultanées */
+html{scroll-padding-top:180px}
+body{overflow-x:clip}
+#adventure-game,#game-root,.adventure-layout,.adventure-main,
+.adventure-panels,#exploration-panel,.scene-view,.continent-explorer,.combat-panel{min-width:0}
+.player-hud{
+ position:sticky;top:86px;z-index:32;
+ margin:10px 0 18px;padding:9px 12px;
+ background:rgba(14,13,22,.97);backdrop-filter:blur(15px);
+ border:1px solid #a86b855e;border-radius:9px;
+ box-shadow:0 9px 28px #000b
+}
+.player-hud .player-identity{padding:8px 13px}
+.player-hud .adventure-status{margin:0}
+.player-hud .status-panel{padding:9px 12px}
+.player-hud .status-panel strong{font-size:22px}
+.player-hud .info-menu-toggle{min-height:48px;padding:9px 12px}
+.novela-reading-nav{position:relative;top:auto;z-index:1}
+.decision-eyebrow{display:block;margin:0 0 8px}
+.decision-help{margin:-5px 0 16px;color:#d8beca;font-size:12px;line-height:1.55}
+.adventure-main .scene-view{min-width:0}
+.adventure-main .adventure-panel{min-width:0}
+@media(min-width:1050px){
+ .adventure-wrap{padding-inline:clamp(20px,3vw,65px)}
+ .adventure-main{
+   display:grid;
+   grid-template-columns:minmax(0,1.35fr) minmax(310px,.80fr);
+   grid-template-areas:"quick quick" "episode episode" "scene decisions" "map map" "combat combat";
+   gap:12px 22px;align-items:start
+ }
+ .novela-reading-nav{grid-area:quick;margin:0}
+ .episode-progress{grid-area:episode;margin:0}
+ .scene-view{grid-area:scene;align-self:stretch}
+ .adventure-panels{grid-area:decisions;display:block;margin:0;align-self:start;position:sticky;top:172px;z-index:10}
+ #exploration-panel{max-height:calc(100dvh - 186px);min-height:220px;display:flex;flex-direction:column;overflow:auto;padding:18px}
+ #exploration-panel h3{font-size:clamp(25px,2.6vw,36px);line-height:1.08;margin-bottom:15px}
+ #world-actions{grid-template-columns:minmax(0,1fr)!important;gap:9px}
+ #world-actions .adventure-action{min-height:65px;padding:13px}
+ #continent-explorer{grid-area:map;margin:8px 0}
+ #combat-panel{grid-area:combat;min-width:0}
+}
+@media(min-width:1050px) and (max-height:700px){
+ .player-hud{padding:5px 10px;top:83px;margin:6px 0 9px}
+ .player-hud .status-panel{padding:5px 9px}
+ .adventure-panels{top:144px}
+ #exploration-panel{max-height:calc(100dvh - 157px)}
+}
+@media(max-width:1049px){
+ .adventure-main{display:flex;flex-direction:column;gap:0}
+ .novela-reading-nav{order:0}
+ .episode-progress{order:1}
+ .scene-view{order:2;width:100%}
+ .adventure-panels{order:3;width:100%}
+ #continent-explorer{order:4;width:100%}
+ #combat-panel{order:5;width:100%}
+ #exploration-panel{scroll-margin-top:190px}
+ .adventure-layout{grid-template-columns:minmax(0,1fr)}
+ .continent-layout{grid-template-columns:minmax(0,1fr)}
+ .adventure-panels #world-actions{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+ html{scroll-padding-top:175px}
+ .adventure-wrap{padding-inline:12px}
+ .player-hud{top:73px;padding:7px 9px;margin:8px 0 13px;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+ .player-hud .player-identity{grid-column:1;grid-row:1;padding:4px 8px;gap:2px}
+ .player-hud .player-identity strong{font-size:19px}
+ .player-hud .player-identity>span:last-child{display:none}
+ .player-hud .adventure-status{grid-column:1/-1;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .player-hud .status-panel{min-width:0;padding:7px 9px;gap:3px}
+ .player-hud .status-panel>span{font-size:9px}
+ .player-hud .status-panel strong{font-size:17px}
+ .player-hud .info-menu-toggle{grid-column:2;grid-row:1;min-height:40px;min-width:0;padding:5px 9px;font-size:10px;gap:2px}
+ .player-hud .info-menu-toggle span{font-size:9px}
+ .nav{height:70px}
+ #links{max-height:calc(100dvh - 70px);overflow-y:auto}
+ .novela-reading-nav{position:relative;top:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:5px}
+ .novela-reading-nav a{min-width:0;min-height:42px;padding:7px 4px;text-align:center;font-size:9px;letter-spacing:0;display:grid;place-items:center}
+ .scene-illustration{height:clamp(200px,62vw,300px)}
+ .scene-view>h3{font-size:clamp(31px,9vw,48px);overflow-wrap:anywhere}
+ .scene-view>#place-desc{font-size:14px;line-height:1.7}
+ .scene-view>#story-event{font-size:12px;overflow-wrap:anywhere}
+ .adventure-panels{margin:10px 0}
+ #exploration-panel{padding:13px;min-width:0}
+ #exploration-panel h3{font-size:28px}
+ #world-actions .adventure-action,#combat-actions .adventure-action{min-width:0;overflow-wrap:anywhere}
+ .continent-regions,.continent-sites{grid-template-columns:minmax(0,1fr)}
+ .continent-map{min-height:265px}
+ .continent-pin{white-space:normal;max-width:30%;font-size:9px;padding:6px 5px;text-align:center}
+ #info-drawer{top:70px;bottom:0;width:100%;max-width:100%;padding:12px}
+ #info-drawer .info-tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+ #info-drawer .info-tabs button{padding:9px 2px;font-size:9px;min-width:0;overflow-wrap:anywhere}
+ .combat-actions{grid-template-columns:minmax(0,1fr)}
+ .combat-heading{min-width:0}
+}
+@media(max-width:390px){
+ .player-hud .player-identity strong{font-size:16px}
+ .player-hud .info-menu-toggle{font-size:9px}
+ .continent-pin{font-size:8px;max-width:33%}
+ .info-drawer-head h3{font-size:22px}
+ #info-drawer .info-tabs button{font-size:8px}
+}
