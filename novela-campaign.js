@@ -961,6 +961,31 @@ function renderWorld(){
  renderLiving();
 }
 
+
+function renderCharacterArcs(){
+ const container=$("character-arcs-list");if(!container)return;
+ container.replaceChildren();
+ const ep=C.scenes[S.index]?.episode||1;
+ for(const arc of C.storyArcs||[]){
+  if(ep<arc.intro)continue;
+  const phase=arc.stages.filter(n=>n<=ep).length;
+  const card=document.createElement("article");card.className="character-arc-card";
+  const header=document.createElement("div");header.className="character-arc-heading";
+  const name=document.createElement("strong");name.textContent=arc.name;
+  const step=document.createElement("span");step.textContent="PHASE "+phase+" / "+arc.stages.length;
+  header.append(name,step);
+  function entry(label,detail){const p=document.createElement("p");const b=document.createElement("b");b.textContent=label+" — ";p.append(b,document.createTextNode(detail));return p}
+  card.append(header,entry("DÉSIR",arc.desire),entry("CONTRADICTION",arc.contradiction));
+  // Ne pas raconter une évolution à venir comme si elle avait déjà eu lieu.
+  if(ep>=arc.stages[arc.stages.length-1])card.append(entry("ÉVOLUTION",arc.evolution));
+  else card.append(entry("ÉVOLUTION","Le parcours n'est pas terminé. Les conséquences restent à découvrir."));
+  if(arc.aliveOnly&&S.maileizStatus==="morte"){
+    card.append(entry("CONTINUITÉ","Décédée dans cette partie. Son histoire ne reprend pas sans événement explicite."));
+  }
+  container.append(card);
+ }
+}
+
 function render(){
  if(S.mode&&!S.introDone){
   $("mode-setup").hidden=true;$("game-root").hidden=true;
@@ -972,6 +997,7 @@ function render(){
  applyReaderSettings();
  renderDecisionMemory();
  renderRPG();
+ renderCharacterArcs();
  const n=C.scenes[S.index],chapter=C.chapters[n.chapter];
  renderWorld();
  const episode=C.season?.episodes[n.episode-1];
@@ -1008,6 +1034,8 @@ function render(){
  else if(n.textIfMaileizAlive&&S.maileizStatus!=="morte")sceneText=n.textIfMaileizAlive;
  if(n.id==="s18"&&S.maileizStatus==="morte")sceneText="La ville enterre ses morts, dont MAILEIZ, tombée en sauvant une enfant. CHAYAH ne peut pas effacer les décisions de cette route. AETHER l'accompagne sans le décharger de sa responsabilité. Les quartiers cherchent comment vivre après la bataille.";
  else if(n.id==="s18"&&S.maileizStatus==="blessee")sceneText+=" MAILEIZ est vivante mais blessée. Sa convalescence et ses choix futurs lui appartiennent.";
+ const echoes=C.storyEchoes?.[n.id]||[];
+ for(const echo of echoes)if(has(echo.flag))sceneText+="\n\n"+echo.text;
  $("place-desc").textContent=sceneText+reaction();
  renderDialogue(n,sceneText);
  // La nouvelle scène s'ouvre toujours au début de son propre panneau de lecture.
