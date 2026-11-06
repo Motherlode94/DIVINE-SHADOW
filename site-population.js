@@ -16,7 +16,7 @@
   if(!Number.isInteger(index)||index<0||index>39)return wrap;
   // Portraits nouvellement illustrés pour les 12 premiers habitants : fichier individuel
   // et identité strictement liée à portraitIndex; les autres gardent leur source existante.
-  const hasFreshPhoto=index<12;
+  const hasFreshPhoto=true;
   const file=String(index).padStart(2,"0")+".webp";
   portrait.src="./assets/population/"+(hasFreshPhoto?"new/":"hd/")+"portrait-"+file;
   portrait.dataset.fresh=String(hasFreshPhoto);
@@ -60,7 +60,7 @@
   const fragment=document.createDocumentFragment();
   visible.forEach(x=>fragment.append(build(x)));
   grid.append(fragment);
-  counter.textContent=visible.length+" habitants présentés"+(current==="Tous"?" · 12 nouveaux portraits photo / 40 habitants":" · "+current);
+  counter.textContent=visible.length+" habitants présentés"+(current==="Tous"?" · portraits individuels":" · "+current);
   for(const button of filter.querySelectorAll("button")){
    const active=button.dataset.peopleGroup===current;button.setAttribute("aria-pressed",String(active));button.classList.toggle("selected",active);
   }
