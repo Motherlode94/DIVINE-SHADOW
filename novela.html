@@ -3,7 +3,7 @@
 <meta name="theme-color" content="#08090d"><title>Novela jouable — La Nuit des Serments | DIVINE SHADOW</title>
 <meta name="description" content="Campagne interactive DIVINE SHADOW : CHAYAH explore la cité, rencontre les habitants et combat pour ses choix.">
 <link rel="stylesheet" href="./styles.css?v=adventure-1">
-<link rel="stylesheet" href="./novela-adventure.css?v=23"></head>
+<link rel="stylesheet" href="./novela-adventure.css?v=24"></head>
 <body>
 <header class="nav"><a class="brand" href="./index.html#accueil"><span class="sigil">✦</span> DIVINE<span>SHADOW</span></a>
 <button id="menu" class="menu" aria-expanded="false" aria-controls="links" aria-label="Afficher le menu">☰</button>
@@ -38,11 +38,11 @@
 <section class="adventure-main">
 <div class="novela-reading-nav" aria-label="Navigation rapide"><a href="#novela-reading">LIRE LA SCÈNE</a><a href="#exploration-panel">DÉCISIONS</a><a href="#continent-explorer">CARTE DU MONDE</a></div>
 <div class="episode-progress" id="novela-reading"><div class="episode-heading"><span id="episode-label">ÉPISODE 01 / 225</span><strong id="episode-name">AVANT LES SIRÈNES</strong><span id="episode-arc">LES VISAGES DE LA CITÉ</span></div><div class="episode-trajectory" role="progressbar" id="episode-trajectory" aria-label="Progression de la saison" aria-valuemin="0" aria-valuemax="225" aria-valuenow="1"><i id="episode-trajectory-fill"></i></div></div>
-<div class="scene-view"><div class="scene-illustration" id="scene-illustration" role="img" aria-label="Illustration d’ambiance de la scène"><img id="scene-portrait" class="scene-character-portrait" alt="" loading="lazy" hidden><div class="scene-illustration-caption"><span id="scene-visual-type">ILLUSTRATION D’AMBIANCE</span><strong id="scene-visual-speaker"></strong></div></div><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div>
+<div class="scene-view"><div class="scene-illustration" id="scene-illustration" role="img" aria-label="Illustration d’ambiance de la scène"><img id="scene-portrait" class="scene-character-portrait" alt="" loading="lazy" hidden><div class="scene-illustration-caption"><span id="scene-visual-type">ILLUSTRATION D’AMBIANCE</span><strong id="scene-visual-speaker"></strong></div></div><div class="scene-reading-body" id="scene-reading-body" tabindex="0" role="region" aria-label="Récit de la scène, zone défilable"><span class="eyebrow">EXPLORATION / LIEU ACTUEL</span><h3 id="current-place"></h3><p id="place-desc"></p><div class="event-message" id="story-event" aria-live="polite"></div></div></div>
 
 
 <div class="adventure-panels">
-<div class="adventure-panel" id="exploration-panel"><span class="eyebrow decision-eyebrow">ACTIONS DISPONIBLES · EN DIRECT</span><h3>QUE DÉCIDE CHAYAH ?</h3><p class="decision-help">Les choix restent à côté du récit. Vitalité et énergie sont toujours visibles en haut.</p><div id="world-actions" class="adventure-actions"></div></div>
+<div class="adventure-panel" id="exploration-panel"><span class="eyebrow decision-eyebrow">ACTIONS DISPONIBLES · EN DIRECT</span><h3>QUE DÉCIDE CHAYAH ?</h3><p class="decision-help">Lis le récit à gauche en faisant défiler son panneau, puis choisis une action ici.</p><div id="world-actions" class="adventure-actions"></div></div>
 </div>
 <section id="continent-explorer" class="continent-explorer" aria-labelledby="continent-heading">
 <div class="continent-top"><div><span class="eyebrow">EXPLORATION HORS ÉPISODE</span><h3 id="continent-heading">CARTE DU CONTINENT</h3><p>Carte schématique · Six cités, dix-huit lieux à visiter. Voyage entre les cités sans sauter l'histoire. Les rencontres locales et les visites restent dans la sauvegarde.</p></div><button id="continent-toggle" type="button" aria-expanded="false" aria-controls="continent-content">OUVRIR LA CARTE</button></div>
@@ -107,5 +107,5 @@
 <script src="./novela-season-225.js?v=1" defer></script>
 <script src="./novela-world-data.js?v=1" defer></script>
 <script src="./novela-divinities.js?v=4" defer></script>
-<script src="./novela-campaign.js?v=24" defer></script>
+<script src="./novela-campaign.js?v=25" defer></script>
 </body></html>
