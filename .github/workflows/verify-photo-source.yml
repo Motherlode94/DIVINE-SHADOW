@@ -1,0 +1,36 @@
+name: Verify original portrait source
+on:
+  push:
+    paths:
+      - '.github/workflows/verify-photo-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow==11.3.0
+      - name: Compare photo delivery sizes
+        shell: bash
+        run: |
+          python - <<'PY'
+          import urllib.request
+          variants={"original":"https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:150?csig=AAAAAAAAAAAAAAAAAAAAAIyglQTLf5rugATKnZ6zXPx96Xa2c7UEHbvRbgLhCKyt&exp=1793991564&osig=AAAAAAAAAAAAAAAAAAAAACOM-TRGQ99cwlNo62XeeMlg4dVCG72OLlEAPv8paBfE&signer=media-rpc&token=AAIAAU0AJGE0YTZiNDQxLWU5ODUtNDMyMS1iYmQ3LTY1Yjg3YzY4YWNhZAAAAAABobI62uDk7w69SCRTe8iinloAcNJQibTp-xcR4S5MQIX-tuDu5g&x-canva-quality=thumbnail","large":"https://media.canva.com/v2/image-resize/format:PNG/height:1000/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:750?csig=AAAAAAAAAAAAAAAAAAAAAIyglQTLf5rugATKnZ6zXPx96Xa2c7UEHbvRbgLhCKyt&exp=1793991564&osig=AAAAAAAAAAAAAAAAAAAAACOM-TRGQ99cwlNo62XeeMlg4dVCG72OLlEAPv8paBfE&signer=media-rpc&token=AAIAAU0AJGE0YTZiNDQxLWU5ODUtNDMyMS1iYmQ3LTY1Yjg3YzY4YWNhZAAAAAABobI62uDk7w69SCRTe8iinloAcNJQibTp-xcR4S5MQIX-tuDu5g&x-canva-quality=thumbnail","noResize":"https://media.canva.com/v2/image-resize/format:PNG/height:1448/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:1086?csig=AAAAAAAAAAAAAAAAAAAAAIyglQTLf5rugATKnZ6zXPx96Xa2c7UEHbvRbgLhCKyt&exp=1793991564&osig=AAAAAAAAAAAAAAAAAAAAACOM-TRGQ99cwlNo62XeeMlg4dVCG72OLlEAPv8paBfE&signer=media-rpc&token=AAIAAU0AJGE0YTZiNDQxLWU5ODUtNDMyMS1iYmQ3LTY1Yjg3YzY4YWNhZAAAAAABobI62uDk7w69SCRTe8iinloAcNJQibTp-xcR4S5MQIX-tuDu5g&x-canva-quality=thumbnail","noToken":"https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2Fa4a6b441-e985-4321-bbd7-65b87c68acad/watermark:F/width:150"}
+          for label,url in variants.items():
+           try:
+            req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0"})
+            with urllib.request.urlopen(req,timeout=20) as r:
+             body=r.read()
+             from PIL import Image
+             from io import BytesIO
+             im=Image.open(BytesIO(body))
+             print(label, r.status, im.size,len(body))
+           except Exception as e:
+            print(label,"ERR",str(e))
+          
+          PY
