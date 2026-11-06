@@ -683,6 +683,16 @@ function advanceDialogue(skip=false){
  renderDialogue(scene,scene.text);
  save();
 }
+
+const CANON_FACE_KEY=(name)=>String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-zA-Z0-9]/g,"").toUpperCase();
+function conceptIllustrationFor(name){
+ const findName=CANON_FACE_KEY(name);
+ for(const [category,items] of Object.entries(window.DS_CAST||{})){
+  const item=(Array.isArray(items)?items:[]).find(x=>CANON_FACE_KEY(x.name)===findName);
+  if(item)return {item,category};
+ }
+ return null;
+}
 function renderSceneArt(scene){
  const key=String(scene.who||"").trim().toUpperCase();
  const portrait=SCENE_CAST_IMAGES[key];
@@ -694,17 +704,28 @@ function renderSceneArt(scene){
  const kind=combat?"combat":archive?"archives":rural?"village":"divine";
  const art=portrait||SCENE_BACKDROPS[kind];
  const imageUrl="./assets/"+art.split("/").map(encodeURIComponent).join("/");
- const stage=$("scene-illustration"),img=$("scene-portrait");
- // La grande image suit l'acteur lorsqu'il possède une illustration,
- // sinon montre explicitement un visuel d'ambiance non attribué.
- stage.style.backgroundImage="linear-gradient(90deg,rgba(6,7,13,.12),rgba(6,7,13,.7)),url('"+imageUrl+"')";
+ const stage=$("scene-illustration"),img=$("scene-portrait"),concept=$("scene-concept-art");
+ const matching=!portrait&&typeof window.DS_renderPose==="function"?conceptIllustrationFor(key):null;
+ const hasConcept=Boolean(matching);
+ // Ne pas agrandir la planche de 40 civils dans une scène : source trop faible.
+ const scenery=kind==="village"&&!portrait;
+ stage.style.backgroundImage=scenery?
+  "radial-gradient(ellipse at 42% 31%,#765443,#312833 57%,#0d131c 100%)":
+  "linear-gradient(90deg,rgba(6,7,13,.12),rgba(6,7,13,.7)),url('"+imageUrl+"')";
  stage.dataset.kind=kind;
  img.hidden=!portrait;
- if(portrait){img.src="./assets/"+portrait.split("/").map(encodeURIComponent).join("/");img.alt="Portrait illustratif de "+key;}
- else{img.removeAttribute("src");img.alt="";}
- $("scene-visual-type").textContent=portrait?"PORTRAIT DU PERSONNAGE":"ILLUSTRATION D’AMBIANCE";
- $("scene-visual-speaker").textContent=portrait?key:(scene.episodeTitle||scene.place||"DIVINE SHADOW");
- stage.setAttribute("aria-label",portrait?"Illustration du personnage "+key:"Illustration d’ambiance, non spécifique au lieu");
+ if(portrait){
+  img.src="./assets/"+portrait.split("/").map(encodeURIComponent).join("/");
+  img.alt="Portrait illustratif de "+key;
+ }else{img.removeAttribute("src");img.alt="";}
+ concept.replaceChildren();concept.hidden=!hasConcept;
+ if(hasConcept){
+  concept.innerHTML=window.DS_renderPose(matching.item,matching.category);
+  concept.setAttribute("aria-label","Illustration 2D conceptuelle de "+matching.item.name+" en posture de "+matching.item.role);
+ }
+ $("scene-visual-type").textContent=portrait?"PORTRAIT DU PERSONNAGE":hasConcept?"CONCEPT 2D — POSTURE / MÉTIER":"ILLUSTRATION D’AMBIANCE";
+ $("scene-visual-speaker").textContent=portrait||hasConcept?key:(scene.episodeTitle||scene.place||"DIVINE SHADOW");
+ stage.setAttribute("aria-label",portrait?"Illustration du personnage "+key:hasConcept?"Illustration conceptuelle non canonique de "+key:"Illustration d’ambiance, non spécifique au lieu");
 }
 
 
