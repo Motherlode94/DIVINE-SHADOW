@@ -41,6 +41,12 @@ La carte peut être ouverte depuis la campagne. Voyager consomme des phases ; le
 - Mises en page adaptées aux mobiles, navigation clavier et indication des actions.
 - Combat : retours d'impact, dégâts infligés/subis et compétences accessibles au corps à corps.
 
+## Dialogues cinématiques
+
+La campagne dispose d’un panneau de dialogue intégré aux scènes hors combat : portraits issus des assets du dépôt lorsqu’une correspondance exacte existe, indicateur de tonalité (urgence, gravité, réflexion), bouton pour avancer ou lire le texte complet, et choix narratifs conservés dans le panneau de décisions. Les premières répliques attribuées proviennent des textes des scènes 1, 2, 4, 6, 7, 8 et 9. Pour les autres scènes, un court extrait du texte original est présenté comme **narration**, sans attribuer de fausses paroles à un personnage. Les personnages sans portrait confirmé utilisent un monogramme neutre. La sauvegarde reste en version 8 ; le dialogue reprend dans la scène en cours.
+
+**Important :** les tonalités sont des effets de présentation, pas de nouvelles expressions faciales illustrées ou des affirmations de nouveaux pouvoirs. Le dialogue ne ressuscite aucun personnage décédé et ne change pas les conséquences existantes.
+
 ## Personnages et cohérence
 
 CHAYAH est africain, immortel mais physiquement vulnérable aux blessures. MARIN est son **père adoptif**, à la suite de la volonté de sa mère. AETHER agit comme conseiller et allié autonome. SAMA et MAILEIZ conservent leur libre arbitre ; **MAILEIZ est mortelle**. Les routes où un personnage meurt ne doivent pas le faire revenir sans événement explicite. Les populations des cités sont diverses : aucune origine ne prédétermine un pouvoir, une profession ou une allégeance.
